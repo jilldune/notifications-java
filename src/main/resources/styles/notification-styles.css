@@ -3,16 +3,37 @@
      -fx-text-fill: #000;
      -fx-font-size: 16px;
 }
+
+/**
+    =================================
+    ============== TOAST ============
+    =================================
+*/
 .toast {
-    -fx-background-color: #323232;
-    -fx-text-fill: white;
-    -fx-padding: 10px;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
+    -fx-padding: 3px;
+    -fx-border-width: 0 0 2px 0;
+    -fx-border-color: transparent transparent red transparent;
+    -fx-background-color: white;
+}
+.toast-icon {
+    -fx-width: 40px;
+    -fx-padding: 3px;
+}
+.toast-icon .icon {
+    -fx-icon-color: red;
+}
+.toast-message {
+    -fx-min-width: 40px;
+    -fx-max-width: 200px;
+    -fx-font-size: 12px;
+    -fx-text-fill: #000;
+    -fx-line-spacing: -3;
 }
 
 /**
+    ================================
     ======== NOTIFICATION ==========
+    ================================
 */
 .notification {
     -fx-pref-width: 350px;
