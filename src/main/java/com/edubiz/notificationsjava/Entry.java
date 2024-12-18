@@ -2,6 +2,7 @@ package com.edubiz.notificationsjava;
 
 import com.edubiz.notificationsjava.Notifications.Notification;
 import com.edubiz.notificationsjava.Notifications.Toast;
+import com.edubiz.notificationsjava.Notifications.ToastType;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -13,9 +14,9 @@ import java.util.Map;
 public class Entry extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-          // Toast
+        // Toast
         Toast toast = new Toast();
-        toast.toast("This is a toast",0);
+        toast.toast(ToastType.ERROR,"This is a toast");
 
         // Notification
 //        Notification notify = new Notification();

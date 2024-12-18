@@ -8,12 +8,48 @@
     =================================
     ============== TOAST ============
     =================================
+
+$toastSuccess: #2ecc71;
+$toastInfo: #3498db;
+$toastErr: #e74c3c;
+$toastAlert: #f39c12;
+$toastNeutral: #7f8cbd;
 */
 .toast {
     -fx-padding: 3px;
     -fx-border-width: 0 0 2px 0;
-    -fx-border-color: transparent transparent red transparent;
+    -fx-border-color: transparent transparent transparent transparent;
     -fx-background-color: white;
+}
+.toast.success {
+    -fx-border-color: transparent transparent #2ecc71 transparent;
+}
+.toast.success .toast-icon .icon {
+    -fx-icon-color: #2ecc71;
+}
+.toast.error {
+    -fx-border-color: transparent transparent #e74c3c transparent;
+}
+.toast.error .toast-icon .icon {
+    -fx-icon-color: #e74c3c;
+}
+.toast.alert {
+    -fx-border-color: transparent transparent #f39c12 transparent;
+}
+.toast.alert .toast-icon .icon {
+    -fx-icon-color: #f39c12;
+}
+.toast.info {
+    -fx-border-color: transparent transparent #3498db transparent;
+}
+.toast.info .toast-icon .icon {
+    -fx-icon-color: #3498db;
+}
+.toast.neutral {
+    -fx-border-color: transparent transparent #7f8cbd transparent;
+}
+.toast.neutral .toast-icon .icon {
+    -fx-icon-color: #7f8cbd;
 }
 .toast-icon {
     -fx-width: 40px;
