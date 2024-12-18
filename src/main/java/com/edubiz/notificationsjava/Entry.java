@@ -1,7 +1,6 @@
 package com.edubiz.notificationsjava;
 
 import com.edubiz.notificationsjava.Notifications.Notification;
-import com.edubiz.notificationsjava.Notifications.Toast;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -25,11 +24,11 @@ public class Entry extends Application {
                 "autoClose",false,
                 "buttons",new LinkedHashMap<String,Map<String,Object>>(){{
                     put("cancel",Map.of(
-                            "action",(Runnable)()->{ System.out.println("action for button"); }
+                            "action",(Runnable)()-> System.out.println("action for button")
 //                            "style","-fx-background-color: blue;-fx-text-fill: white;"
                     ));
                     put("delete",Map.of(
-                            "action",(Runnable)()->{System.out.println("action for delete");},
+                            "action",(Runnable)()-> System.out.println("action for delete"),
                             "style","-fx-background-color: red;-fx-text-fill: white;"
                     ));
                 }}

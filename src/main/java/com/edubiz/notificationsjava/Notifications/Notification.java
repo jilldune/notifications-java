@@ -1,7 +1,6 @@
 package com.edubiz.notificationsjava.Notifications;
 
 import com.edubiz.notificationsjava.util.Util;
-import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
@@ -96,11 +95,11 @@ public class Notification extends BaseNotifications {
     // create Notification message body
     private void createBody(VBox parent, String bodyText) {
         // add to the parent
-        parent.getChildren().add(getTextArea(parent, bodyText));
+        parent.getChildren().add(getTextArea(bodyText));
     }
 
     @NotNull
-    private TextArea getTextArea(VBox parent, String bodyText) {
+    private TextArea getTextArea(String bodyText) {
         TextArea messageArea = new TextArea();
         messageArea.setText(bodyText);
         messageArea.setWrapText(true);

@@ -5,6 +5,8 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.util.Objects;
+
 public abstract class BaseNotifications {
     protected Stage stage;
     protected StackPane root;
@@ -16,7 +18,7 @@ public abstract class BaseNotifications {
 
         Scene scene = new Scene(root);
         scene.setFill(null);
-        scene.getStylesheets().add(getClass().getResource("/styles/notification-styles.css").toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/notification-styles.css")).toExternalForm());
         stage.setScene(scene);
     }
 

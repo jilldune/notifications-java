@@ -47,6 +47,6 @@ public class Toast extends BaseNotifications {
 
         show();
 
-        Util.timeOut(()->{ Platform.runLater(this::close); },delayInMilliseconds == 0? 3500:delayInMilliseconds);
+        Util.timeOut(()-> Platform.runLater(this::close),delayInMilliseconds == 0? 3500:delayInMilliseconds);
     }
 }

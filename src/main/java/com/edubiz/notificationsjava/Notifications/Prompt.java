@@ -9,12 +9,13 @@ public class Prompt extends BaseNotifications {
 
     public Prompt(String title,String placeholder) {
         VBox vbox = new VBox(10);
-        TextField textField = new TextField();
+        TextField textField = new TextField(title);
         textField.setPromptText(placeholder);
         Button submitButton = new Button("submit");
 
         submitButton.setOnAction(e -> {
             userInput = textField.getText();
+            System.out.println(getUserInput());
             close();
         });
 
