@@ -1,0 +1,91 @@
+/** default icon styling */
+.icon {
+     -fx-text-fill: #000;
+     -fx-font-size: 16px;
+}
+.toast {
+    -fx-background-color: #323232;
+    -fx-text-fill: white;
+    -fx-padding: 10px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+/**
+    ======== NOTIFICATION ==========
+*/
+.notification {
+    -fx-pref-width: 350px;
+    -fx-text-fill: #eee;
+    -fx-padding: 2px;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-background-color: #fff;
+}
+
+.notification-head {
+    -fx-padding: 0 0 2px 0;
+    -fx-border: 0 0 2px 0;
+    -fx-border-style: solid;
+    -fx-border-color: transparent transparent #eee transparent;
+    -fx-background-color: white;
+}
+
+.notification-title {
+    -fx-pref-width: 306px;
+    -fx-pref-height: 25px;
+    -fx-text-fill: #000;
+    -fx-font-weight: 700;
+    -fx-background-color: inherit;
+}
+
+.notification-close {
+    -fx-pref-width: 40px;
+    -fx-pref-height: 25px;
+    -fx-cursor: hand;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-background-color: #eee;
+}
+.notification-close:hover {
+    -fx-background-color: red;
+}
+.notification-close:hover .icon {
+    -fx-icon-color: #fff;
+}
+
+/*Notification body*/
+.notification-body {
+    -fx-pref-width: 346;
+    -fx-pref-height: 40px;
+    -fx-min-height: 40px;
+    -fx-max-height: 60px;
+    -fx-text-fill: #000;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-text-box-border: transparent;
+    -fx-padding: 0;
+    -fx-border-width: 0;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-background-color: transparent;
+    -fx-cursor: default;
+}
+.notification-body .content {
+    -fx-cursor: default;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-background-color: #fff;
+}
+
+.notification-footer {
+    -fx-padding: 5px 2px 5px 5px;
+    -fx-background-radius: 0 0 3px 3px;
+    -fx-background-color: #eee;
+}
+.notification-footer .button {
+    -fx-border-radius: 5px;
+    -fx-background-color: #e4e4e4;
+    -fx-cursor: hand;
+}
