@@ -1,26 +1,202 @@
 package com.edubiz.notificationsjava.Notifications;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import com.edubiz.notificationsjava.util.Util;
+import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
+import org.jetbrains.annotations.NotNull;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.remixicon.RemixiconAL;
+
+import java.util.Map;
 
 public class Prompt extends BaseNotifications {
     private String userInput;
 
-    public Prompt(String title,String placeholder) {
-        VBox vbox = new VBox(10);
-        TextField textField = new TextField(title);
-        textField.setPromptText(placeholder);
-        Button submitButton = new Button("submit");
+    public void prompt(Map<String, Object> options) {
+        String header = (String) options.getOrDefault("header", "Prompt");
+        Integer duration = (Integer) options.getOrDefault("duration", 3500);
+        Boolean autoClose = (Boolean) options.getOrDefault("autoClose", true);
 
-        submitButton.setOnAction(e -> {
-            userInput = textField.getText();
-            System.out.println(getUserInput());
-            close();
+        // create parent
+        AnchorPane anchorPane = new AnchorPane();
+        anchorPane.getStyleClass().add("parent-container");
+
+        // create child pane
+        VBox vBox = new VBox();
+        vBox.setAlignment(Pos.CENTER);
+        vBox.getStyleClass().add("prompt");
+
+        // create the head
+        createHead(vBox, header);
+
+        // create the body
+        createBody(vBox, options);
+
+        // create footer
+        if (options.containsKey("buttons")) {
+            Map<String, Map<String, Object>> buttons = (Map<String, Map<String, Object>>) options.getOrDefault("buttons", Map.of());
+            createFooter(vBox, buttons);
+        }
+
+        anchorPane.getChildren().add(vBox);
+        root.getChildren().add(anchorPane);
+
+        show();
+
+
+        // create the close function
+        autoClosePrompt(autoClose, duration);
+    }
+
+    private void createHead(@NotNull VBox parent, String headerText) {
+        // create the header text
+        Label header = new Label(headerText);
+        header.setTextOverrun(OverrunStyle.ELLIPSIS);
+        header.getStyleClass().add("prompt-title");
+
+        // create the Icon
+        HBox head = getHead(parent, header);
+        head.getStyleClass().add("prompt-head");
+
+        // set the header
+        parent.getChildren().add(head);
+    }
+
+    @NotNull
+    private HBox getHead(@NotNull VBox parent, Label header) {
+        FontIcon icon = new FontIcon(RemixiconAL.CLOSE_FILL);
+        icon.getStyleClass().add("icon");
+
+        Label btnIcon = new Label();
+        btnIcon.setGraphic(icon);
+        btnIcon.setAlignment(Pos.CENTER);
+        btnIcon.getStyleClass().add("prompt-close");
+
+        btnIcon.setOnMouseClicked(event -> close());
+
+        // create the head container
+        HBox head = new HBox(header,btnIcon);// Add label and close icon to the head
+        head.setAlignment(Pos.CENTER_LEFT);
+
+        return head;
+    }
+
+    // create Notification message body
+    private void createBody(VBox parent, Map<String, Object> options) {
+        String inputType = (String) options.getOrDefault("type", "text");
+        String placeHolder = (String) options.getOrDefault("placeHolder", "Enter text");
+        String value = (String) options.getOrDefault("value", "");
+        String label = (String) options.getOrDefault("label", null);
+
+        // create a body container
+        VBox bodyPane = new VBox();
+        bodyPane.getStyleClass().add("prompt-body");
+
+        // create label
+        if (label != null) {
+            Label inputLabel = new Label();
+            inputLabel.setText(label);
+            inputLabel.setTextAlignment(TextAlignment.LEFT);
+            inputLabel.getStyleClass().add("prompt-label");
+
+            bodyPane.getChildren().add(inputLabel);
+        }
+
+        // Create the input
+        if (inputType != null) {
+            switch(inputType.toLowerCase()) {
+                case "text" -> {
+                    TextField textField = new TextField();
+                    textField.getStyleClass().addAll("prompt-text","text");
+                    textField.setPromptText(placeHolder);
+                    textField.setText(value);
+
+                    bodyPane.getChildren().add(textField);
+                }
+                case "textarea" -> {
+                    TextArea textField = new TextArea();
+                    textField.getStyleClass().addAll("prompt-text","textarea");
+                    textField.setPromptText(placeHolder);
+                    textField.setText(value);
+
+                    bodyPane.getChildren().add(textField);
+                }
+            }
+        }
+
+        // add to the parent
+        parent.getChildren().add(bodyPane);
+    }
+
+    @NotNull
+    private TextArea getTextArea(String bodyText) {
+        TextArea messageArea = new TextArea();
+        messageArea.setText(bodyText);
+        messageArea.setWrapText(true);
+        messageArea.setEditable(false);
+        messageArea.setFocusTraversable(false);
+        messageArea.setCursor(Cursor.DEFAULT);
+        messageArea.getStyleClass().add("prompt-body");
+
+        return messageArea;
+    }
+
+    // create the Notification Footer
+    private void createFooter(VBox parent,Map<String,Map<String,Object>> buttons) {
+        if (buttons == null) return;
+
+        HBox buttonContainer = new HBox();
+        buttonContainer.getStyleClass().add("prompt-footer");
+        buttonContainer.setSpacing(5);
+        buttonContainer.setAlignment(Pos.CENTER_RIGHT);
+        buttons.forEach((label,properties) -> {
+            Button button = new Button(label);
+
+            // apply style if provided
+            String styles = (String) properties.getOrDefault("style","");
+            button.setStyle(styles);
+            button.getStyleClass().add("button");
+
+            // apply icon if provided
+            String iconUrl = (String) properties.get("icon");
+            if (iconUrl != null) {
+                ImageView icon = new ImageView(new Image(iconUrl));
+                icon.setFitWidth(16);
+                icon.setFitHeight(16);
+                button.setGraphic(icon);
+            }
+
+            // bind action to button
+            Runnable action = (Runnable) properties.getOrDefault("action", (Runnable) () -> System.out.println(label + " clicked"));
+
+            button.setOnAction(e -> {
+                action.run();
+                close();
+            });
+
+            buttonContainer.getChildren().add(button);
         });
 
-        vbox.getChildren().addAll(textField,submitButton);
-        root.getChildren().add(vbox);
+        parent.getChildren().add(buttonContainer);
+    }
+
+    // Auto closing the function
+    private void autoClosePrompt(Boolean autoClose, int duration) {
+        if (!autoClose) return;
+
+        Util.timeOut(this::run,duration == 0? 3500:duration);
+    }
+
+    private void run() {
+        close();
     }
 
     public String getUserInput() {

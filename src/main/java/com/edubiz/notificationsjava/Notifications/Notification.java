@@ -29,7 +29,7 @@ public class Notification extends BaseNotifications {
 
         // create parent
         AnchorPane anchorPane = new AnchorPane();
-        anchorPane.setStyle("-fx-background-color: rgba(0,0,0,0.8);");
+        anchorPane.getStyleClass().add("parent-container");
 
         // create child pane
         VBox vBox = new VBox();
