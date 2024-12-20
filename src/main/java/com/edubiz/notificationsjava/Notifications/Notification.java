@@ -9,7 +9,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -31,15 +30,12 @@ public class Notification extends BaseNotifications {
         Map<String,Map<String,Object>> buttons = (Map<String,Map<String,Object>>) options.getOrDefault("buttons",Map.of());
         Integer duration = (Integer) options.getOrDefault("duration",3500);
         Boolean autoClose = (Boolean) options.getOrDefault("autoClose",true);
-
-        // create parent
-        AnchorPane anchorPane = new AnchorPane();
-        anchorPane.getStyleClass().add("parent-container");
+        String position = (String) options.getOrDefault("position", "center");
 
         // create child pane
         VBox vBox = new VBox();
         vBox.setAlignment(Pos.CENTER);
-        vBox.getStyleClass().add("notification");
+        vBox.getStyleClass().addAll("notification","parent-container");
 
         // create the head
         createHead(vBox,header);
@@ -50,14 +46,7 @@ public class Notification extends BaseNotifications {
         // create footer
         createFooter(vBox,buttons);
 
-        // set auto-sizing
-        // vBox.setMaxWidth(200);
-
-        anchorPane.getChildren().add(vBox);
-        notificationRoot.getChildren().add(anchorPane);
-
-        show();
-
+        show(vBox,position);
 
         // create the close function
         autoCloseNotification(autoClose,duration);
