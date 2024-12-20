@@ -13,7 +13,7 @@ import org.kordamp.ikonli.remixicon.RemixiconAL;
 
 public class Toast extends BaseNotifications {
     private final int DURATION = 3500;
-    private final String DEFAULT_POSITION = "top-right";
+    private final NotificationPos DEFAULT_POSITION = NotificationPos.TOP_RIGHT;
 
     public Toast(Stage stage) {
         super(stage);
@@ -21,15 +21,15 @@ public class Toast extends BaseNotifications {
 
     public void toast(ToastType type,String message) { createToast(type,message,DEFAULT_POSITION,DURATION); }
 
-    public void toast(ToastType type,String message,String position) { createToast(type,message,position,DURATION); }
+    public void toast(ToastType type,String message,NotificationPos position) { createToast(type,message,position,DURATION); }
 
     public void toast(ToastType type,String message,int delayInMilliseconds) { createToast(type,message,DEFAULT_POSITION,delayInMilliseconds); }
 
-    public void toast(ToastType type,String message,String position,int delayInMilliseconds) {
+    public void toast(ToastType type,String message,NotificationPos position,int delayInMilliseconds) {
         createToast(type,message,position,delayInMilliseconds);
     }
 
-    private void createToast(ToastType type,String message,String position,int delayInMilliseconds) {
+    private void createToast(ToastType type,String message,NotificationPos position,int delayInMilliseconds) {
         // get/configure the toast type
         String colorStyle;
         Ikon iconCode;

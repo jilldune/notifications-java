@@ -40,12 +40,18 @@ public abstract class BaseNotifications {
         this.stage = stage;
     }
 
-    protected void setPosition(Node node,String position) {
+    protected void setPosition(Node node,NotificationPos position) {
         getPosition(node,position);
     }
 
-    protected void getPosition(Node node,String position) {
-        String[] positions = position.toLowerCase().split("-");
+    protected void getPosition(Node node,NotificationPos position) {
+        // Process the notification position first
+        String nPos = "";
+        switch (position) {
+            case TOP,TOP_LEFT,TOP_RIGHT,LEFT,RIGHT,BOTTOM,BOTTOM_LEFT,BOTTOM_RIGHT,CENTER ->  nPos = position.getPosition();
+        };
+
+        String[] positions = nPos.toLowerCase().split("-");
         Double top = null,left = null,right = null,bottom = null;
 
         for (String pos : positions) {
@@ -86,7 +92,7 @@ public abstract class BaseNotifications {
     }
 
     // Method for displaying any type of notification
-    public void show(Node node,String position) {
+    public void show(Node node,NotificationPos position) {
         if (! notificationRoot.getChildren().contains(node))
             notificationRoot.getChildren().add(node);
 

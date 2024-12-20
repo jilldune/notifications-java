@@ -31,7 +31,7 @@ public class Prompt extends BaseNotifications {
         String header = (String) options.getOrDefault("header", "Prompt");
         Integer duration = (Integer) options.getOrDefault("duration", 3500);
         Boolean autoClose = (Boolean) options.getOrDefault("autoClose", true);
-        String position = (String) options.getOrDefault("position", "center");
+        NotificationPos position = (NotificationPos) options.getOrDefault("position", "center");
 
         // create child pane
         VBox vBox = new VBox();

@@ -30,7 +30,7 @@ public class Notification extends BaseNotifications {
         Map<String,Map<String,Object>> buttons = (Map<String,Map<String,Object>>) options.getOrDefault("buttons",Map.of());
         Integer duration = (Integer) options.getOrDefault("duration",3500);
         Boolean autoClose = (Boolean) options.getOrDefault("autoClose",true);
-        String position = (String) options.getOrDefault("position", "center");
+        NotificationPos position = (NotificationPos) options.getOrDefault("position", NotificationPos.CENTER);
 
         // create child pane
         VBox vBox = new VBox();
