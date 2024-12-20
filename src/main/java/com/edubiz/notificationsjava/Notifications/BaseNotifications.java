@@ -46,10 +46,7 @@ public abstract class BaseNotifications {
 
     protected void getPosition(Node node,NotificationPos position) {
         // Process the notification position first
-        String nPos = "";
-        switch (position) {
-            case TOP,TOP_LEFT,TOP_RIGHT,LEFT,RIGHT,BOTTOM,BOTTOM_LEFT,BOTTOM_RIGHT,CENTER ->  nPos = position.getPosition();
-        };
+        String nPos = extractPosition(position);
 
         String[] positions = nPos.toLowerCase().split("-");
         Double top = null,left = null,right = null,bottom = null;
@@ -66,6 +63,16 @@ public abstract class BaseNotifications {
         }
 
         applyPosition(node,top,left,right,bottom);
+    }
+
+    public String extractPosition(NotificationPos position) {
+        // Process the notification position first
+        String nPos = "";
+        switch (position) {
+            case TOP,TOP_LEFT,TOP_RIGHT,LEFT,RIGHT,BOTTOM,BOTTOM_LEFT,BOTTOM_RIGHT,CENTER ->  nPos = position.getPosition();
+        };
+
+        return nPos;
     }
 
     // Center the notification at the center of the window
