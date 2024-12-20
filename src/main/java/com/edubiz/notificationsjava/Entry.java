@@ -27,8 +27,8 @@ public class Entry extends Application {
         Button button = new Button("See Notification");
         button.setOnAction(e -> {
             // Toast
-            // Toast toast = new Toast();
-            // toast.toast(ToastType.ERROR,"This is a toast");
+             Toast toast = new Toast(stage);
+             toast.toast(ToastType.ERROR,"This is a toast",5000);
 
             // Notification
     //        Notification notify = new Notification();
@@ -49,30 +49,30 @@ public class Entry extends Application {
     //        }});
     //        notify.notification(options);
 
-            Prompt prompt = new Prompt(stage);
-            Map<String, Object> options = new HashMap<>();
-            options.put("header", "My Prompt");
-            options.put("type", "text");
-            options.put("placeholder", "placeholder");
-            options.put("label", "Enter your name");
-            options.put("position", "top-left");
-            options.put("duration", 0);
-            options.put("autoClose", false);
-            options.put("buttons", new LinkedHashMap<String, Map<String, Object>>() {{
-                put("cancel", Map.of(
-                        "action", (Consumer<String>) (text) -> {
-                            System.out.println(text);
-                        }
-                        // "style","-fx-background-color: blue;-fx-text-fill: white;"
-                ));
-                put("delete", Map.of(
-                        "action", (Consumer<String>) (text) -> {
-                            System.out.println(text);
-                        },
-                        "style", "-fx-background-color: red;-fx-text-fill: white;"
-                ));
-            }});
-            prompt.prompt(options);
+//            Prompt prompt = new Prompt(stage);
+//            Map<String, Object> options = new HashMap<>();
+//            options.put("header", "My Prompt");
+//            options.put("type", "text");
+//            options.put("placeholder", "placeholder");
+//            options.put("label", "Enter your name");
+//            options.put("position", "top-left");
+//            options.put("duration", 0);
+//            options.put("autoClose", false);
+//            options.put("buttons", new LinkedHashMap<String, Map<String, Object>>() {{
+//                put("cancel", Map.of(
+//                        "action", (Consumer<String>) (text) -> {
+//                            System.out.println(text);
+//                        }
+//                        // "style","-fx-background-color: blue;-fx-text-fill: white;"
+//                ));
+//                put("delete", Map.of(
+//                        "action", (Consumer<String>) (text) -> {
+//                            System.out.println(text);
+//                        },
+//                        "style", "-fx-background-color: red;-fx-text-fill: white;"
+//                ));
+//            }});
+//            prompt.prompt(options);
         });
 
         root.getChildren().add(button);
