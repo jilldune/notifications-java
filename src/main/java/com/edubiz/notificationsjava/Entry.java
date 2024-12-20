@@ -24,53 +24,54 @@ public class Entry extends Application {
         Button button = new Button("See Notification");
         button.setOnAction(e -> {
             // Toast
-            // Toast toast = new Toast(stage);
-            // toast.toast(ToastType.ERROR,"This is a toast",5000);
+//             Toast toast = new Toast(stage);
+//             toast.toast(ToastType.ERROR,"This is a toast",NotificationPos.CENTER,true,5);
 
             // Notification
-//            Notification notify = new Notification(stage);
-//            Map<String, Object> options = new HashMap<>();
-//            options.put("header", "My new notification");
-//            options.put("body", "This is a test notification message. Thank you");
-//            options.put("duration", 0);
-//            options.put("position", NotificationPos.BOTTOM_LEFT);
-//            options.put("autoClose", false);
-//            options.put("buttons", new LinkedHashMap<String, Map<String, Object>>() {{
-//                put("cancel", Map.of(
-//                        "action", (Runnable) () -> System.out.println("action for button")
-//                        // "style","-fx-background-color: blue;-fx-text-fill: white;"
-//                ));
-//                put("delete", Map.of(
-//                        "action", (Runnable) () -> System.out.println("action for delete"),
-//                        "style", "-fx-background-color: red;-fx-text-fill: white;"
-//                ));
-//            }});
-//            notify.notification(options);
-
-            Prompt prompt = new Prompt(stage);
+            Notification notify = new Notification(stage);
             Map<String, Object> options = new HashMap<>();
-            options.put("header", "My Prompt");
-            options.put("type", "text");
-            options.put("placeholder", "placeholder");
-            options.put("label", "Enter your name");
-            options.put("position", NotificationPos.TOP_LEFT);
-            options.put("duration", 0);
+            options.put("header", "My new notification");
+            options.put("body", "This is a test notification message. Thank you");
+            options.put("duration", 5.0);
+            options.put("position", NotificationPos.CENTER);
             options.put("autoClose", false);
             options.put("buttons", new LinkedHashMap<String, Map<String, Object>>() {{
                 put("cancel", Map.of(
-                        "action", (Consumer<String>) (text) -> {
-                            System.out.println(text);
-                        }
+                        "action", (Runnable) () -> System.out.println("action for button")
                         // "style","-fx-background-color: blue;-fx-text-fill: white;"
                 ));
                 put("delete", Map.of(
-                        "action", (Consumer<String>) (text) -> {
-                            System.out.println(text);
-                        },
+                        "action", (Runnable) () -> System.out.println("action for delete"),
                         "style", "-fx-background-color: red;-fx-text-fill: white;"
                 ));
             }});
-            prompt.prompt(options);
+            notify.notification(options);
+
+//            Prompt prompt = new Prompt(stage);
+//            Map<String, Object> options = new HashMap<>();
+//            options.put("header", "My Prompt");
+//            options.put("type", "text");
+//            options.put("placeholder", "placeholder");
+//            options.put("label", "Enter your name");
+//            options.put("position", NotificationPos.CENTER);
+//            options.put("duration", 0);
+//            options.put("autoClose", false);
+//            options.put("animation", true);
+//            options.put("buttons", new LinkedHashMap<String, Map<String, Object>>() {{
+//                put("cancel", Map.of(
+//                        "action", (Consumer<String>) (text) -> {
+//                            System.out.println(text);
+//                        }
+//                        // "style","-fx-background-color: blue;-fx-text-fill: white;"
+//                ));
+//                put("delete", Map.of(
+//                        "action", (Consumer<String>) (text) -> {
+//                            System.out.println(text);
+//                        },
+//                        "style", "-fx-background-color: red;-fx-text-fill: white;"
+//                ));
+//            }});
+//            prompt.prompt(options);
         });
 
         root.getChildren().add(button);

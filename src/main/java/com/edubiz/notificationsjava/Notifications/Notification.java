@@ -28,7 +28,8 @@ public class Notification extends BaseNotifications {
         String header = (String) options.getOrDefault("header","Notification");
         String messageBody = (String) options.getOrDefault("messageBody","Notification body");
         Map<String,Map<String,Object>> buttons = (Map<String,Map<String,Object>>) options.getOrDefault("buttons",Map.of());
-        Integer duration = (Integer) options.getOrDefault("duration",3500);
+        Double duration = (Double) options.getOrDefault("duration", 3.5);
+        Boolean animation = (Boolean) options.getOrDefault("animation", true);
         Boolean autoClose = (Boolean) options.getOrDefault("autoClose",true);
         NotificationPos position = (NotificationPos) options.getOrDefault("position", NotificationPos.CENTER);
 
@@ -46,7 +47,7 @@ public class Notification extends BaseNotifications {
         // create footer
         createFooter(vBox,buttons);
 
-        show(vBox,position);
+        show(vBox,position,animation,duration);
 
         // create the close function
         autoCloseNotification(autoClose,duration);
@@ -145,10 +146,10 @@ public class Notification extends BaseNotifications {
     }
 
     // Auto closing the function
-    private void autoCloseNotification(Boolean autoClose,int duration) {
+    private void autoCloseNotification(Boolean autoClose,double duration) {
         if (!autoClose) return;
 
-        Util.timeOut(this::run,duration == 0? 3500:duration);
+        Util.timeOut(this::run,duration == 0? 3.5:duration);
     }
 
     private void run() {

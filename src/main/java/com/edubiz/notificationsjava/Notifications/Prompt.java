@@ -2,8 +2,6 @@ package com.edubiz.notificationsjava.Notifications;
 
 import com.edubiz.notificationsjava.util.Util;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -29,7 +27,8 @@ public class Prompt extends BaseNotifications {
 
     public void prompt(Map<String, Object> options) {
         String header = (String) options.getOrDefault("header", "Prompt");
-        Integer duration = (Integer) options.getOrDefault("duration", 3500);
+        Double duration = (Double) options.getOrDefault("duration", 3.5);
+        Boolean animation = (Boolean) options.getOrDefault("animation", true);
         Boolean autoClose = (Boolean) options.getOrDefault("autoClose", true);
         NotificationPos position = (NotificationPos) options.getOrDefault("position", "center");
 
@@ -50,7 +49,7 @@ public class Prompt extends BaseNotifications {
             createFooter(vBox, buttons);
         }
 
-        show(vBox,position);
+        show(vBox,position,animation,duration);
 
         // create the close function
         autoClosePrompt(autoClose, duration);
@@ -180,7 +179,7 @@ public class Prompt extends BaseNotifications {
     }
 
     // Auto closing the function
-    private void autoClosePrompt(Boolean autoClose, int duration) {
+    private void autoClosePrompt(Boolean autoClose, double duration) {
         if (!autoClose) return;
 
         Util.timeOut(this::run,duration == 0? 3500:duration);

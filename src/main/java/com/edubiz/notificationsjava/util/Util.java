@@ -5,11 +5,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Util {
-    public static void timeOut(Runnable taskFunc,int durationInMilliseconds) {
+    public static void timeOut(Runnable taskFunc,double durationSeconds) {
         ScheduledExecutorService schedule = Executors.newScheduledThreadPool(1);
         schedule.schedule(() -> {
             taskFunc.run();
             schedule.shutdown();
-        },durationInMilliseconds, TimeUnit.MILLISECONDS);
+        },(long) durationSeconds, TimeUnit.SECONDS);
     }
 }

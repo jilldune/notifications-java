@@ -70,7 +70,7 @@ public abstract class BaseNotifications {
         String nPos = "";
         switch (position) {
             case TOP,TOP_LEFT,TOP_RIGHT,LEFT,RIGHT,BOTTOM,BOTTOM_LEFT,BOTTOM_RIGHT,CENTER ->  nPos = position.getPosition();
-        };
+        }
 
         return nPos;
     }
@@ -98,6 +98,30 @@ public abstract class BaseNotifications {
         if (bottom != null) AnchorPane.setBottomAnchor(node,bottom);
     }
 
+    protected void positioningRoute(Node node,NotificationPos position,Boolean animation,double duration) {
+        if (position == null) return;
+
+        if (animation) {
+            Animation anim = new Animation();
+            anim.animate(node,position,stage.getScene(),duration);
+
+            return;
+        }
+
+        setPosition(node,position);
+    }
+
+    // Method for displaying any type of notification
+    public void show(Node node,NotificationPos position,Boolean animation,double duration) {
+        if (! notificationRoot.getChildren().contains(node))
+            notificationRoot.getChildren().add(node);
+
+        notificationRoot.setVisible(true);
+
+        // Setting the position of the notification type
+        positioningRoute(node,position,animation,duration);
+    }
+
     // Method for displaying any type of notification
     public void show(Node node,NotificationPos position) {
         if (! notificationRoot.getChildren().contains(node))
@@ -106,7 +130,7 @@ public abstract class BaseNotifications {
         notificationRoot.setVisible(true);
 
         // Setting the position of the notification type
-        if (position != null) setPosition(node,position);
+        positioningRoute(node,position,true,3.5);
     }
 
     public void close() {

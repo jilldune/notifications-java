@@ -160,7 +160,7 @@ $toastNeutral: #7f8cbd;
     ==========================
 */
 .prompt {
-    -fx-min-width: 350px;
+    -fx-min-width: 300px;
     -fx-text-fill: #eee;
     -fx-padding: 2px;
     -fx-border-radius: 3px;
@@ -177,7 +177,7 @@ $toastNeutral: #7f8cbd;
 }
 
 .prompt-title {
-    -fx-pref-width: 306px;
+    -fx-pref-width: 256px;
     -fx-pref-height: 25px;
     -fx-text-fill: #000;
     -fx-font-weight: 700;
@@ -201,7 +201,7 @@ $toastNeutral: #7f8cbd;
 
 /*Notification body*/
 .prompt-body {
-    -fx-min-width: 346px;
+    -fx-min-width: 296px;
     -fx-min-height: 40px;
     -fx-text-fill: #000;
     -fx-padding: 5px 3px 5px 3px;
@@ -215,7 +215,7 @@ $toastNeutral: #7f8cbd;
     -fx-background-color: transparent;
 }
 .prompt-body .prompt-text {
-   -fx-pref-width: 346;
+   -fx-pref-width: 296;
    -fx-text-fill: #000;
    -fx-focus-color: transparent;
    -fx-faint-focus-color: transparent;
