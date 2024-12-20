@@ -2,37 +2,41 @@ package com.edubiz.notificationsjava.Notifications;
 
 import com.edubiz.notificationsjava.util.Util;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.remixicon.RemixiconAL;
 
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class Prompt extends BaseNotifications {
-    private String userInput;
+    private TextArea textArea;
+    private TextField textField;
+    private static boolean isTextField = true;
+
+    public Prompt(Stage stage) {
+        super(stage);
+    }
 
     public void prompt(Map<String, Object> options) {
         String header = (String) options.getOrDefault("header", "Prompt");
         Integer duration = (Integer) options.getOrDefault("duration", 3500);
         Boolean autoClose = (Boolean) options.getOrDefault("autoClose", true);
-
-        // create parent
-        AnchorPane anchorPane = new AnchorPane();
-        anchorPane.getStyleClass().add("parent-container");
+        String position = (String) options.getOrDefault("position", "center");
 
         // create child pane
         VBox vBox = new VBox();
         vBox.setAlignment(Pos.CENTER);
-        vBox.getStyleClass().add("prompt");
+        vBox.getStyleClass().addAll("prompt","parent-container");
 
         // create the head
         createHead(vBox, header);
@@ -46,11 +50,7 @@ public class Prompt extends BaseNotifications {
             createFooter(vBox, buttons);
         }
 
-        anchorPane.getChildren().add(vBox);
-        root.getChildren().add(anchorPane);
-
-        show();
-
+        show(vBox,position);
 
         // create the close function
         autoClosePrompt(autoClose, duration);
@@ -63,7 +63,7 @@ public class Prompt extends BaseNotifications {
         header.getStyleClass().add("prompt-title");
 
         // create the Icon
-        HBox head = getHead(parent, header);
+        HBox head = getHead(header);
         head.getStyleClass().add("prompt-head");
 
         // set the header
@@ -71,7 +71,7 @@ public class Prompt extends BaseNotifications {
     }
 
     @NotNull
-    private HBox getHead(@NotNull VBox parent, Label header) {
+    private HBox getHead(Label header) {
         FontIcon icon = new FontIcon(RemixiconAL.CLOSE_FILL);
         icon.getStyleClass().add("icon");
 
@@ -114,39 +114,30 @@ public class Prompt extends BaseNotifications {
         if (inputType != null) {
             switch(inputType.toLowerCase()) {
                 case "text" -> {
-                    TextField textField = new TextField();
+                    textField = new TextField();
                     textField.getStyleClass().addAll("prompt-text","text");
                     textField.setPromptText(placeHolder);
                     textField.setText(value);
 
+                    isTextField = true;
+
                     bodyPane.getChildren().add(textField);
                 }
                 case "textarea" -> {
-                    TextArea textField = new TextArea();
-                    textField.getStyleClass().addAll("prompt-text","textarea");
-                    textField.setPromptText(placeHolder);
-                    textField.setText(value);
+                    textArea = new TextArea();
+                    textArea.getStyleClass().addAll("prompt-text","textarea");
+                    textArea.setPromptText(placeHolder);
+                    textArea.setText(value);
 
-                    bodyPane.getChildren().add(textField);
+                    isTextField = false;
+
+                    bodyPane.getChildren().add(textArea);
                 }
             }
         }
 
         // add to the parent
         parent.getChildren().add(bodyPane);
-    }
-
-    @NotNull
-    private TextArea getTextArea(String bodyText) {
-        TextArea messageArea = new TextArea();
-        messageArea.setText(bodyText);
-        messageArea.setWrapText(true);
-        messageArea.setEditable(false);
-        messageArea.setFocusTraversable(false);
-        messageArea.setCursor(Cursor.DEFAULT);
-        messageArea.getStyleClass().add("prompt-body");
-
-        return messageArea;
     }
 
     // create the Notification Footer
@@ -175,10 +166,10 @@ public class Prompt extends BaseNotifications {
             }
 
             // bind action to button
-            Runnable action = (Runnable) properties.getOrDefault("action", (Runnable) () -> System.out.println(label + " clicked"));
+            Consumer<String> action = (Consumer<String>) properties.getOrDefault("action", (Consumer<String>) (String text) -> System.out.println(label + " clicked"));
 
             button.setOnAction(e -> {
-                action.run();
+                action.accept(getUserInput());
                 close();
             });
 
@@ -200,6 +191,8 @@ public class Prompt extends BaseNotifications {
     }
 
     public String getUserInput() {
-        return userInput;
+        if (isTextField) return textField.getText().trim();
+
+        return textArea.getText().trim();
     }
 }

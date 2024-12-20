@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 import org.kordamp.ikonli.remixicon.RemixiconAL;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -19,6 +20,10 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import java.util.Map;
 
 public class Notification extends BaseNotifications {
+
+    public Notification(Stage stage) {
+        super(stage);
+    }
 
     public void notification(Map<String, Object> options){
         String header = (String) options.getOrDefault("header","Notification");
@@ -49,7 +54,7 @@ public class Notification extends BaseNotifications {
         // vBox.setMaxWidth(200);
 
         anchorPane.getChildren().add(vBox);
-        root.getChildren().add(anchorPane);
+        notificationRoot.getChildren().add(anchorPane);
 
         show();
 
