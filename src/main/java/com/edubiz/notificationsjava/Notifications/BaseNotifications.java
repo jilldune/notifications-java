@@ -85,26 +85,7 @@ public abstract class BaseNotifications {
         if (bottom != null) AnchorPane.setBottomAnchor(node,bottom);
     }
 
-    public void show() {
-        Scene scene = stage.getScene();
-        Parent userRoot = scene.getRoot();
-
-        if (userRoot instanceof Pane) {
-            ((Pane) userRoot).getChildren().add(notificationRoot);
-        } else if (userRoot instanceof Group) {
-            ((Group) userRoot).getChildren().add(notificationRoot);
-        } else {
-            // wrap in a stack pane if none specified
-            StackPane newRoot = new StackPane();
-            scene.setRoot(newRoot);
-        }
-
-        notificationRoot.prefWidthProperty().bind(scene.widthProperty());
-        notificationRoot.prefHeightProperty().bind(scene.heightProperty());
-
-        notificationRoot.setVisible(true);
-    }
-
+    // Method for displaying any type of notification
     public void show(Node node,String position) {
         if (! notificationRoot.getChildren().contains(node))
             notificationRoot.getChildren().add(node);
