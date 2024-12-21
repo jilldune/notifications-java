@@ -23,8 +23,22 @@ public class EntryNotification extends Application {
 //             Toast toast = new Toast(stage);
 //             toast.toast(ToastType.ERROR,"This is a toast",NotificationPos.CENTER,true,5);
 
-            // MyNotifier
-//            MyNotifier notify = new MyNotifier(stage);
+            // Notifier
+            Notifier notify = new Notifier(stage);
+            notify.setHeader("Notification");
+            notify.setBody("This is the body of the Notifier");
+            notify.setPosition(NotificationPos.TOP);
+            notify.setDuration(4.5);
+            notify.autoClose(false);
+            notify.setAnimation(false);
+            notify.setButton("ok", () -> {
+                System.out.println("text");
+            },"-fx-background-color: blue;-fx-text-fill: white;");
+            notify.setButton("cancel", () -> {
+                System.out.println("text");
+            },"-fx-background-color: green;-fx-text-fill: white;");
+            notify.create();
+            // Map Method
 //            Map<String, Object> options = new HashMap<>();
 //            options.put("header", "My new notification");
 //            options.put("body", "This is a test notification message. Thank you");
@@ -44,23 +58,23 @@ public class EntryNotification extends Application {
 //            notify.notification(options);
 
 //          ======= PROMPT ========
-            PromptNotifier prompt = new PromptNotifier(stage);
+//            PromptNotifier prompt = new PromptNotifier(stage);
 //            Plain Methods
-            prompt.setHeader("Prompt Notification");
-            prompt.setType(NotifierInputType.TEXT);
-            prompt.setPlaceholder("your name");
-            prompt.setLabel("Enter name");
-            prompt.setPosition(NotificationPos.CENTER);
-            prompt.setDuration(5.0);
-            prompt.autoClose(false);
-            prompt.setAnimation(true);
-            prompt.setButton("ok", (text) -> {
-                System.out.println(text);
-            },"-fx-background-color: blue;-fx-text-fill: white;");
-            prompt.setButton("cancel", (text) -> {
-                System.out.println(text);
-            },"-fx-background-color: green;-fx-text-fill: white;");
-            prompt.create();
+//            prompt.setHeader("Prompt Notification");
+//            prompt.setType(NotifierInputType.TEXT);
+//            prompt.setPlaceholder("your name");
+//            prompt.setLabel("Enter name");
+//            prompt.setPosition(NotificationPos.CENTER);
+//            prompt.setDuration(5.0);
+//            prompt.autoClose(false);
+//            prompt.setAnimation(true);
+//            prompt.setButton("ok", (text) -> {
+//                System.out.println(text);
+//            },"-fx-background-color: blue;-fx-text-fill: white;");
+//            prompt.setButton("cancel", (text) -> {
+//                System.out.println(text);
+//            },"-fx-background-color: green;-fx-text-fill: white;");
+//            prompt.create();
 
 //            === Map Method ===
 //            Map<String, Object> options = new HashMap<>();

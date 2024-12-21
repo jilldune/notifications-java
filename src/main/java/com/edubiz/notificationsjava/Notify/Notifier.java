@@ -16,22 +16,33 @@ import org.jetbrains.annotations.NotNull;
 import org.kordamp.ikonli.remixicon.RemixiconAL;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class Notifier extends BaseNotifier {
+    //    class variables
+    private String headerText = "Notifier";
+    private String body = "";
+    private double durationInSeconds = 3.5;
+    private NotificationPos position = NotificationPos.CENTER;
+    private Boolean autoClose = true;
+    private Boolean animation = true;
+    private final Map<String,Map<String,Object>> buttons = new LinkedHashMap<>();
+
 
     public Notifier(Stage stage) {
         super(stage);
     }
 
     public void notification(Map<String, Object> options){
-        String header = (String) options.getOrDefault("header","MyNotifier");
-        String messageBody = (String) options.getOrDefault("messageBody","MyNotifier body");
+        String header = (String) options.getOrDefault("header",this.headerText);
+        String messageBody = (String) options.getOrDefault("messageBody",this.body);
         Map<String,Map<String,Object>> buttons = (Map<String,Map<String,Object>>) options.getOrDefault("buttons",Map.of());
-        Double duration = (Double) options.getOrDefault("duration", 3.5);
-        Boolean animation = (Boolean) options.getOrDefault("animation", true);
-        Boolean autoClose = (Boolean) options.getOrDefault("autoClose",true);
-        NotificationPos position = (NotificationPos) options.getOrDefault("position", NotificationPos.CENTER);
+        Double duration = (Double) options.getOrDefault("duration", this.durationInSeconds);
+        Boolean animation = (Boolean) options.getOrDefault("animation", this.animation);
+        Boolean autoClose = (Boolean) options.getOrDefault("autoClose",this.autoClose);
+        NotificationPos position = (NotificationPos) options.getOrDefault("position", this.position);
 
         // create child pane
         VBox vBox = new VBox();
@@ -150,6 +161,53 @@ public class Notifier extends BaseNotifier {
         if (!autoClose) return;
 
         Helper.timeOut(this::run,duration == 0? 3.5:duration);
+    }
+
+    // Plain Methods
+    public void setHeader(String headerText) {
+        this.headerText = headerText;
+    }
+    public void setBody(String body) {
+        this.body = body;
+    }
+    public void setPosition(NotificationPos position) {
+        this.position = position;
+    }
+    public void setDuration(Double durationInSeconds) {
+        this.durationInSeconds = durationInSeconds;
+    }
+    public void autoClose(Boolean autoClose) {
+        this.autoClose = autoClose;
+    }
+    public void setAnimation(Boolean animation) {
+        this.animation = animation;
+    }
+    public void setButton(String label, Runnable action, String style) {
+        this.buttons.put(label,Map.of("action",action,"style",style));
+    }
+    public void setButton(String label, Runnable action) {
+        this.buttons.put(label,Map.of("action",action));
+    }
+
+    public void create() {
+        // create prompt pane
+        VBox vBox = new VBox();
+        vBox.setAlignment(Pos.CENTER);
+        vBox.getStyleClass().addAll("notification","parent-container");
+
+        // create the head
+        createHead(vBox, this.headerText);
+
+        // create the body
+        createBody(vBox, this.body);
+
+        // create footer
+        createFooter(vBox, this.buttons);
+
+        show(vBox, this.position, this.animation, this.durationInSeconds);
+
+        // create the close function
+        autoCloseNotification(this.autoClose, this.durationInSeconds);
     }
 
     private void run() {
