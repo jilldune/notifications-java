@@ -1,5 +1,7 @@
 package com.edubiz.notificationsjava.Notify;
 
+import com.edubiz.notificationsjava.NotifierUtil.Helper;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -7,8 +9,10 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.util.Map;
 import java.util.Objects;
 
 public abstract class BaseNotifier {
@@ -40,62 +44,31 @@ public abstract class BaseNotifier {
         this.stage = stage;
     }
 
-    protected void setPosition(Node node,NotificationPos position) {
-        getPosition(node,position);
-    }
-
-    protected void getPosition(Node node,NotificationPos position) {
-        // Process the notification position first
-        String nPos = extractPosition(position);
-
-        String[] positions = nPos.toLowerCase().split("-");
-        Double top = null,left = null,right = null,bottom = null;
-
-        for (String pos : positions) {
-            switch (pos) {
-                case "top": top = 10.0; break;
-                case "right": right = 10.0; break;
-                case "left": left = 10.0; break;
-                case "bottom": bottom = 10.0; break;
-                case "center": centerNode(node); return;
-                default: throw new IllegalArgumentException("Invalid position: "+pos);
-            }
-        }
-
-        applyPosition(node,top,left,right,bottom);
-    }
-
-    public String extractPosition(NotificationPos position) {
-        // Process the notification position first
-        String nPos = "";
-        switch (position) {
-            case TOP,TOP_LEFT,TOP_RIGHT,LEFT,RIGHT,BOTTOM,BOTTOM_LEFT,BOTTOM_RIGHT,CENTER ->  nPos = position.getPosition();
-        }
-
-        return nPos;
-    }
-
-    // Center the notification at the center of the window
-    protected void centerNode(Node node) {
-        AnchorPane parent = (AnchorPane) node.getParent();
-
-        if (parent == null) throw new IllegalStateException("Node must be added to a parent AnchorPane first");
-
-        parent.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
-            double centerX = (newBounds.getWidth() - node.prefWidth(-1)) / 2;
-            double centerY = (newBounds.getHeight() - node.prefHeight(-1)) / 2;
-
-            AnchorPane.setLeftAnchor(node,centerX);
-            AnchorPane.setTopAnchor(node,centerY);
-        });
-    }
-
     // creates or applies the positions to the notification
-    protected void applyPosition(Node node,Double top,Double left,Double right,Double bottom) {
-        if (top != null) AnchorPane.setTopAnchor(node,top);
-        if (left != null) AnchorPane.setLeftAnchor(node,left);
-        if (right != null) AnchorPane.setRightAnchor(node,right);
-        if (bottom != null) AnchorPane.setBottomAnchor(node,bottom);
+    protected void setInanimatePosition(Node node,NotificationPos position) {
+        Scene scene = stage.getScene();
+        Helper helper = new Helper();
+        // get geometry
+        Map<String, Double> geoMetry = helper.getGeometry(node,scene);
+
+        // Set bounds
+        double width = geoMetry.get("width");
+        double height = geoMetry.get("height");
+
+        // Get the scene bounds
+        double sceneWidth = geoMetry.get("sceneWidth");
+        double sceneHeight = geoMetry.get("sceneHeight");
+
+        // Define positioning
+        Map<String, Object> coordinate = helper.parsePosition(position,width,height,sceneWidth,sceneHeight);
+        double toX = (double) coordinate.get("toX");
+        double toY = (double) coordinate.get("toY");
+
+        // Initial Position
+        node.setLayoutX(toX);
+        node.setLayoutY(toY);
+
+        helper.addNodeListeners(stage,node,position,width,height);
     }
 
     protected void positioningRoute(Node node,NotificationPos position,Boolean animation,double duration) {
@@ -103,12 +76,12 @@ public abstract class BaseNotifier {
 
         if (animation) {
             NotifierAnimations anim = new NotifierAnimations();
-            anim.animate(node,position,stage.getScene(),duration);
+            anim.animate(node,position,stage,duration);
 
             return;
         }
 
-        setPosition(node,position);
+        setInanimatePosition(node,position);
     }
 
     // Method for displaying any type of notification
@@ -136,5 +109,8 @@ public abstract class BaseNotifier {
     public void close() {
         notificationRoot.getChildren().clear();
         notificationRoot.setVisible(false);
+
+        (new Helper()).removeListeners(stage);
+        (new NotifierAnimations()).removeListeners(stage);
     }
 }

@@ -1,16 +1,28 @@
 package com.edubiz.notificationsjava.Notify;
 
+import com.edubiz.notificationsjava.NotifierUtil.Helper;
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
-import javafx.geometry.Bounds;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.layout.Region;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class NotifierAnimations {
-    public void animate(Node notification, NotificationPos position, Scene scene,double durationInSec) {
+import java.util.Map;
 
+public class NotifierAnimations {
+    private Map<String, Double> coordinates;
+    private ChangeListener<Number> widthListener;
+    private ChangeListener<Number> heightListener;
+    private ChangeListener<Boolean> fullScreenListener;
+
+    public void animate(Node notification, NotificationPos position, Stage stage,double durationInSec) {
+        // Get scene
+        Scene scene = stage.getScene();
+
+        // Get duration
         double duration = durationInSec == 0 ? durationInSec : .5;
 
         // Create the translation
@@ -19,102 +31,32 @@ public class NotifierAnimations {
         // Define bounds
         double width, height, sceneWidth, sceneHeight;
 
-        if (notification instanceof Region region) {
-            region.applyCss();
-            region.layout();
+        // Helper Class
+        Helper helper = new Helper();
 
-            width = region.prefWidth(-1);
-            height = region.prefHeight(-1);
-        } else {
-            Bounds bounds = notification.getBoundsInLocal();
+        // get geometry
+        Map<String, Double> geoMetry = helper.getGeometry(notification,scene);
 
-            width = bounds.getWidth();
-            height = bounds.getHeight();
-        }
+        // Set bounds
+        width = geoMetry.get("width");
+        height = geoMetry.get("height");
 
         // Get the scene bounds
-        sceneWidth = scene.getWidth();
-        sceneHeight = scene.getHeight();
+        sceneWidth = geoMetry.get("sceneWidth");
+        sceneHeight = geoMetry.get("sceneHeight");
 
         // Define positioning
-        double fromX;
-        double fromY;
-        double toX;
-        double toY;
-        double pad = 10.0;
+        Map<String, Object> coordinate = helper.parsePosition(position,width,height,sceneWidth,sceneHeight);
+        double fromX = (double) coordinate.get("fromX");
+        double fromY = (double) coordinate.get("fromY");
+        double toX = (double) coordinate.get("toX");
+        double toY = (double) coordinate.get("toY");
+        String pos = (String) coordinate.get("position");
 
-        // Get position
-        // Process the notification position
-        String nPos = "";
-        switch (position) {
-            case TOP,TOP_LEFT,TOP_RIGHT,LEFT,RIGHT,BOTTOM,BOTTOM_LEFT,BOTTOM_RIGHT,CENTER ->  nPos = position.getPosition();
-        }
-
-        //Set the positions
-        switch (nPos) {
-            case "right" -> {
-                double y = (sceneHeight - height) / 2;
-
-                fromX = sceneWidth;
-                toX = (sceneWidth - width) - pad;
-                fromY = y;
-                toY = y;
-            }
-            case "left" -> {
-                double y = (sceneHeight - height) / 2;
-
-                fromX = -width;
-                toX = 0 + pad;
-                fromY = y;
-                toY = y;
-            }
-            case "bottom" -> {
-                double x = (sceneWidth - width) / 2;
-
-                fromY = sceneHeight;
-                toY = (sceneHeight - height) - pad;
-                fromX = x;
-                toX = x;
-            }
-            case "center" -> {
-                toX = (sceneWidth - width) / 2;
-                toY = (sceneWidth - width) / 2;
-
-                popIn(notification,toX,toY,duration);
-                return;
-            }
-            case "top-left" -> {
-                fromX = -width;
-                fromY = -height;
-                toX = 0 + pad;
-                toY = 0 + pad;
-            }
-            case "top-right" -> {
-                fromX = sceneWidth;
-                fromY = -height;
-                toX = (sceneWidth - width) - pad;
-                toY = 0 + pad;
-            }
-            case "bottom-left" -> {
-                fromX = -width;
-                fromY = sceneHeight;
-                toX = 0 + pad;
-                toY = (sceneHeight - height) - pad;
-            }
-            case "bottom-right" -> {
-                fromX = sceneWidth;
-                fromY = sceneHeight;
-                toX = (sceneWidth - width) - pad;
-                toY = (sceneHeight - height) - pad;
-            }
-            default -> {
-                double x = (sceneWidth - width) / 2;
-
-                fromY = -height;
-                fromX = x;
-                toY = 0 + pad;
-                toX = x;
-            }
+        if (pos.equals("center")) {
+            popIn(notification, toX, toY, duration);
+            this.addNodeListeners(notification,position,stage,duration);
+            return;
         }
 
         // Set up animation
@@ -124,6 +66,9 @@ public class NotifierAnimations {
         translateTransition.setToY(toY);
 
         translateTransition.play();
+
+        // AddListeners to update positions
+        this.addNodeListeners(notification,position,stage,duration);
     }
 
     private void popIn(Node notification,double toX,double toY,double duration) {
@@ -139,5 +84,47 @@ public class NotifierAnimations {
 
         // start animation
         scale.play();
+    }
+
+    public void addNodeListeners(Node notification,NotificationPos position,Stage stage,Double duration) {
+        // Remove old listeners
+        this.removeListeners(stage);
+
+        // Get the new scene
+        Scene scene = stage.getScene();
+
+        // Width
+        widthListener = (obs,oldVal,newV) -> {
+            this.animate(notification,position,stage,duration);
+        };
+        scene.widthProperty().addListener(widthListener);
+
+        // Height
+        heightListener = (obs,oldVal,newV) -> {
+            this.animate(notification,position,stage,duration);
+        };
+        scene.heightProperty().addListener(heightListener);
+
+        // Full screen mode
+        fullScreenListener = (obs,wasFullScreen,isFullScreen) -> {
+            if (isFullScreen) this.animate(notification,position,stage,duration);
+        };
+        stage.fullScreenProperty().addListener(fullScreenListener);
+    }
+
+    public void removeListeners(Stage stage) {
+        Scene scene = stage.getScene();
+
+        if (widthListener != null) {
+            scene.widthProperty().removeListener(widthListener);
+            widthListener = null;
+        }
+        if (heightListener != null) {
+            scene.heightProperty().removeListener(heightListener);
+            heightListener = null;
+        }
+        if (fullScreenListener != null) {
+            stage.fullScreenProperty().removeListener(fullScreenListener);
+        }
     }
 }

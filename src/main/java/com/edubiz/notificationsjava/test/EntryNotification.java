@@ -27,10 +27,10 @@ public class EntryNotification extends Application {
             Notifier notify = new Notifier(stage);
             notify.setHeader("Notification");
             notify.setBody("This is the body of the Notifier");
-            notify.setPosition(NotificationPos.TOP);
+            notify.setPosition(NotificationPos.CENTER);
             notify.setDuration(4.5);
             notify.autoClose(false);
-            notify.setAnimation(false);
+            notify.setAnimation(true);
             notify.setButton("ok", () -> {
                 System.out.println("text");
             },"-fx-background-color: blue;-fx-text-fill: white;");
