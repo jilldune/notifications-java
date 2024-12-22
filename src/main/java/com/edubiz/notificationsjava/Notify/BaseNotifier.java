@@ -1,7 +1,6 @@
 package com.edubiz.notificationsjava.Notify;
 
 import com.edubiz.notificationsjava.NotifierUtil.Helper;
-import javafx.beans.value.ChangeListener;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -9,7 +8,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.util.Map;
@@ -49,15 +47,15 @@ public abstract class BaseNotifier {
         Scene scene = stage.getScene();
         Helper helper = new Helper();
         // get geometry
-        Map<String, Double> geoMetry = helper.getGeometry(node,scene);
+        Map<String, Double> helperGeometry = helper.getGeometry(node,scene);
 
         // Set bounds
-        double width = geoMetry.get("width");
-        double height = geoMetry.get("height");
+        double width = helperGeometry.get("width");
+        double height = helperGeometry.get("height");
 
         // Get the scene bounds
-        double sceneWidth = geoMetry.get("sceneWidth");
-        double sceneHeight = geoMetry.get("sceneHeight");
+        double sceneWidth = helperGeometry.get("sceneWidth");
+        double sceneHeight = helperGeometry.get("sceneHeight");
 
         // Define positioning
         Map<String, Object> coordinate = helper.parsePosition(position,width,height,sceneWidth,sceneHeight);
@@ -93,17 +91,6 @@ public abstract class BaseNotifier {
 
         // Setting the position of the notification type
         positioningRoute(node,position,animation,duration);
-    }
-
-    // Method for displaying any type of notification
-    public void show(Node node,NotificationPos position) {
-        if (! notificationRoot.getChildren().contains(node))
-            notificationRoot.getChildren().add(node);
-
-        notificationRoot.setVisible(true);
-
-        // Setting the position of the notification type
-        positioningRoute(node,position,true,3.5);
     }
 
     public void close() {
