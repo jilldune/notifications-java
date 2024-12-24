@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.util.Map;
@@ -62,6 +63,16 @@ public abstract class BaseNotifier {
         }
 
         setInanimatePosition(node,position);
+    }
+
+    // Get font
+    protected void getFont(Node node,String variant) {
+        Font thin = Font.loadFont(getClass().getResourceAsStream("/_fonts/Poppins/Poppins-Thin.ttf"), 14);
+        Font regular = Font.loadFont(getClass().getResourceAsStream("/_fonts/Poppins/Poppins-Regular.ttf"), 14);
+        Font medium = Font.loadFont(getClass().getResourceAsStream("/_fonts/Poppins/Poppins-Medium.ttf"), 14);
+        Font bold = Font.loadFont(getClass().getResourceAsStream("/_fonts/Poppins/Poppins-Bold.ttf"), 14);
+        Font italic = Font.loadFont(getClass().getResourceAsStream("/_fonts/Poppins/Poppins-Italic.ttf"), 14);
+
     }
 
     // Method for displaying any type of notification

@@ -210,11 +210,9 @@ public class PromptNotifier extends BaseNotifier {
 
         Helper.timeOut(this::run,duration == 0? 3500:duration);
     }
-
     private void run() {
         close();
     }
-
     private String getUserInput() {
         if (isTextField) return textField.getText().trim();
 

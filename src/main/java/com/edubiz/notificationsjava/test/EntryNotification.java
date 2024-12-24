@@ -1,5 +1,7 @@
 package com.edubiz.notificationsjava.test;
 
+import com.edubiz.notificationsjava.Managers.NotifyManager;
+import com.edubiz.notificationsjava.NotifierUtil.NotifyType;
 import com.edubiz.notificationsjava.Notify.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -17,27 +19,40 @@ public class EntryNotification extends Application {
         root.setPrefSize(800,600);
         root.setStyle("-fx-background-color: red;");
 
+        NotifyManager manager = new NotifyManager(stage);
+
         Button button = new Button("See MyNotifier");
         button.setOnAction(e -> {
+//            ToastNotifier toast = manager.create(NotifyType.TOAST);
+//            toast.create(NotifierToastType.SUCCESS,"This is a brave toast",10.0);
+
+            PromptNotifier prompt = manager.create(NotifyType.PROMPT);
+            prompt.setHeader("Prompt")
+                    .setLabel("Hi there this is a prompt \n I am doing great")
+                    .setPlaceholder("Hello placeholder").create();
+//            PromptNotifier prompt = new PromptNotifier(stage);
+//            ToastNotifier toast = new ToastNotifier(stage);
+//            Notifier notify = new Notifier(stage);
+
             // Toast
-//             Toast toast = new Toast(stage);
+//             ToastNotifier toast = new ToastNotifier(stage);
 //             toast.toast(ToastType.ERROR,"This is a toast",NotificationPos.CENTER,true,5);
 
             // Notifier
-            Notifier notify = new Notifier(stage);
-            notify.setHeader("Notification");
-            notify.setBody("This is the body of the Notifier");
-            notify.setPosition(NotificationPos.CENTER);
-            notify.setDuration(4.5);
-            notify.autoClose(false);
-            notify.setAnimation(true);
-            notify.setButton("ok", () -> {
-                System.out.println("text");
-            },"-fx-background-color: blue;-fx-text-fill: white;");
-            notify.setButton("cancel", () -> {
-                System.out.println("text");
-            },"-fx-background-color: green;-fx-text-fill: white;");
-            notify.create();
+//            Notifier notify = new Notifier(stage);
+//            notify.setHeader("Notification");
+//            notify.setBody("This is the body of the Notifier");
+//            notify.setPosition(NotificationPos.CENTER);
+//            notify.setDuration(4.5);
+//            notify.autoClose(false);
+//            notify.setAnimation(true);
+//            notify.setButton("ok", () -> {
+//                System.out.println("text");
+//            },"-fx-background-color: blue;-fx-text-fill: white;");
+//            notify.setButton("cancel", () -> {
+//                System.out.println("text");
+//            },"-fx-background-color: green;-fx-text-fill: white;");
+//            notify.create();
             // Map Method
 //            Map<String, Object> options = new HashMap<>();
 //            options.put("header", "My new notification");
