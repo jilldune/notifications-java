@@ -1,49 +1,31 @@
-package com.edubiz.notificationsjava.Notify;
+package com.edubiz.notificationsjava.Managers;
 
 import com.edubiz.notificationsjava.NotifierUtil.Helper;
-import javafx.scene.Group;
+import com.edubiz.notificationsjava.NotifierUtil.NotificationPos;
+import com.edubiz.notificationsjava.NotifierUtil.NotifierAnimations;
+import javafx.application.Platform;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import java.util.Map;
-import java.util.Objects;
 
 public abstract class BaseNotifier {
     protected Stage stage;
-    protected AnchorPane notificationRoot;
+    private final Region layout;
+    private Node node = null;
 
-    public BaseNotifier(Stage stage) {
-        // Init the notification root Pane
-        notificationRoot = new AnchorPane();
-        notificationRoot.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/_notify-styles/notification-styles.css")).toExternalForm());
-        notificationRoot.getStyleClass().add("root");
-
-        Scene scene = stage.getScene();
-        Parent userRoot = scene.getRoot();
-
-        if (userRoot instanceof Pane) {
-            ((Pane) userRoot).getChildren().add(notificationRoot);
-        } else if (userRoot instanceof Group) {
-            ((Group) userRoot).getChildren().add(notificationRoot);
-        } else {
-            // wrap in a stack pane if none specified
-            StackPane newRoot = new StackPane();
-            scene.setRoot(newRoot);
-        }
-
-        notificationRoot.prefWidthProperty().bind(scene.widthProperty());
-        notificationRoot.prefHeightProperty().bind(scene.heightProperty());
-
+    public BaseNotifier(Stage stage, Region layout) {
         this.stage = stage;
+        this.layout = layout;
     }
 
+    public Region getLayout() { return this.layout; }
+
     // creates or applies the positions to the notification
-    protected void setInanimatePosition(Node node,NotificationPos position) {
+    protected void setInanimatePosition(Node node, NotificationPos position) {
         Scene scene = stage.getScene();
         Helper helper = new Helper();
         // get geometry
@@ -83,19 +65,19 @@ public abstract class BaseNotifier {
     }
 
     // Method for displaying any type of notification
-    public void show(Node node,NotificationPos position,Boolean animation,double duration) {
-        if (! notificationRoot.getChildren().contains(node))
-            notificationRoot.getChildren().add(node);
+    protected void show(Node node,NotificationPos position,Boolean animation,double duration) {
+        Platform.runLater(()->{
+            this.node = node;
 
-        notificationRoot.setVisible(true);
-
-        // Setting the position of the notification type
-        positioningRoute(node,position,animation,duration);
+            // Setting the position of the notification type
+            positioningRoute(node,position,animation,duration);
+        });
     }
 
-    public void close() {
-        notificationRoot.getChildren().clear();
-        notificationRoot.setVisible(false);
+    protected void close() {
+        Pane root = (Pane) this.node;
+        root.getParent().setVisible(false);
+        root.setManaged(false);
 
         (new Helper()).removeListeners(stage);
         (new NotifierAnimations()).removeListeners(stage);

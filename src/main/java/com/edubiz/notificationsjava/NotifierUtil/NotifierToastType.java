@@ -1,4 +1,4 @@
-package com.edubiz.notificationsjava.Notify;
+package com.edubiz.notificationsjava.NotifierUtil;
 
 public enum NotifierToastType {
     SUCCESS("success","s"),

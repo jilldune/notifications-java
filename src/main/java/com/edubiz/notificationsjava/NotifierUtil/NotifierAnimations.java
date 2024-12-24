@@ -1,12 +1,10 @@
-package com.edubiz.notificationsjava.Notify;
+package com.edubiz.notificationsjava.NotifierUtil;
 
-import com.edubiz.notificationsjava.NotifierUtil.Helper;
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -18,7 +16,7 @@ public class NotifierAnimations {
     private ChangeListener<Number> heightListener;
     private ChangeListener<Boolean> fullScreenListener;
 
-    public void animate(Node notification, NotificationPos position, Stage stage,double durationInSec) {
+    public void animate(Node notification, NotificationPos position, Stage stage, double durationInSec) {
         // Get scene
         Scene scene = stage.getScene();
 

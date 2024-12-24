@@ -1,7 +1,5 @@
 package com.edubiz.notificationsjava.NotifierUtil;
 
-import com.edubiz.notificationsjava.Notify.Coordinates;
-import com.edubiz.notificationsjava.Notify.NotificationPos;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
