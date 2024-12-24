@@ -1,6 +1,7 @@
 package com.edubiz.notificationsjava.test;
 
 import com.edubiz.notificationsjava.Managers.NotifyManager;
+import com.edubiz.notificationsjava.NotifierUtil.NotifierToastType;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyType;
 import com.edubiz.notificationsjava.Notify.*;
 import javafx.application.Application;
@@ -28,7 +29,8 @@ public class EntryNotification extends Application {
 
             PromptNotifier prompt = manager.create(NotifyType.PROMPT);
             prompt.setHeader("Prompt")
-                    .setLabel("Hi there this is a prompt \n I am doing great")
+                    .setLabel("Hi there this is a prompt \nI am doing great")
+                    .autoClose(false)
                     .setPlaceholder("Hello placeholder").create();
 //            PromptNotifier prompt = new PromptNotifier(stage);
 //            ToastNotifier toast = new ToastNotifier(stage);

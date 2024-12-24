@@ -65,16 +65,6 @@ public abstract class BaseNotifier {
         setInanimatePosition(node,position);
     }
 
-    // Get font
-    protected void getFont(Node node,String variant) {
-        Font thin = Font.loadFont(getClass().getResourceAsStream("/_fonts/Poppins/Poppins-Thin.ttf"), 14);
-        Font regular = Font.loadFont(getClass().getResourceAsStream("/_fonts/Poppins/Poppins-Regular.ttf"), 14);
-        Font medium = Font.loadFont(getClass().getResourceAsStream("/_fonts/Poppins/Poppins-Medium.ttf"), 14);
-        Font bold = Font.loadFont(getClass().getResourceAsStream("/_fonts/Poppins/Poppins-Bold.ttf"), 14);
-        Font italic = Font.loadFont(getClass().getResourceAsStream("/_fonts/Poppins/Poppins-Italic.ttf"), 14);
-
-    }
-
     // Method for displaying any type of notification
     protected void show(Node node,NotificationPos position,Boolean animation,double duration) {
         Platform.runLater(()->{
@@ -86,11 +76,15 @@ public abstract class BaseNotifier {
     }
 
     protected void close() {
-        Pane root = (Pane) this.node;
-        root.getParent().setVisible(false);
-        root.setManaged(false);
+        if (this.node != null) {
+            Pane root = (Pane) this.node;
+            root.getParent().setVisible(false);
+            root.setManaged(false);
 
-        (new Helper()).removeListeners(stage);
-        (new NotifierAnimations()).removeListeners(stage);
+            (new Helper()).removeListeners(stage);
+            (new NotifierAnimations()).removeListeners(stage);
+        }
     }
+
+    public void clear() { close(); }
 }

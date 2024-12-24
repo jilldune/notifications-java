@@ -1,3 +1,9 @@
+@font-face {
+    font-family: "Poppins",
+    src: url("/_fonts/Poppins/Poppins-Bold.ttf");
+    font-weight: normal;
+    font-style: normal;
+}
 /** default icon styling */
 .root {
     -fx-background-color: rgba(0,0,0,0.2);
@@ -8,6 +14,8 @@
 }
 .parent-container {
     -fx-effect: dropshadow(one-pass-box,rgba(0,0,0,.3),2,1,1,2);
+    -fx-font-family: Sans-serif;
+    -fx-background-color: green;
 }
 
 /**
@@ -177,7 +185,7 @@ $toastNeutral: #7f8cbd;
 }
 
 .prompt-title {
-    -fx-pref-width: 256px;
+    -fx-pref-width: 260px;
     -fx-pref-height: 25px;
     -fx-text-fill: #000;
     -fx-font-weight: 700;
@@ -192,6 +200,9 @@ $toastNeutral: #7f8cbd;
     -fx-background-radius: 3px;
     -fx-background-color: #eee;
 }
+.prompt-close .icon {
+    -fx-text-fill: #000;
+}
 .prompt-close:hover {
     -fx-background-color: red;
 }
@@ -202,17 +213,17 @@ $toastNeutral: #7f8cbd;
 /*Notification body*/
 .prompt-body {
     -fx-min-width: 296px;
-    -fx-min-height: 40px;
     -fx-text-fill: #000;
     -fx-padding: 5px 3px 5px 3px;
     -fx-background-color: inherit
 }
 .prompt-body .prompt-label {
-    -fx-height: 15px;
     -fx-font-size: 12px;
-    -fx-font-weight: 800;
-    -fx-margin-bottom: 8px;
+    -fx-font-weight: 300;
     -fx-background-color: transparent;
+}
+.prompt-body .prompt-divider {
+    -fx-pref-height: 10px;
 }
 .prompt-body .prompt-text {
    -fx-pref-width: 296;
@@ -229,10 +240,11 @@ $toastNeutral: #7f8cbd;
 }
 .prompt-body .prompt-text:placeholder {
     -fx-font-style: italic;
+    -fx-text-fill: red;
 }
 .prompt-body .prompt-text.text {
-    -fx-min-height: 25px;
-    -fx-padding: 3px 2px 3px 2px;
+    -fx-height: 30px;
+    -fx-padding: 3px;
     -fx-background-color: #e3e3e3;
     -fx-border-color: transparent transparent #e4e4e4 transparent;
 }

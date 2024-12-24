@@ -5,10 +5,12 @@ import com.edubiz.notificationsjava.NotifierUtil.NotifyType;
 import com.edubiz.notificationsjava.Notify.PromptNotifier;
 import com.edubiz.notificationsjava.Notify.ToastNotifier;
 import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.util.Objects;
@@ -48,6 +50,16 @@ public class NotifyManager {
     public void addStyleSheet(String styleSheetPath) {
         if (!root.getStylesheets().contains(styleSheetPath))
             root.getStylesheets().add(styleSheetPath);
+    }
+
+    // Get font
+    private void getFont(Node node, String variant) {
+        Font thin = Font.loadFont(getClass().getResourceAsStream("/_fonts/Poppins/Poppins-Thin.ttf"), 14);
+        Font regular = Font.loadFont(getClass().getResourceAsStream("/_fonts/Poppins/Poppins-Regular.ttf"), 14);
+        Font medium = Font.loadFont(getClass().getResourceAsStream("/_fonts/Poppins/Poppins-Medium.ttf"), 14);
+        Font bold = Font.loadFont(getClass().getResourceAsStream("/_fonts/Poppins/Poppins-Bold.ttf"), 14);
+        Font italic = Font.loadFont(getClass().getResourceAsStream("/_fonts/Poppins/Poppins-Italic.ttf"), 14);
+
     }
 
     @SuppressWarnings("unchecked")

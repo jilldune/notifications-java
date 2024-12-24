@@ -5,11 +5,7 @@ import com.edubiz.notificationsjava.NotifierUtil.Helper;
 import com.edubiz.notificationsjava.NotifierUtil.NotificationPos;
 import com.edubiz.notificationsjava.NotifierUtil.NotifierInputType;
 import javafx.geometry.Pos;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.Label;
-import javafx.scene.control.OverrunStyle;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -137,7 +133,12 @@ public class PromptNotifier extends BaseNotifier {
             inputLabel.setTextAlignment(TextAlignment.LEFT);
             inputLabel.getStyleClass().add("prompt-label");
 
-            bodyPane.getChildren().add(inputLabel);
+            // Create a divider
+            VBox divider = new VBox();
+            divider.getStyleClass().add("prompt-divider");
+
+
+            bodyPane.getChildren().addAll(inputLabel,divider);
         }
 
         switch(this.type) {
