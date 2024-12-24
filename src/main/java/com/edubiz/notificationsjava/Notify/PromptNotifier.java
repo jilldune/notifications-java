@@ -1,6 +1,9 @@
 package com.edubiz.notificationsjava.Notify;
 
+import com.edubiz.notificationsjava.Managers.BaseNotifier;
 import com.edubiz.notificationsjava.NotifierUtil.Helper;
+import com.edubiz.notificationsjava.NotifierUtil.NotificationPos;
+import com.edubiz.notificationsjava.NotifierUtil.NotifierInputType;
 import javafx.geometry.Pos;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
@@ -39,37 +42,7 @@ public class PromptNotifier extends BaseNotifier {
     private final Map<String,Map<String,Object>> buttons = new LinkedHashMap<>();
 
     public PromptNotifier(Stage stage) {
-        super(stage);
-    }
-
-    public void prompt(Map<String, Object> options) {
-        String header = (String) options.getOrDefault("header", "NotifierPrompt");
-        Double duration = (Double) options.getOrDefault("duration", 3.5);
-        Boolean animation = (Boolean) options.getOrDefault("animation", true);
-        Boolean autoClose = (Boolean) options.getOrDefault("autoClose", true);
-        NotificationPos position = (NotificationPos) options.getOrDefault("position", "center");
-
-        // create child pane
-        VBox vBox = new VBox();
-        vBox.setAlignment(Pos.CENTER);
-        vBox.getStyleClass().addAll("prompt","parent-container");
-
-        // create the head
-        createHead(vBox, header);
-
-        // create the body
-        createBody(vBox, options);
-
-        // create footer
-        if (options.containsKey("buttons")) {
-            Map<String, Map<String, Object>> buttons = (Map<String, Map<String, Object>>) options.getOrDefault("buttons", Map.of());
-            createFooter(vBox, buttons);
-        }
-
-        show(vBox,position,animation,duration);
-
-        // create the close function
-        autoClosePrompt(autoClose, duration);
+        super(stage, new VBox());
     }
 
     private void createHead(@NotNull VBox parent, String headerText) {
@@ -85,7 +58,6 @@ public class PromptNotifier extends BaseNotifier {
         // set the header
         parent.getChildren().add(head);
     }
-
     @NotNull
     private HBox head(Label header) {
         FontIcon icon = new FontIcon(RemixiconAL.CLOSE_FILL);
@@ -194,7 +166,6 @@ public class PromptNotifier extends BaseNotifier {
         // add to the parent
         parent.getChildren().add(bodyPane);
     }
-
     // create the MyNotifier Footer
     private void createFooter(VBox parent,Map<String,Map<String,Object>> buttons) {
         if (buttons == null) return;
@@ -233,7 +204,6 @@ public class PromptNotifier extends BaseNotifier {
 
         parent.getChildren().add(buttonContainer);
     }
-
     // Auto closing the function
     private void autoClosePrompt(Boolean autoClose, double duration) {
         if (!autoClose) return;
@@ -245,56 +215,99 @@ public class PromptNotifier extends BaseNotifier {
         close();
     }
 
-    public String getUserInput() {
+    private String getUserInput() {
         if (isTextField) return textField.getText().trim();
 
         return textArea.getText().trim();
     }
-    
+    private VBox parent() {
+        VBox vBox = (VBox) getLayout();
+        vBox.setAlignment(Pos.CENTER);
+        vBox.getStyleClass().addAll("prompt","parent-container");
 
+        return vBox;
+    }
     
-//    Plain Methods
-    public void setHeader(String header) {
+    // ========== Exposed creator Methods ==========
+
+    public void prompt(Map<String, Object> options) {
+        String header = (String) options.getOrDefault("header", "NotifierPrompt");
+        Double duration = (Double) options.getOrDefault("duration", this.durationInSeconds);
+        Boolean animation = (Boolean) options.getOrDefault("animation", this.animation);
+        Boolean autoClose = (Boolean) options.getOrDefault("autoClose", this.autoClose);
+        NotificationPos position = (NotificationPos) options.getOrDefault("position", this.position);
+
+        // create child pane
+        VBox vBox = parent();
+
+        // create the head
+        createHead(vBox, header);
+
+        // create the body
+        createBody(vBox, options);
+
+        // create footer
+        if (options.containsKey("buttons")) {
+            Map<String, Map<String, Object>> buttons = (Map<String, Map<String, Object>>) options.getOrDefault("buttons", Map.of());
+            createFooter(vBox, buttons);
+        }
+
+        show(vBox,position,animation,duration);
+
+        // create the close function
+        autoClosePrompt(autoClose, duration);
+    }
+
+    public PromptNotifier setHeader(String header) {
         headerText = header;
+        return this;
     }
-    public void setType(NotifierInputType type) {
+    public PromptNotifier setType(NotifierInputType type) {
         this.type = type;
+        return this;
     }
-    public void setPlaceholder(String placeHolder) {
+    public PromptNotifier setPlaceholder(String placeHolder) {
         this.placeHolder = placeHolder;
+        return this;
     }
-    public void setValue(String value) {
+    public PromptNotifier setValue(String value) {
         this.value = value;
+        return this;
     }
-    public void setLabel(String label) {
+    public PromptNotifier setLabel(String label) {
         this.label = label;
+        return this;
     }
-    public void setPosition(NotificationPos position) {
+    public PromptNotifier setPosition(NotificationPos position) {
         this.position = position;
+        return this;
     }
-    public void setDuration(Double durationInSeconds) {
+    public PromptNotifier setDuration(Double durationInSeconds) {
         this.durationInSeconds = durationInSeconds;
+        return this;
     }
-    public void autoClose(Boolean autoClose) {
+    public PromptNotifier autoClose(Boolean autoClose) {
         this.autoClose = autoClose;
+        return this;
     }
-    public void setAnimation(Boolean animation) {
+    public PromptNotifier setAnimation(Boolean animation) {
         this.animation = animation;
+        return this;
     }
-    public void setButton(String label,Consumer<String> action,String style) {
+    public PromptNotifier setButton(String label,Consumer<String> action,String style) {
         this.buttons.put(label,Map.of(
                 "action",action,
                 "style",style
         ));
+        return this;
     }
-    public void setButton(String label,Consumer<String> action) {
+    public PromptNotifier setButton(String label,Consumer<String> action) {
         this.buttons.put(label,Map.of("action",action));
+        return this;
     }
     public void create() {
         // create prompt pane
-        VBox vBox = new VBox();
-        vBox.setAlignment(Pos.CENTER);
-        vBox.getStyleClass().addAll("prompt","parent-container");
+        VBox vBox = parent();
 
         // create the head
         createHead(vBox, headerText);

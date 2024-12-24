@@ -1,6 +1,9 @@
 package com.edubiz.notificationsjava.Notify;
 
+import com.edubiz.notificationsjava.Managers.BaseNotifier;
 import com.edubiz.notificationsjava.NotifierUtil.Helper;
+import com.edubiz.notificationsjava.NotifierUtil.NotificationPos;
+import com.edubiz.notificationsjava.NotifierUtil.NotifierToastType;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -16,16 +19,16 @@ public class ToastNotifier extends BaseNotifier {
     private final NotificationPos DEFAULT_POSITION = NotificationPos.TOP_RIGHT;
 
     public ToastNotifier(Stage stage) {
-        super(stage);
+        super(stage, new HBox());
     }
 
-    public void toast(NotifierToastType type, String message) { createToast(type,message,DEFAULT_POSITION,true,DURATION); }
+    public void create(NotifierToastType type, String message) { createToast(type,message,DEFAULT_POSITION,true,DURATION); }
 
-    public void toast(NotifierToastType type, String message, NotificationPos position) { createToast(type,message,position,true,DURATION); }
+    public void create(NotifierToastType type, String message, NotificationPos position) { createToast(type,message,position,true,DURATION); }
 
-    public void toast(NotifierToastType type, String message, double delayInSeconds) { createToast(type,message,DEFAULT_POSITION,true,delayInSeconds); }
+    public void create(NotifierToastType type, String message, double delayInSeconds) { createToast(type,message,DEFAULT_POSITION,true,delayInSeconds); }
 
-    public void toast(NotifierToastType type, String message, NotificationPos position, boolean animation, double delayInSeconds) {
+    public void create(NotifierToastType type, String message, NotificationPos position, boolean animation, double delayInSeconds) {
         createToast(type,message,position,animation,delayInSeconds);
     }
 
@@ -58,7 +61,7 @@ public class ToastNotifier extends BaseNotifier {
         }
 
         // create child pane
-        HBox hBox = new HBox();
+        HBox hBox = (HBox) getLayout();
         hBox.setAlignment(Pos.CENTER_LEFT);
         hBox.getStyleClass().addAll("toast","parent-container",colorStyle);
 
@@ -85,7 +88,9 @@ public class ToastNotifier extends BaseNotifier {
 
         show(hBox,position,animation,delayInSeconds);
 
-        Helper.timeOut(()-> Platform.runLater(this::close),delayInSeconds);
+        Helper.timeOut(()-> Platform.runLater(() -> {
+            close();
+        }),delayInSeconds);
     }
 }
 

@@ -1,6 +1,8 @@
 package com.edubiz.notificationsjava.Notify;
 
+import com.edubiz.notificationsjava.Managers.BaseNotifier;
 import com.edubiz.notificationsjava.NotifierUtil.Helper;
+import com.edubiz.notificationsjava.NotifierUtil.NotificationPos;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
@@ -18,7 +20,6 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 public class Notifier extends BaseNotifier {
     //    class variables
@@ -30,39 +31,7 @@ public class Notifier extends BaseNotifier {
     private Boolean animation = true;
     private final Map<String,Map<String,Object>> buttons = new LinkedHashMap<>();
 
-
-    public Notifier(Stage stage) {
-        super(stage);
-    }
-
-    public void notification(Map<String, Object> options){
-        String header = (String) options.getOrDefault("header",this.headerText);
-        String messageBody = (String) options.getOrDefault("messageBody",this.body);
-        Map<String,Map<String,Object>> buttons = (Map<String,Map<String,Object>>) options.getOrDefault("buttons",Map.of());
-        Double duration = (Double) options.getOrDefault("duration", this.durationInSeconds);
-        Boolean animation = (Boolean) options.getOrDefault("animation", this.animation);
-        Boolean autoClose = (Boolean) options.getOrDefault("autoClose",this.autoClose);
-        NotificationPos position = (NotificationPos) options.getOrDefault("position", this.position);
-
-        // create child pane
-        VBox vBox = new VBox();
-        vBox.setAlignment(Pos.CENTER);
-        vBox.getStyleClass().addAll("notification","parent-container");
-
-        // create the head
-        createHead(vBox,header);
-
-        // create the body
-        createBody(vBox,messageBody);
-
-        // create footer
-        createFooter(vBox,buttons);
-
-        show(vBox,position,animation,duration);
-
-        // create the close function
-        autoCloseNotification(autoClose,duration);
-    }
+    public Notifier(Stage stage) { super(stage, new VBox()); }
 
     private void createHead(@NotNull VBox parent, String headerText) {
         // create the header text
@@ -77,7 +46,6 @@ public class Notifier extends BaseNotifier {
         // set the header
         parent.getChildren().add(head);
     }
-
     @NotNull
     private HBox getHead(@NotNull VBox parent, Label header) {
         FontIcon icon = new FontIcon(RemixiconAL.CLOSE_FILL);
@@ -103,7 +71,6 @@ public class Notifier extends BaseNotifier {
         // add to the parent
         parent.getChildren().add(getTextArea(bodyText));
     }
-
     @NotNull
     private TextArea getTextArea(String bodyText) {
         TextArea messageArea = new TextArea();
@@ -155,45 +122,84 @@ public class Notifier extends BaseNotifier {
 
         parent.getChildren().add(buttonContainer);
     }
-
     // Auto closing the function
     private void autoCloseNotification(Boolean autoClose,double duration) {
         if (!autoClose) return;
 
         Helper.timeOut(this::run,duration == 0? 3.5:duration);
     }
+    private VBox parent() {
+        VBox vBox = new VBox();
+        vBox.setAlignment(Pos.CENTER);
+        vBox.getStyleClass().addAll("notification","parent-container");
 
-    // Plain Methods
-    public void setHeader(String headerText) {
+        return vBox;
+    }
+    // =============== Plain Methods ==================
+
+    public void notification(Map<String, Object> options){
+        String header = (String) options.getOrDefault("header",this.headerText);
+        String messageBody = (String) options.getOrDefault("messageBody",this.body);
+        Map<String,Map<String,Object>> buttons = (Map<String,Map<String,Object>>) options.getOrDefault("buttons",Map.of());
+        Double duration = (Double) options.getOrDefault("duration", this.durationInSeconds);
+        Boolean animation = (Boolean) options.getOrDefault("animation", this.animation);
+        Boolean autoClose = (Boolean) options.getOrDefault("autoClose",this.autoClose);
+        NotificationPos position = (NotificationPos) options.getOrDefault("position", this.position);
+
+        // create child pane
+        VBox vBox = parent();
+
+        // create the head
+        createHead(vBox,header);
+
+        // create the body
+        createBody(vBox,messageBody);
+
+        // create footer
+        createFooter(vBox,buttons);
+
+        show(vBox,position,animation,duration);
+
+        // create the close function
+        autoCloseNotification(autoClose,duration);
+    }
+
+    public Notifier setHeader(String headerText) {
         this.headerText = headerText;
+        return this;
     }
-    public void setBody(String body) {
+    public Notifier setBody(String body) {
         this.body = body;
+        return this;
     }
-    public void setPosition(NotificationPos position) {
+    public Notifier setPosition(NotificationPos position) {
         this.position = position;
+        return this;
     }
-    public void setDuration(Double durationInSeconds) {
+    public Notifier setDuration(Double durationInSeconds) {
         this.durationInSeconds = durationInSeconds;
+        return this;
     }
-    public void autoClose(Boolean autoClose) {
+    public Notifier autoClose(Boolean autoClose) {
         this.autoClose = autoClose;
+        return this;
     }
-    public void setAnimation(Boolean animation) {
+    public Notifier setAnimation(Boolean animation) {
         this.animation = animation;
+        return this;
     }
-    public void setButton(String label, Runnable action, String style) {
+    public Notifier setButton(String label, Runnable action, String style) {
         this.buttons.put(label,Map.of("action",action,"style",style));
+        return this;
     }
-    public void setButton(String label, Runnable action) {
+    public Notifier setButton(String label, Runnable action) {
         this.buttons.put(label,Map.of("action",action));
+        return this;
     }
 
     public void create() {
         // create prompt pane
-        VBox vBox = new VBox();
-        vBox.setAlignment(Pos.CENTER);
-        vBox.getStyleClass().addAll("notification","parent-container");
+        VBox vBox = parent();
 
         // create the head
         createHead(vBox, this.headerText);
