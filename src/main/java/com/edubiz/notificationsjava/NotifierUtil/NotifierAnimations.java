@@ -11,7 +11,6 @@ import javafx.util.Duration;
 import java.util.Map;
 
 public class NotifierAnimations {
-    private Map<String, Double> coordinates;
     private ChangeListener<Number> widthListener;
     private ChangeListener<Number> heightListener;
     private ChangeListener<Boolean> fullScreenListener;
@@ -33,15 +32,15 @@ public class NotifierAnimations {
         Helper helper = new Helper();
 
         // get geometry
-        Map<String, Double> geoMetry = helper.getGeometry(notification,scene);
+        Map<String, Double> geometry = helper.getGeometry(notification,scene);
 
         // Set bounds
-        width = geoMetry.get("width");
-        height = geoMetry.get("height");
+        width = geometry.get("width");
+        height = geometry.get("height");
 
         // Get the scene bounds
-        sceneWidth = geoMetry.get("sceneWidth");
-        sceneHeight = geoMetry.get("sceneHeight");
+        sceneWidth = geometry.get("sceneWidth");
+        sceneHeight = geometry.get("sceneHeight");
 
         // Define positioning
         Map<String, Object> coordinate = helper.parsePosition(position,width,height,sceneWidth,sceneHeight);
@@ -92,15 +91,11 @@ public class NotifierAnimations {
         Scene scene = stage.getScene();
 
         // Width
-        widthListener = (obs,oldVal,newV) -> {
-            this.animate(notification,position,stage,duration);
-        };
+        widthListener = (obs,oldVal,newV) -> this.animate(notification,position,stage,duration);
         scene.widthProperty().addListener(widthListener);
 
         // Height
-        heightListener = (obs,oldVal,newV) -> {
-            this.animate(notification,position,stage,duration);
-        };
+        heightListener = (obs,oldVal,newV) -> this.animate(notification,position,stage,duration);
         scene.heightProperty().addListener(heightListener);
 
         // Full screen mode
