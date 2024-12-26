@@ -52,16 +52,6 @@ public class NotifyManager {
             root.getStylesheets().add(styleSheetPath);
     }
 
-    // Get font
-    private void getFont(Node node, String variant) {
-        Font thin = Font.loadFont(getClass().getResourceAsStream("/_fonts/Poppins/Poppins-Thin.ttf"), 14);
-        Font regular = Font.loadFont(getClass().getResourceAsStream("/_fonts/Poppins/Poppins-Regular.ttf"), 14);
-        Font medium = Font.loadFont(getClass().getResourceAsStream("/_fonts/Poppins/Poppins-Medium.ttf"), 14);
-        Font bold = Font.loadFont(getClass().getResourceAsStream("/_fonts/Poppins/Poppins-Bold.ttf"), 14);
-        Font italic = Font.loadFont(getClass().getResourceAsStream("/_fonts/Poppins/Poppins-Italic.ttf"), 14);
-
-    }
-
     @SuppressWarnings("unchecked")
     public <T extends BaseNotifier>T create(NotifyType type) {
         BaseNotifier notification = switch (type) {
