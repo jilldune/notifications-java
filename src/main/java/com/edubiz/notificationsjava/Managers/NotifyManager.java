@@ -64,11 +64,10 @@ public class NotifyManager {
     }
 
     private void initializeNotification(BaseNotifier baseNotifier) {
+        baseNotifier.setRoot(root);
         Region layout = baseNotifier.getLayout();
 
         root.getChildren().clear();
         root.getChildren().add(layout);
-        root.setVisible(true);
-        root.setManaged(true);
     }
 }

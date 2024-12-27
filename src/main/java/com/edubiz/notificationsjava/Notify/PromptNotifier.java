@@ -37,9 +37,7 @@ public class PromptNotifier extends BaseNotifier {
     private Boolean animation = true;
     private final Map<String,Map<String,Object>> buttons = new LinkedHashMap<>();
 
-    public PromptNotifier(Stage stage) {
-        super(stage, new VBox());
-    }
+    public PromptNotifier(Stage stage) { super(stage, new VBox()); }
 
     private void createHead(@NotNull VBox parent, String headerText) {
         // create the header text
@@ -62,7 +60,7 @@ public class PromptNotifier extends BaseNotifier {
         Label btnIcon = new Label();
         btnIcon.setGraphic(icon);
         btnIcon.setAlignment(Pos.CENTER);
-        btnIcon.getStyleClass().add("prompt-close");
+        btnIcon.getStyleClass().addAll("prompt-close","close-btn");
 
         btnIcon.setOnMouseClicked(event -> close());
 
@@ -74,53 +72,6 @@ public class PromptNotifier extends BaseNotifier {
     }
 
     // create MyNotifier message body
-    private void createBody(VBox parent, Map<String, Object> options) {
-        NotifierInputType inputType = (NotifierInputType) options.getOrDefault("type", this.type);
-        String placeHolder = (String) options.getOrDefault("placeHolder", this.placeHolder);
-        String value = (String) options.getOrDefault("value", this.value);
-        String label = (String) options.getOrDefault("label", this.label);
-
-        // create a body container
-        VBox bodyPane = new VBox();
-        bodyPane.getStyleClass().add("prompt-body");
-
-        // create label
-        if (label != null) {
-            Label inputLabel = new Label();
-            inputLabel.setText(label);
-            inputLabel.setTextAlignment(TextAlignment.LEFT);
-            inputLabel.getStyleClass().add("prompt-label");
-
-            bodyPane.getChildren().add(inputLabel);
-        }
-
-        // Create the input
-        switch(inputType) {
-            case TEXT -> {
-                textField = new TextField();
-                textField.getStyleClass().addAll("prompt-text",type.getValue());
-                textField.setPromptText(placeHolder);
-                textField.setText(value);
-
-                isTextField = true;
-
-                bodyPane.getChildren().add(textField);
-            }
-            case TEXTAREA -> {
-                textArea = new TextArea();
-                textArea.getStyleClass().addAll("prompt-text",type.getValue());
-                textArea.setPromptText(placeHolder);
-                textArea.setText(value);
-
-                isTextField = false;
-
-                bodyPane.getChildren().add(textArea);
-            }
-        }
-
-        // add to the parent
-        parent.getChildren().add(bodyPane);
-    }
     private void createBody(VBox parent) {
         // create a body container
         VBox bodyPane = new VBox();
@@ -229,34 +180,6 @@ public class PromptNotifier extends BaseNotifier {
     
     // ========== Exposed creator Methods ==========
 
-    public void prompt(Map<String, Object> options) {
-        String header = (String) options.getOrDefault("header", "NotifierPrompt");
-        Double duration = (Double) options.getOrDefault("duration", this.durationInSeconds);
-        Boolean animation = (Boolean) options.getOrDefault("animation", this.animation);
-        Boolean autoClose = (Boolean) options.getOrDefault("autoClose", this.autoClose);
-        NotificationPos position = (NotificationPos) options.getOrDefault("position", this.position);
-
-        // create child pane
-        VBox vBox = parent();
-
-        // create the head
-        createHead(vBox, header);
-
-        // create the body
-        createBody(vBox, options);
-
-        // create footer
-        if (options.containsKey("buttons")) {
-            Map<String, Map<String, Object>> buttons = (Map<String, Map<String, Object>>) options.getOrDefault("buttons", Map.of());
-            createFooter(vBox, buttons);
-        }
-
-        show(vBox,position,animation,duration);
-
-        // create the close function
-        autoClosePrompt(autoClose, duration);
-    }
-
     public PromptNotifier setHeader(String header) {
         headerText = header;
         return this;
@@ -294,10 +217,7 @@ public class PromptNotifier extends BaseNotifier {
         return this;
     }
     public PromptNotifier setButton(String label,Consumer<String> action,String style) {
-        this.buttons.put(label,Map.of(
-                "action",action,
-                "style",style
-        ));
+        this.buttons.put(label,Map.of("action",action,"style",style));
         return this;
     }
     public PromptNotifier setButton(String label,Consumer<String> action) {
@@ -317,6 +237,7 @@ public class PromptNotifier extends BaseNotifier {
         // create footer
         createFooter(vBox, buttons);
 
+        // showing the prompt
         show(vBox,position,animation,durationInSeconds);
 
         // create the close function

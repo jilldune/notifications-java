@@ -54,14 +54,13 @@ public class Notifier extends BaseNotifier {
         Label btnIcon = new Label();
         btnIcon.setGraphic(icon);
         btnIcon.setAlignment(Pos.CENTER);
-        btnIcon.getStyleClass().add("notification-close");
+        btnIcon.getStyleClass().addAll("notification-close","close-btn");
 
         btnIcon.setOnMouseClicked(event -> close());
 
         // create the head container
         HBox head = new HBox(header,btnIcon);// Add label and close icon to the head
         head.setAlignment(Pos.CENTER_LEFT);
-        head.maxWidth(parent.getWidth());
 
         return head;
     }
@@ -135,34 +134,8 @@ public class Notifier extends BaseNotifier {
 
         return vBox;
     }
+
     // =============== Plain Methods ==================
-
-    public void notification(Map<String, Object> options){
-        String header = (String) options.getOrDefault("header",this.headerText);
-        String messageBody = (String) options.getOrDefault("messageBody",this.body);
-        Map<String,Map<String,Object>> buttons = (Map<String,Map<String,Object>>) options.getOrDefault("buttons",Map.of());
-        Double duration = (Double) options.getOrDefault("duration", this.durationInSeconds);
-        Boolean animation = (Boolean) options.getOrDefault("animation", this.animation);
-        Boolean autoClose = (Boolean) options.getOrDefault("autoClose",this.autoClose);
-        NotificationPos position = (NotificationPos) options.getOrDefault("position", this.position);
-
-        // create child pane
-        VBox vBox = parent();
-
-        // create the head
-        createHead(vBox,header);
-
-        // create the body
-        createBody(vBox,messageBody);
-
-        // create footer
-        createFooter(vBox,buttons);
-
-        show(vBox,position,animation,duration);
-
-        // create the close function
-        autoCloseNotification(autoClose,duration);
-    }
 
     public Notifier setHeader(String headerText) {
         this.headerText = headerText;
@@ -210,13 +183,12 @@ public class Notifier extends BaseNotifier {
         // create footer
         createFooter(vBox, this.buttons);
 
+        // showing the notification
         show(vBox, this.position, this.animation, this.durationInSeconds);
 
         // create the close function
         autoCloseNotification(this.autoClose, this.durationInSeconds);
     }
 
-    private void run() {
-        close();
-    }
+    private void run() { close(); }
 }

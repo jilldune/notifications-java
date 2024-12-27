@@ -1,10 +1,12 @@
 package com.edubiz.notificationsjava.test;
 
 import com.edubiz.notificationsjava.Managers.NotifyManager;
+import com.edubiz.notificationsjava.NotifierUtil.NotificationPos;
 import com.edubiz.notificationsjava.NotifierUtil.NotifierToastType;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyType;
 import com.edubiz.notificationsjava.Notify.*;
 import javafx.application.Application;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
@@ -23,18 +25,34 @@ public class EntryNotification extends Application {
         NotifyManager manager = new NotifyManager(stage);
 
         Button button = new Button("See MyNotifier");
+        button.setCursor(Cursor.HAND);
         button.setOnAction(e -> {
 //            ToastNotifier toast = manager.create(NotifyType.TOAST);
 //            toast.create(NotifierToastType.SUCCESS,"This is a brave toast",10.0);
 
-            PromptNotifier prompt = manager.create(NotifyType.PROMPT);
-            prompt.setHeader("Prompt")
-                    .setLabel("Hi there this is a prompt \nI am doing great")
+//            PromptNotifier prompt = manager.create(NotifyType.PROMPT);
+//            prompt.setHeader("Prompt")
+//                    .setLabel("Hi there this is a prompt \nI am doing great")
+//                    .autoClose(false)
+//                    .setAnimation(true)
+//                    .setPlaceholder("Hello placeholder")
+//                    .create();
+
+            Notifier notify = manager.create(NotifyType.NOTIFIER);
+            notify.setHeader("Notification")
+                    .setBody("I am a notification in the making please take it light.\nI am the new order")
+                    .setPosition(NotificationPos.TOP)
+                    .setAnimation(false)
                     .autoClose(false)
-                    .setPlaceholder("Hello placeholder").create();
+                    .create();
+
+            // xxxx This initialisation method is not right xxxx
 //            PromptNotifier prompt = new PromptNotifier(stage);
+//            prompt.create();
 //            ToastNotifier toast = new ToastNotifier(stage);
+//            toast.create(NotifierToastType.SUCCESS,"Hey");
 //            Notifier notify = new Notifier(stage);
+//            notify.create();
 
             // Toast
 //             ToastNotifier toast = new ToastNotifier(stage);
@@ -42,19 +60,19 @@ public class EntryNotification extends Application {
 
             // Notifier
 //            Notifier notify = new Notifier(stage);
-//            notify.setHeader("Notification");
-//            notify.setBody("This is the body of the Notifier");
-//            notify.setPosition(NotificationPos.CENTER);
-//            notify.setDuration(4.5);
-//            notify.autoClose(false);
-//            notify.setAnimation(true);
-//            notify.setButton("ok", () -> {
+//            notify.setHeader("Notification")
+//            .setBody("This is the body of the Notifier")
+//            .setPosition(NotificationPos.CENTER);
+//            notify.setDuration(4.5)
+//            .autoClose(false)
+//            .setAnimation(true)
+//            .setButton("ok", () -> {
 //                System.out.println("text");
-//            },"-fx-background-color: blue;-fx-text-fill: white;");
-//            notify.setButton("cancel", () -> {
+//            },"-fx-background-color: blue;-fx-text-fill: white;")
+//            .setButton("cancel", () -> {
 //                System.out.println("text");
-//            },"-fx-background-color: green;-fx-text-fill: white;");
-//            notify.create();
+//            },"-fx-background-color: green;-fx-text-fill: white;")
+//            .create();
             // Map Method
 //            Map<String, Object> options = new HashMap<>();
 //            options.put("header", "My new notification");

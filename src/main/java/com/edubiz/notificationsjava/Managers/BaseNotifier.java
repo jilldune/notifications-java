@@ -6,6 +6,7 @@ import com.edubiz.notificationsjava.NotifierUtil.NotifierAnimations;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Font;
@@ -17,6 +18,7 @@ public abstract class BaseNotifier {
     protected Stage stage;
     private final Region layout;
     private Node node = null;
+    private AnchorPane root;
 
     public BaseNotifier(Stage stage, Region layout) {
         this.stage = stage;
@@ -27,6 +29,7 @@ public abstract class BaseNotifier {
 
     // creates or applies the positions to the notification
     protected void setInanimatePosition(Node node, NotificationPos position) {
+        System.out.println("no animation...");
         Scene scene = stage.getScene();
         Helper helper = new Helper();
         // get geometry
@@ -49,6 +52,9 @@ public abstract class BaseNotifier {
         node.setLayoutX(toX);
         node.setLayoutY(toY);
 
+        root.setVisible(true);
+        root.setManaged(true);
+
         helper.addNodeListeners(stage,node,position,width,height);
     }
 
@@ -59,6 +65,9 @@ public abstract class BaseNotifier {
             NotifierAnimations anim = new NotifierAnimations();
             anim.animate(node,position,stage,duration);
 
+            root.setVisible(true);
+            root.setManaged(true);
+            System.out.println("animating...");
             return;
         }
 
@@ -72,6 +81,8 @@ public abstract class BaseNotifier {
 
             // Setting the position of the notification type
             positioningRoute(node,position,animation,duration);
+
+            System.out.println(position);
         });
     }
 
@@ -84,6 +95,10 @@ public abstract class BaseNotifier {
             (new Helper()).removeListeners(stage);
             (new NotifierAnimations()).removeListeners(stage);
         }
+    }
+
+    public void setRoot(AnchorPane root) {
+        this.root = root;
     }
 
     public void clear() { close(); }
