@@ -128,7 +128,7 @@ public class Notifier extends BaseNotifier {
         Helper.timeOut(this::run,duration == 0? 3.5:duration);
     }
     private VBox parent() {
-        VBox vBox = new VBox();
+        VBox vBox = (VBox) getLayout();
         vBox.setAlignment(Pos.CENTER);
         vBox.getStyleClass().addAll("notification","parent-container");
 

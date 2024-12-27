@@ -28,8 +28,8 @@ public class EntryNotification extends Application {
         Button button = new Button("See MyNotifier");
         button.setCursor(Cursor.HAND);
         button.setOnAction(e -> {
-            ToastNotifier toast = manager.create(NotifyType.TOAST);
-            toast.create(NotifierToastType.SUCCESS,"This is a brave toast",NotificationPos.TOP,true,10.0);
+//            ToastNotifier toast = manager.create(NotifyType.TOAST);
+//            toast.create(NotifierToastType.SUCCESS,"This is a brave toast",NotificationPos.TOP,true,10.0);
 
 //            PromptNotifier prompt = manager.create(NotifyType.PROMPT);
 //            prompt.setHeader("Prompt")
@@ -39,13 +39,13 @@ public class EntryNotification extends Application {
 //                    .setPlaceholder("Hello placeholder")
 //                    .create();
 
-//            Notifier notify = manager.create(NotifyType.NOTIFIER);
-//            notify.setHeader("Notification")
-//                    .setBody("I am a notification in the making please take it light.\nI am the new order")
-//                    .setPosition(NotificationPos.TOP)
-//                    .setAnimation(false)
-//                    .autoClose(false)
-//                    .create();
+            Notifier notify = manager.create(NotifyType.NOTIFIER);
+            notify.setHeader("Notification")
+                    .setBody("I am a notification in the making please take it light.\nI am the new order")
+                    .setPosition(NotificationPos.TOP)
+                    .setAnimation(false)
+                    .autoClose(false)
+                    .create();
         });
 
         root.getChildren().add(button);
