@@ -14,16 +14,24 @@ public class NotifierAnimations {
     private ChangeListener<Number> widthListener;
     private ChangeListener<Number> heightListener;
     private ChangeListener<Boolean> fullScreenListener;
+    private double fromX;
+    private double fromY;
+    private double toX;
+    private double toY;
+    private double duration;
+    private Node notification;
+    private String pos;
 
     public void animate(Node notification, NotificationPos position, Stage stage, double durationInSec) {
         // Get scene
         Scene scene = stage.getScene();
 
         // Get duration
-        double duration = durationInSec == 0 ? durationInSec : .5;
+        duration = durationInSec == 0 ? durationInSec : .5;
 
         // Create the translation
-        TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(duration),notification);
+        TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(duration), notification);
+        this.notification = notification;
 
         // Define bounds
         double width, height, sceneWidth, sceneHeight;
@@ -44,11 +52,11 @@ public class NotifierAnimations {
 
         // Define positioning
         Map<String, Object> coordinate = helper.parsePosition(position,width,height,sceneWidth,sceneHeight);
-        double fromX = (double) coordinate.get("fromX");
-        double fromY = (double) coordinate.get("fromY");
-        double toX = (double) coordinate.get("toX");
-        double toY = (double) coordinate.get("toY");
-        String pos = (String) coordinate.get("position");
+        fromX = (double) coordinate.get("fromX");
+        fromY = (double) coordinate.get("fromY");
+        toX = (double) coordinate.get("toX");
+        toY = (double) coordinate.get("toY");
+        pos = (String) coordinate.get("position");
 
         if (pos.equals("center")) {
             popIn(notification, toX, toY, duration);
@@ -68,12 +76,48 @@ public class NotifierAnimations {
         this.addNodeListeners(notification,position,stage,duration);
     }
 
+    // Reverses the transition
+    public void reverseTransition(Runnable callback) {
+        if (fromX != 0.0 || fromY != 0.0 || toX != 0.0 || toY != 0.0) {
+            if (pos.equals("center")) {
+                popOut(notification, toX, toY, duration,callback);
+                return;
+            }
+
+            TranslateTransition reverse = new TranslateTransition(Duration.seconds(duration),notification);
+            reverse.setFromX(toX);
+            reverse.setFromY(toY);
+            reverse.setToX(fromX);
+            reverse.setToY(fromY);
+            reverse.setOnFinished(actionEvent -> callback.run());
+
+            reverse.play();
+        }
+    }
+
     private void popIn(Node notification,double toX,double toY,double duration) {
         ScaleTransition scale = new ScaleTransition(Duration.seconds(duration),notification);
         scale.setFromX(0);
         scale.setFromY(0);
         scale.setToX(1);
         scale.setToY(1);
+
+        // set notification in the center
+        notification.setLayoutX(toX);
+        notification.setLayoutY(toY);
+
+        // start animation
+        scale.play();
+    }
+
+
+    private void popOut(Node notification,double toX,double toY,double duration,Runnable callback) {
+        ScaleTransition scale = new ScaleTransition(Duration.seconds(duration),notification);
+        scale.setFromX(1);
+        scale.setFromY(1);
+        scale.setToX(0);
+        scale.setToY(0);
+        scale.setOnFinished(actionEvent -> callback.run());
 
         // set notification in the center
         notification.setLayoutX(toX);

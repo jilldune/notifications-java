@@ -9,7 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.util.Map;
@@ -19,6 +18,8 @@ public abstract class BaseNotifier {
     private final Region layout;
     private Node node = null;
     private AnchorPane root;
+    private NotifierAnimations animations;
+    private Boolean animation = true;
 
     public BaseNotifier(Stage stage, Region layout) {
         this.stage = stage;
@@ -29,6 +30,7 @@ public abstract class BaseNotifier {
 
     // creates or applies the positions to the notification
     protected void setInanimatePosition(Node node, NotificationPos position) {
+        this.animation = false;
         Scene scene = stage.getScene();
         Helper helper = new Helper();
         // get geometry
@@ -61,8 +63,9 @@ public abstract class BaseNotifier {
         if (position == null) return;
 
         if (animation) {
-            NotifierAnimations anim = new NotifierAnimations();
-            anim.animate(node,position,stage,duration);
+            this.animation = true;
+            animations = new NotifierAnimations();
+            animations.animate(node,position,stage,duration);
 
             root.setVisible(true);
             root.setManaged(true);
@@ -84,6 +87,20 @@ public abstract class BaseNotifier {
 
     protected void close() {
         if (this.node != null) {
+            if (this.animation) {
+                animations.reverseTransition(() -> {
+                    Pane root = (Pane) this.node;
+                    root.getParent().setVisible(false);
+                    root.setManaged(false);
+
+                    (new Helper()).removeListeners(stage);
+                    (new NotifierAnimations()).removeListeners(stage);
+                });
+
+                return;
+            }
+
+
             Pane root = (Pane) this.node;
             root.getParent().setVisible(false);
             root.setManaged(false);
@@ -96,6 +113,4 @@ public abstract class BaseNotifier {
     public void setRoot(AnchorPane root) {
         this.root = root;
     }
-
-    public void clear() { close(); }
 }
