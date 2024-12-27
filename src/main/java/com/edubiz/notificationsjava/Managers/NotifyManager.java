@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
@@ -33,8 +34,8 @@ public class NotifyManager {
             Scene scene = this.stage.getScene();
             Parent userRoot = scene.getRoot();
 
-            if(! ((AnchorPane) userRoot).getChildren().contains(root)) {
-                ((AnchorPane) userRoot).getChildren().add(root);
+            if(! ((Pane) userRoot).getChildren().contains(root)) {
+                ((Pane) userRoot).getChildren().add(root);
 
                 // bind to scene
                 root.prefWidthProperty().bind(scene.widthProperty());
