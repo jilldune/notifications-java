@@ -88,9 +88,7 @@ public class ToastNotifier extends BaseNotifier {
 
         show(hBox,position,animation,delayInSeconds);
 
-        Helper.timeOut(()-> Platform.runLater(() -> {
-            close();
-        }),delayInSeconds);
+        Helper.timeOut(()-> Platform.runLater(this::close),delayInSeconds);
     }
 }
 
