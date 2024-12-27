@@ -43,7 +43,7 @@ public class EntryNotification extends Application {
             notify.setHeader("Notification")
                     .setBody("I am a notification in the making please take it light.\nI am the new order")
                     .setPosition(NotificationPos.TOP)
-                    .setAnimation(false)
+                    .setAnimation(true)
                     .autoClose(false)
                     .create();
         });

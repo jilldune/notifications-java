@@ -29,7 +29,6 @@ public abstract class BaseNotifier {
 
     // creates or applies the positions to the notification
     protected void setInanimatePosition(Node node, NotificationPos position) {
-        System.out.println("no animation...");
         Scene scene = stage.getScene();
         Helper helper = new Helper();
         // get geometry
@@ -67,7 +66,6 @@ public abstract class BaseNotifier {
 
             root.setVisible(true);
             root.setManaged(true);
-            System.out.println("animating...");
             return;
         }
 
@@ -81,8 +79,6 @@ public abstract class BaseNotifier {
 
             // Setting the position of the notification type
             positioningRoute(node,position,animation,duration);
-
-            System.out.println(position);
         });
     }
 
