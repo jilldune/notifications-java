@@ -126,32 +126,61 @@ public class PromptNotifier extends BaseNotifier {
         buttonContainer.getStyleClass().add("prompt-footer");
         buttonContainer.setSpacing(5);
         buttonContainer.setAlignment(Pos.CENTER_RIGHT);
-        buttons.forEach((label,properties) -> {
-            Button button = new Button(label);
 
-            // apply style if provided
-            String styles = (String) properties.getOrDefault("style","");
-            button.setStyle(styles);
-            button.getStyleClass().add("button");
+        buttons.forEach((label, properties) -> {
+            if (properties != null) {
+                Button button = new Button(label);
 
-            // apply icon if provided
-            String iconUrl = (String) properties.get("icon");
-            if (iconUrl != null) {
-                ImageView icon = new ImageView(new Image(iconUrl));
-                icon.setFitWidth(16);
-                icon.setFitHeight(16);
-                button.setGraphic(icon);
+                // apply style if provided
+                Object styleObj = properties.get("style");
+                if (styleObj instanceof String styles) { button.setStyle(styles); }
+                else { System.err.println("Invalid style property for button: " + label); }
+
+                // Add default button style
+                button.getStyleClass().add("button");
+
+                // apply icon if provided
+                try {
+                    String iconUrl = (String) properties.get("icon");
+                    if (iconUrl != null) {
+                        ImageView icon = new ImageView(new Image(iconUrl));
+                        icon.setFitWidth(16);
+                        icon.setFitHeight(16);
+                        button.setGraphic(icon);
+                    }
+                }
+                catch (Exception e) {
+                    System.err.println("Failed to load icon for button: " + label + ", error: " + e.getMessage());
+                }
+
+                // bind action to button
+                Object actionObj = properties.get("action");
+                if (actionObj instanceof Runnable action) {
+                    button.setOnAction(e -> {
+                        action.run();
+                        close();
+                    });
+                }
+                else if (actionObj instanceof Consumer) {
+                    Consumer<String> action = (Consumer<String>) actionObj;
+                    button.setOnAction(e -> {
+                        action.accept(getUserInput());
+                        close();
+                    });
+                }
+                else {
+                    Runnable defaultAction = () -> System.out.println(label + " clicked");
+                    button.setOnAction(e -> {
+                        defaultAction.run();
+                        close();
+                    });
+                }
+
+                buttonContainer.getChildren().add(button);
             }
-
-            // bind action to button
-            Consumer<String> action = (Consumer<String>) properties.getOrDefault("action", (Consumer<String>) (String text) -> System.out.println(label + " clicked"));
-
-            button.setOnAction(e -> {
-                action.accept(getUserInput());
-                close();
-            });
-
-            buttonContainer.getChildren().add(button);
+            else {
+                System.err.println("Properties map is null for button: " + label);
+            }
         });
 
         parent.getChildren().add(buttonContainer);
@@ -222,6 +251,14 @@ public class PromptNotifier extends BaseNotifier {
     }
     public PromptNotifier setButton(String label,Consumer<String> action) {
         this.buttons.put(label,Map.of("action",action));
+        return this;
+    }
+    public PromptNotifier setButton(String label,Runnable action) {
+        this.buttons.put(label,Map.of("action",action));
+        return this;
+    }
+    public PromptNotifier setButton(String label,Runnable action,String style) {
+        this.buttons.put(label,Map.of("action",action,"style",style));
         return this;
     }
     public void create() {
