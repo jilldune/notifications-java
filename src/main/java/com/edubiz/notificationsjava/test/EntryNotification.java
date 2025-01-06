@@ -31,21 +31,32 @@ public class EntryNotification extends Application {
 //            ToastNotifier toast = manager.create(NotifyType.TOAST);
 //            toast.create(NotifierToastType.SUCCESS,"This is a brave toast",NotificationPos.TOP,true,10.0);
 
-//            PromptNotifier prompt = manager.create(NotifyType.PROMPT);
-//            prompt.setHeader("Prompt")
-//                    .setLabel("Hi there this is a prompt \nI am doing great")
-//                    .autoClose(false)
-//                    .setAnimation(true)
-//                    .setPlaceholder("Hello placeholder")
-//                    .create();
-
-            Notifier notify = manager.create(NotifyType.NOTIFIER);
-            notify.setHeader("Notification")
-                    .setBody("I am a notification in the making please take it light.\nI am the new order")
-                    .setPosition(NotificationPos.TOP_LEFT)
-                    .setAnimation(true)
+//
+            // Prompt
+            PromptNotifier prompt = manager.create(NotifyType.PROMPT);
+            prompt.setHeader("Prompt")
+                    .setLabel("Hi there this is a prompt \nI am doing great")
                     .autoClose(false)
+                    .setAnimation(true)
+                    .setPlaceholder("Hello placeholder")
+                    .setButton("cancel",()->{})
+                    .setButton("save",(data)->{
+                        System.out.println(data);
+
+                        Notifier notify = manager.create(NotifyType.NOTIFIER);
+                        notify.setHeader("Notification")
+                                .setBody("I am a notification in the making please take it light.\nI am the new order")
+                                .setPosition(NotificationPos.CENTER)
+                                .setAnimation(true)
+                                .autoClose(false)
+                                .setButton("exit", ()->{
+
+                                },"-fx-background-color: red;-fx-text-fill: white;")
+                                .setButton("cancel",()->{})
+                                .create();
+                    })
                     .create();
+
         });
 
         root.getChildren().add(button);

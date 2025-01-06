@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class BaseNotifier {
@@ -20,6 +21,8 @@ public abstract class BaseNotifier {
     private AnchorPane root;
     private NotifierAnimations animations;
     private Boolean animation = true;
+    private  NotificationPos position = NotificationPos.TOP;
+    private double duration = 5;
 
     public BaseNotifier(Stage stage, Region layout) {
         this.stage = stage;
@@ -69,6 +72,15 @@ public abstract class BaseNotifier {
 
             root.setVisible(true);
             root.setManaged(true);
+
+            System.out.println("#...... ROOT SHOWING PROP.......#");
+            System.out.println("Showing root" + root.toString());
+            System.out.println("#Visible: " + root.isVisible());
+            System.out.println("#Managed: " + root.isManaged());
+            System.out.println("#...... ROOT SHOWING PROP END.......#");
+
+            System.out.println("..................");
+            System.out.println("..................");
             return;
         }
 
@@ -77,40 +89,70 @@ public abstract class BaseNotifier {
 
     // Method for displaying any type of notification
     protected void show(Node node,NotificationPos position,Boolean animation,double duration) {
-        Platform.runLater(()->{
-            this.node = node;
+        setProps(node,position,animation,duration);
+    }
 
-            // Setting the position of the notification type
-            positioningRoute(node,position,animation,duration);
-        });
+    private void setProps(Node node,NotificationPos pos,Boolean animation,double duration) {
+        this.node = node;
+        this.position = pos;
+        this.animation = animation;
+        this.duration = duration;
     }
 
     protected void close() {
-        if (this.node != null) {
-            if (this.animation) {
-                animations.reverseTransition(() -> {
-                    Pane root = (Pane) this.node;
-                    root.getParent().setVisible(false);
-                    root.setManaged(false);
+        Platform.runLater(()->{
+            if (this.node != null) {
+                if (this.animation) {
+                    animations.reverseTransition(() -> {
+                        Pane root = (Pane) this.node;
+                        root.getParent().setVisible(false);
+                        root.setManaged(false);
 
-                    (new Helper()).removeListeners(stage);
-                    (new NotifierAnimations()).removeListeners(stage);
-                });
+                        if (! this.closeCallbacks.isEmpty()) {
+                            Helper.timeOut(()->{
+                                Runnable callback = (Runnable) closeCallbacks.get("close");
+                                callback.run();
+                            },2);
+                        }
 
-                return;
+                        (new Helper()).removeListeners(stage);
+                        (new NotifierAnimations()).removeListeners(stage);
+                    });
+
+                    return;
+                }
+
+
+                Pane root = (Pane) this.node;
+                root.getParent().setVisible(false);
+                root.setManaged(false);
+
+                if (! this.closeCallbacks.isEmpty()) {
+                    Helper.timeOut(()->{
+                        Runnable callback = (Runnable) closeCallbacks.get("close");
+                        callback.run();
+                    },2);
+                }
+
+                (new Helper()).removeListeners(stage);
+                (new NotifierAnimations()).removeListeners(stage);
             }
+        });
+    }
 
+    private final Map<String, Object> closeCallbacks = new HashMap<>();
+    public void display(Runnable callback) {
+        Platform.runLater(()->{
+            // Setting the position of the notification type
+            positioningRoute(this.node,this.position,this.animation,this.duration);
 
-            Pane root = (Pane) this.node;
-            root.getParent().setVisible(false);
-            root.setManaged(false);
-
-            (new Helper()).removeListeners(stage);
-            (new NotifierAnimations()).removeListeners(stage);
-        }
+            if (callback != null)
+                closeCallbacks.put("close",callback);
+        });
     }
 
     public void setRoot(AnchorPane root) {
         this.root = root;
+        System.out.println("Set Root: " + root.toString());
     }
 }

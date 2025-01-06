@@ -40,14 +40,14 @@ public class Notifier extends BaseNotifier {
         header.getStyleClass().add("notification-title");
 
         // create the Icon
-        HBox head = getHead(parent, header);
+        HBox head = getHead(header);
         head.getStyleClass().add("notification-head");
 
         // set the header
         parent.getChildren().add(head);
     }
     @NotNull
-    private HBox getHead(@NotNull VBox parent, Label header) {
+    private HBox getHead(Label header) {
         FontIcon icon = new FontIcon(RemixiconAL.CLOSE_FILL);
         icon.getStyleClass().add("icon");
 

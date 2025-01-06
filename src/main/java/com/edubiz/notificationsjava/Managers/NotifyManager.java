@@ -12,15 +12,21 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
+import java.util.LinkedList;
 import java.util.Objects;
+import java.util.Queue;
 
 public class NotifyManager {
     private final AnchorPane root;
     private final Stage stage;
+    private final Queue<BaseNotifier> notificationQueue = new LinkedList<>();
+    private boolean isNotificationDisplayed = false;
 
     public NotifyManager(Stage stage) {
         this.stage = stage;
         this.root = initRoot();
+
+        System.out.println("Initialised main root: " + this.root);
     }
 
     private AnchorPane initRoot() {
@@ -64,11 +70,45 @@ public class NotifyManager {
         return (T) notification;
     }
 
-    private void initializeNotification(BaseNotifier baseNotifier) {
-        baseNotifier.setRoot(root);
-        Region layout = baseNotifier.getLayout();
+    private synchronized void displayNextNotification() {
+        System.out.println("Queue empty before call: " + notificationQueue.isEmpty());
+        if (!notificationQueue.isEmpty()) {
+            BaseNotifier notifier = notificationQueue.poll();
+            isNotificationDisplayed = true;
 
-        root.getChildren().clear();
-        root.getChildren().add(layout);
+            root.setManaged(false);
+            root.setVisible(false);
+
+            System.out.println("Empty Queue: " + notificationQueue.isEmpty());
+            System.out.println("Root managed: " + root.isManaged());
+            System.out.println("Root Visible: " + root.isVisible());
+            System.out.println("Main root: " + this.root);
+
+            notifier.setRoot(root);
+            Region layout = notifier.getLayout();
+            System.out.println("Layout: " + layout);
+
+//            root.getChildren().clear();
+            if (root.getChildren().size() == 1)
+                root.getChildren().removeFirst();
+
+            root.getChildren().add(layout);
+            System.out.println("Root Children: " + root.getChildren().size());
+
+
+            notifier.display(() -> {
+                isNotificationDisplayed = false;
+                System.out.println("callback");
+                this.displayNextNotification();
+            });
+        }
+    }
+
+    private synchronized void initializeNotification(BaseNotifier baseNotifier) {
+        notificationQueue.add(baseNotifier);
+
+        if (!isNotificationDisplayed) {
+            displayNextNotification();
+        }
     }
 }
