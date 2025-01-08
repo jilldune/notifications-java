@@ -6,8 +6,6 @@ import com.edubiz.notificationsjava.NotifierUtil.NotificationPos;
 import com.edubiz.notificationsjava.NotifierUtil.NotifierInputType;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
@@ -137,20 +135,6 @@ public class PromptNotifier extends BaseNotifier {
 
                 // Add default button style
                 button.getStyleClass().add("button");
-
-                // apply icon if provided
-                try {
-                    String iconUrl = (String) properties.get("icon");
-                    if (iconUrl != null) {
-                        ImageView icon = new ImageView(new Image(iconUrl));
-                        icon.setFitWidth(16);
-                        icon.setFitHeight(16);
-                        button.setGraphic(icon);
-                    }
-                }
-                catch (Exception e) {
-                    System.err.println("Failed to load icon for button: " + label + ", error: " + e.getMessage());
-                }
 
                 // bind action to button
                 Object actionObj = properties.get("action");
