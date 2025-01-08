@@ -25,15 +25,13 @@ public class NotifyManager {
     public NotifyManager(Stage stage) {
         this.stage = stage;
         this.root = initRoot();
-
-        System.out.println("Initialised main root: " + this.root);
     }
 
     private AnchorPane initRoot() {
         AnchorPane root = new AnchorPane();
 
         Platform.runLater(()->{
-            root.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/_notify-styles/notification-styles.css")).toExternalForm());
+            addStyleSheet(Objects.requireNonNull(getClass().getResource("/_notify-styles/notification-styles.css")).toExternalForm());
             root.getStyleClass().add("root");
             root.setVisible(false);
 
@@ -71,35 +69,37 @@ public class NotifyManager {
     }
 
     private synchronized void displayNextNotification() {
-        System.out.println("Queue empty before call: " + notificationQueue.isEmpty());
         if (!notificationQueue.isEmpty()) {
-            BaseNotifier notifier = notificationQueue.poll();
-            isNotificationDisplayed = true;
+            Platform.runLater(()->{
+                try {
+                    BaseNotifier notifier = notificationQueue.poll();
+                    isNotificationDisplayed = true;
 
-            root.setManaged(false);
-            root.setVisible(false);
+                    root.setManaged(false);
+                    root.setVisible(false);
 
-            System.out.println("Empty Queue: " + notificationQueue.isEmpty());
-            System.out.println("Root managed: " + root.isManaged());
-            System.out.println("Root Visible: " + root.isVisible());
-            System.out.println("Main root: " + this.root);
+                    // Add the root to the notifier class
+                    assert notifier != null;
+                    notifier.setRoot(root);
 
-            notifier.setRoot(root);
-            Region layout = notifier.getLayout();
-            System.out.println("Layout: " + layout);
+                    // Get the layout region
+                    Region layout = notifier.getLayout();
 
-//            root.getChildren().clear();
-            if (root.getChildren().size() == 1)
-                root.getChildren().removeFirst();
+                    // clear the root component
+                    root.getChildren().clear();
 
-            root.getChildren().add(layout);
-            System.out.println("Root Children: " + root.getChildren().size());
+                    // Add the layout to the root
+                    root.getChildren().add(layout);
 
-
-            notifier.display(() -> {
-                isNotificationDisplayed = false;
-                System.out.println("callback");
-                this.displayNextNotification();
+                    notifier.display(() -> {
+                        root.setManaged(false);
+                        root.setVisible(false);
+                        isNotificationDisplayed = false;
+                        this.displayNextNotification();
+                    });
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
             });
         }
     }
