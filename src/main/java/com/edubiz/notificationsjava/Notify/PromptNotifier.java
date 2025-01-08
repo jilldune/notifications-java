@@ -134,7 +134,6 @@ public class PromptNotifier extends BaseNotifier {
                 // apply style if provided
                 Object styleObj = properties.get("style");
                 if (styleObj instanceof String styles) { button.setStyle(styles); }
-                else { System.err.println("Invalid style property for button: " + label); }
 
                 // Add default button style
                 button.getStyleClass().add("button");
