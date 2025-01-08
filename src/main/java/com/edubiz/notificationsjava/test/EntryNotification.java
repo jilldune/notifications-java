@@ -40,12 +40,10 @@ public class EntryNotification extends Application {
                     .setAnimation(true)
                     .setPlaceholder("Hello placeholder")
                     .setButton("cancel",()->{})
-                    .setButton("save",(data)->{
-                        System.out.println(data);
-
+                    .setButton("save",(text)->{
                         Notifier notify = manager.create(NotifyType.NOTIFIER);
                         notify.setHeader("Notification")
-                                .setBody("I am a notification in the making please take it light.\nI am the new order")
+                                .setBody(text + "\nI am the new order")
                                 .setPosition(NotificationPos.CENTER)
                                 .setAnimation(true)
                                 .autoClose(false)
