@@ -21,7 +21,8 @@ public class Helper {
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public static void timeOut(Runnable taskFunc, double durationInSeconds) {
-        scheduler.schedule(taskFunc, (long) durationInSeconds, TimeUnit.SECONDS);
+        long durationInMillis = (long) (durationInSeconds * 1000); // Convert seconds to milliseconds
+        scheduler.schedule(taskFunc, durationInMillis, TimeUnit.MILLISECONDS);
     }
 
     // Call this method to properly shut down the scheduler when application is closing
