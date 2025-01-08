@@ -18,13 +18,15 @@ public class Helper {
     private ChangeListener<Number> widthListener;
     private ChangeListener<Number> heightListener;
     private ChangeListener<Boolean> fullScreenListener;
+    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    public static void timeOut(Runnable taskFunc,double durationSeconds) {
-        ScheduledExecutorService schedule = Executors.newScheduledThreadPool(1);
-        schedule.schedule(() -> {
-            taskFunc.run();
-            schedule.shutdown();
-        },(long) durationSeconds, TimeUnit.SECONDS);
+    public static void timeOut(Runnable taskFunc, double durationInSeconds) {
+        scheduler.schedule(taskFunc, (long) durationInSeconds, TimeUnit.SECONDS);
+    }
+
+    // Call this method to properly shut down the scheduler when application is closing
+    public static void shutdownScheduler() {
+        scheduler.shutdown();
     }
 
     public Map<String, Object> parsePosition(NotificationPos position, double width, double height, double sceneWidth, double sceneHeight) {

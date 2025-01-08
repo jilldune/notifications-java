@@ -1,5 +1,6 @@
 package com.edubiz.notificationsjava.Managers;
 
+import com.edubiz.notificationsjava.NotifierUtil.Helper;
 import com.edubiz.notificationsjava.Notify.Notifier;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyType;
 import com.edubiz.notificationsjava.Notify.PromptNotifier;
@@ -53,6 +54,10 @@ public class NotifyManager {
     public void addStyleSheet(String styleSheetPath) {
         if (!root.getStylesheets().contains(styleSheetPath))
             root.getStylesheets().add(styleSheetPath);
+    }
+
+    public void shutDown() {
+        Helper.shutdownScheduler();
     }
 
     @SuppressWarnings("unchecked")

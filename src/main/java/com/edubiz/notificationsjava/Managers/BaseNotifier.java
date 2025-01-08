@@ -13,6 +13,8 @@ import javafx.stage.Stage;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.edubiz.notificationsjava.NotifierUtil.Helper.timeOut;
+
 public abstract class BaseNotifier {
     protected Stage stage;
     private final Region layout;
@@ -94,39 +96,7 @@ public abstract class BaseNotifier {
     }
 
     protected void close() {
-        Platform.runLater(()->{
-            if (this.node != null) {
-                if (this.animation) {
-                    animations.reverseTransition(() -> {
-                        this.root.setManaged(false);
-                        this.root.setVisible(false);
-
-                        if (! this.closeCallbacks.isEmpty()) {
-                            Helper.timeOut(()->{
-                                Runnable callback = (Runnable) closeCallbacks.get("notify::close");
-                                callback.run();
-                            },2);
-                        }
-                        (new Helper()).removeListeners(stage);
-                        (new NotifierAnimations()).removeListeners(stage);
-                    });
-
-                    return;
-                }
-
-                this.root.setManaged(false);
-                this.root.setVisible(false);
-                // checks if callback was provided to close function
-                if (! this.closeCallbacks.isEmpty()) {
-                    Helper.timeOut(()->{
-                        Runnable callback = (Runnable) closeCallbacks.get("notify::close");
-                        callback.run();
-                    },2);
-                }
-                (new Helper()).removeListeners(stage);
-                (new NotifierAnimations()).removeListeners(stage);
-            }
-        });
+        Platform.runLater(this::run);
     }
 
     public void display(Runnable callback) {
@@ -139,5 +109,39 @@ public abstract class BaseNotifier {
 
     public void setRoot(AnchorPane root) {
         this.root = root;
+    }
+
+    private void run() {
+        if (this.node != null) {
+            if (this.animation != null) {
+                animations.reverseTransition(() -> {
+                    this.root.setManaged(false);
+                    this.root.setVisible(false);
+
+                    if (!this.closeCallbacks.isEmpty()) {
+                        timeOut(() -> {
+                            Runnable callback = (Runnable) closeCallbacks.get("notify::close");
+                            callback.run();
+                        }, 1);
+                    }
+                    (new Helper()).removeListeners(stage);
+                    (new NotifierAnimations()).removeListeners(stage);
+                });
+
+                return;
+            }
+
+            this.root.setManaged(false);
+            this.root.setVisible(false);
+            // checks if callback was provided to close function
+            if (!this.closeCallbacks.isEmpty()) {
+                timeOut(() -> {
+                    Runnable callback = (Runnable) closeCallbacks.get("notify::close");
+                    callback.run();
+                }, 2);
+            }
+            (new Helper()).removeListeners(stage);
+            (new NotifierAnimations()).removeListeners(stage);
+        }
     }
 }
