@@ -102,6 +102,7 @@ public class NotifyManager {
                     });
                 } catch (Exception e) {
                     System.err.println(e.getMessage());
+                    e.getCause();
                 }
             });
         }

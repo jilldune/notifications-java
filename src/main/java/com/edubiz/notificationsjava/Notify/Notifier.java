@@ -125,7 +125,7 @@ public class Notifier extends BaseNotifier {
     private void autoCloseNotification(Boolean autoClose,double duration) {
         if (!autoClose) return;
 
-        Helper.timeOut(this::run,duration == 0? 3.5:duration);
+        Helper.timeOut(this::run,duration == 0? this.durationInSeconds:duration);
     }
     private VBox parent() {
         VBox vBox = (VBox) getLayout();
@@ -150,7 +150,7 @@ public class Notifier extends BaseNotifier {
         return this;
     }
     public Notifier setDuration(Double durationInSeconds) {
-        this.durationInSeconds = durationInSeconds;
+        this.durationInSeconds = (durationInSeconds < .7) ? this.durationInSeconds : durationInSeconds;
         return this;
     }
     public Notifier autoClose(Boolean autoClose) {

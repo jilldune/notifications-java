@@ -4,7 +4,6 @@ import com.edubiz.notificationsjava.Managers.BaseNotifier;
 import com.edubiz.notificationsjava.NotifierUtil.Helper;
 import com.edubiz.notificationsjava.NotifierUtil.NotificationPos;
 import com.edubiz.notificationsjava.NotifierUtil.NotifierToastType;
-import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -15,7 +14,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.remixicon.RemixiconAL;
 
 public class ToastNotifier extends BaseNotifier {
-    private final double DURATION = 3.5;
+    private final double DURATION = 4.5;
     private final NotificationPos DEFAULT_POSITION = NotificationPos.TOP_RIGHT;
 
     public ToastNotifier(Stage stage) {
@@ -84,11 +83,21 @@ public class ToastNotifier extends BaseNotifier {
         // set auto-sizing
         hBox.setMaxWidth(200);
 
-        delayInSeconds = delayInSeconds == 0? DURATION:delayInSeconds;
+        delayInSeconds = delayInSeconds < .7 ? DURATION:delayInSeconds;
 
         show(hBox,position,animation,delayInSeconds);
 
-        Helper.timeOut(()-> Platform.runLater(this::close),delayInSeconds);
+//        Helper.timeOut(()-> Platform.runLater(this::close),delayInSeconds);
+        autoCloseToast(delayInSeconds);
+    }
+
+    // Auto closing the function
+    private void autoCloseToast(double duration) {
+        Helper.timeOut(this::run,duration);
+    }
+
+    private void run() {
+        close();
     }
 }
 

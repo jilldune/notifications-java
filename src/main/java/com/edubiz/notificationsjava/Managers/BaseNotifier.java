@@ -71,8 +71,8 @@ public abstract class BaseNotifier {
 
         if (animation) {
             this.animation = true;
-            animations = new NotifierAnimations();
-            animations.animate(node,position,stage,duration);
+            this.animations = new NotifierAnimations();
+            this.animations.animate(node,position,stage,duration);
 
             root.setVisible(true);
             root.setManaged(true);
@@ -114,7 +114,7 @@ public abstract class BaseNotifier {
     private void run() {
         if (this.node != null) {
             if (this.animation != null) {
-                animations.reverseTransition(() -> {
+                this.animations.reverseTransition(() -> {
                     this.root.setManaged(false);
                     this.root.setVisible(false);
 
@@ -122,7 +122,7 @@ public abstract class BaseNotifier {
                         timeOut(() -> {
                             Runnable callback = (Runnable) closeCallbacks.get("notify::close");
                             callback.run();
-                        }, 1);
+                        }, .1);
                     }
                     (new Helper()).removeListeners(stage);
                     (new NotifierAnimations()).removeListeners(stage);
@@ -138,7 +138,7 @@ public abstract class BaseNotifier {
                 timeOut(() -> {
                     Runnable callback = (Runnable) closeCallbacks.get("notify::close");
                     callback.run();
-                }, 2);
+                }, .1);
             }
             (new Helper()).removeListeners(stage);
             (new NotifierAnimations()).removeListeners(stage);
