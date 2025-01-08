@@ -92,8 +92,6 @@ public class NotifyManager {
                     root.getChildren().add(layout);
 
                     notifier.display(() -> {
-                        root.setManaged(false);
-                        root.setVisible(false);
                         isNotificationDisplayed = false;
                         this.displayNextNotification();
                     });

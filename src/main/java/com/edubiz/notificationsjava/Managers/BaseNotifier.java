@@ -98,6 +98,9 @@ public abstract class BaseNotifier {
             if (this.node != null) {
                 if (this.animation) {
                     animations.reverseTransition(() -> {
+                        this.root.setManaged(false);
+                        this.root.setVisible(false);
+
                         if (! this.closeCallbacks.isEmpty()) {
                             Helper.timeOut(()->{
                                 Runnable callback = (Runnable) closeCallbacks.get("notify::close");
@@ -111,7 +114,8 @@ public abstract class BaseNotifier {
                     return;
                 }
 
-
+                this.root.setManaged(false);
+                this.root.setVisible(false);
                 // checks if callback was provided to close function
                 if (! this.closeCallbacks.isEmpty()) {
                     Helper.timeOut(()->{
