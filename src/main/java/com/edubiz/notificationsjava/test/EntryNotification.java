@@ -25,6 +25,10 @@ public class EntryNotification extends Application {
 
         NotifyManager manager = new NotifyManager(stage);
 
+        stage.setOnCloseRequest(ev -> {
+            manager.shutDown();
+        });
+
         Button button = new Button("See MyNotifier");
         button.setCursor(Cursor.HAND);
         button.setOnAction(e -> {
@@ -41,17 +45,41 @@ public class EntryNotification extends Application {
                     .setPlaceholder("Hello placeholder")
                     .setButton("cancel",()->{})
                     .setButton("save",(text)->{
+//                        ToastNotifier  toastNotifier = manager.create(NotifyType.TOAST);
+//                        toastNotifier.create(NotifierToastType.SUCCESS,"Great Notification");
                         Notifier notify = manager.create(NotifyType.NOTIFIER);
                         notify.setHeader("Notification")
                                 .setBody(text + "\nI am the new order")
                                 .setPosition(NotificationPos.CENTER)
                                 .setAnimation(true)
-                                .autoClose(false)
+//                                .autoClose(false)
+                                .setDuration(5.5)
                                 .setButton("exit", ()->{
 
                                 },"-fx-background-color: red;-fx-text-fill: white;")
                                 .setButton("cancel",()->{})
                                 .create();
+//                        PromptNotifier prompt2 = manager.create(NotifyType.PROMPT);
+//                        prompt2.setHeader("Prompt")
+//                                .setLabel("Hi there this is a prompt \n"+text)
+//                                .autoClose(false)
+//                                .setAnimation(true)
+//                                .setPlaceholder("Hello placeholder")
+//                                .setButton("cancel",()->{})
+//                                .setButton("save",(data)->{
+//                                    Notifier notify = manager.create(NotifyType.NOTIFIER);
+//                                    notify.setHeader("Notification")
+//                                            .setBody(text + " " + data + "\nI am the new order")
+//                                            .setPosition(NotificationPos.CENTER)
+//                                            .setAnimation(true)
+//                                            .autoClose(false)
+//                                            .setButton("exit", ()->{
+//
+//                                            },"-fx-background-color: red;-fx-text-fill: white;")
+//                                            .setButton("cancel",()->{})
+//                                            .create();
+//                                })
+//                                .create();
                     })
                     .create();
 
