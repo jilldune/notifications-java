@@ -3,7 +3,7 @@ package com.edubiz.notificationsjava.NotifierUtil;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Coordinates {
+public class NotifyCoord {
     public double fromX = 0.0;
     public double fromY = 0.0;
     public double toX = 0.0;
@@ -13,8 +13,8 @@ public class Coordinates {
 
     private final Map<String, Object> coordinates = new HashMap<>();
 
-    public Coordinates() {}
-    public Coordinates(double fromX, double fromY, double toX, double toY, double pad, String position) {
+    public NotifyCoord() {}
+    public NotifyCoord(double fromX, double fromY, double toX, double toY, double pad, String position) {
         setCoordinates(fromX,fromY,toX,toY,pad,position);
     }
 

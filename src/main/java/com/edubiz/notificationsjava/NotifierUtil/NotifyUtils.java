@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class Helper {
+public class NotifyUtils {
     private ChangeListener<Number> widthListener;
     private ChangeListener<Number> heightListener;
     private ChangeListener<Boolean> fullScreenListener;
@@ -30,7 +30,7 @@ public class Helper {
         scheduler.shutdown();
     }
 
-    public Map<String, Object> parsePosition(NotificationPos position, double width, double height, double sceneWidth, double sceneHeight) {
+    public Map<String, Object> parsePosition(NotifyPos position, double width, double height, double sceneWidth, double sceneHeight) {
         // Define positioning
         double fromX;
         double fromY;
@@ -107,12 +107,12 @@ public class Helper {
             }
         }
 
-        Coordinates coordinates = new Coordinates(fromX,fromY,toX,toY,pad,nPos);
+        NotifyCoord coordinates = new NotifyCoord(fromX,fromY,toX,toY,pad,nPos);
 
         return coordinates.getCoordinates();
     }
 
-    public String extractPosition(NotificationPos position) {
+    public String extractPosition(NotifyPos position) {
         // Process the notification position first
         String nPos = "";
         switch (position) {
@@ -157,7 +157,7 @@ public class Helper {
 
 
     // Add listeners
-    public void addNodeListeners(Stage stage, Node node, NotificationPos position, Double width, Double height) {
+    public void addNodeListeners(Stage stage, Node node, NotifyPos position, Double width, Double height) {
         // Get scene
         Scene scene = stage.getScene();
 

@@ -1,8 +1,8 @@
 package com.edubiz.notificationsjava.Notify;
 
-import com.edubiz.notificationsjava.Managers.BaseNotifier;
-import com.edubiz.notificationsjava.NotifierUtil.Helper;
-import com.edubiz.notificationsjava.NotifierUtil.NotificationPos;
+import com.edubiz.notificationsjava.Managers.NotifyBase;
+import com.edubiz.notificationsjava.NotifierUtil.NotifyUtils;
+import com.edubiz.notificationsjava.NotifierUtil.NotifyPos;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
@@ -21,17 +21,17 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class Notifier extends BaseNotifier {
+public class Notification extends NotifyBase {
     //    class variables
     private String headerText = "Notifier";
     private String body = "";
     private double durationInSeconds = 3.5;
-    private NotificationPos position = NotificationPos.CENTER;
+    private NotifyPos position = NotifyPos.CENTER;
     private Boolean autoClose = true;
     private Boolean animation = true;
     private final Map<String,Map<String,Object>> buttons = new LinkedHashMap<>();
 
-    public Notifier(Stage stage) { super(stage, new VBox()); }
+    public Notification(Stage stage) { super(stage, new VBox()); }
 
     private void createHead(@NotNull VBox parent, String headerText) {
         // create the header text
@@ -125,7 +125,7 @@ public class Notifier extends BaseNotifier {
     private void autoCloseNotification(Boolean autoClose,double duration) {
         if (!autoClose) return;
 
-        Helper.timeOut(this::run,duration == 0? this.durationInSeconds:duration);
+        NotifyUtils.timeOut(this::run,duration == 0? this.durationInSeconds:duration);
     }
     private VBox parent() {
         VBox vBox = (VBox) getLayout();
@@ -137,35 +137,35 @@ public class Notifier extends BaseNotifier {
 
     // =============== Plain Methods ==================
 
-    public Notifier setHeader(String headerText) {
+    public Notification setHeader(String headerText) {
         this.headerText = headerText;
         return this;
     }
-    public Notifier setBody(String body) {
+    public Notification setBody(String body) {
         this.body = body;
         return this;
     }
-    public Notifier setPosition(NotificationPos position) {
+    public Notification setPosition(NotifyPos position) {
         this.position = position;
         return this;
     }
-    public Notifier setDuration(Double durationInSeconds) {
+    public Notification setDuration(Double durationInSeconds) {
         this.durationInSeconds = (durationInSeconds < .7) ? this.durationInSeconds : durationInSeconds;
         return this;
     }
-    public Notifier autoClose(Boolean autoClose) {
+    public Notification autoClose(Boolean autoClose) {
         this.autoClose = autoClose;
         return this;
     }
-    public Notifier setAnimation(Boolean animation) {
+    public Notification setAnimation(Boolean animation) {
         this.animation = animation;
         return this;
     }
-    public Notifier setButton(String label, Runnable action, String style) {
+    public Notification setButton(String label, Runnable action, String style) {
         this.buttons.put(label,Map.of("action",action,"style",style));
         return this;
     }
-    public Notifier setButton(String label, Runnable action) {
+    public Notification setButton(String label, Runnable action) {
         this.buttons.put(label,Map.of("action",action));
         return this;
     }

@@ -1,9 +1,9 @@
 package com.edubiz.notificationsjava.Notify;
 
-import com.edubiz.notificationsjava.Managers.BaseNotifier;
-import com.edubiz.notificationsjava.NotifierUtil.Helper;
-import com.edubiz.notificationsjava.NotifierUtil.NotificationPos;
-import com.edubiz.notificationsjava.NotifierUtil.NotifierToastType;
+import com.edubiz.notificationsjava.Managers.NotifyBase;
+import com.edubiz.notificationsjava.NotifierUtil.NotifyUtils;
+import com.edubiz.notificationsjava.NotifierUtil.NotifyPos;
+import com.edubiz.notificationsjava.NotifierUtil.NotifyAlert;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -13,25 +13,25 @@ import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.remixicon.RemixiconAL;
 
-public class ToastNotifier extends BaseNotifier {
+public class Toast extends NotifyBase {
     private final double DURATION = 4.5;
-    private final NotificationPos DEFAULT_POSITION = NotificationPos.TOP_RIGHT;
+    private final NotifyPos DEFAULT_POSITION = NotifyPos.TOP_RIGHT;
 
-    public ToastNotifier(Stage stage) {
+    public Toast(Stage stage) {
         super(stage, new HBox());
     }
 
-    public void create(NotifierToastType type, String message) { createToast(type,message,DEFAULT_POSITION,true,DURATION); }
+    public void create(NotifyAlert type, String message) { createToast(type,message,DEFAULT_POSITION,true,DURATION); }
 
-    public void create(NotifierToastType type, String message, NotificationPos position) { createToast(type,message,position,true,DURATION); }
+    public void create(NotifyAlert type, String message, NotifyPos position) { createToast(type,message,position,true,DURATION); }
 
-    public void create(NotifierToastType type, String message, double delayInSeconds) { createToast(type,message,DEFAULT_POSITION,true,delayInSeconds); }
+    public void create(NotifyAlert type, String message, double delayInSeconds) { createToast(type,message,DEFAULT_POSITION,true,delayInSeconds); }
 
-    public void create(NotifierToastType type, String message, NotificationPos position, boolean animation, double delayInSeconds) {
+    public void create(NotifyAlert type, String message, NotifyPos position, boolean animation, double delayInSeconds) {
         createToast(type,message,position,animation,delayInSeconds);
     }
 
-    private void createToast(NotifierToastType type, String message, NotificationPos position, boolean animation, double delayInSeconds) {
+    private void createToast(NotifyAlert type, String message, NotifyPos position, boolean animation, double delayInSeconds) {
         // get/configure the toast type
         String colorStyle;
         Ikon iconCode;
@@ -87,13 +87,12 @@ public class ToastNotifier extends BaseNotifier {
 
         show(hBox,position,animation,delayInSeconds);
 
-//        Helper.timeOut(()-> Platform.runLater(this::close),delayInSeconds);
         autoCloseToast(delayInSeconds);
     }
 
     // Auto closing the function
     private void autoCloseToast(double duration) {
-        Helper.timeOut(this::run,duration);
+        NotifyUtils.timeOut(this::run,duration);
     }
 
     private void run() {

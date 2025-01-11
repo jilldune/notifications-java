@@ -1,6 +1,6 @@
 package com.edubiz.notificationsjava.NotifierUtil;
 
-public enum NotifierToastType {
+public enum NotifyAlert {
     SUCCESS("success","s"),
     ERROR("error","e"),
     INFO("info","i"),
@@ -10,7 +10,7 @@ public enum NotifierToastType {
     private final String typeName;
     private final String shorthand;
     
-    NotifierToastType(String typeName, String shorthand) {
+    NotifyAlert(String typeName, String shorthand) {
         this.typeName = typeName;
         this.shorthand = shorthand;
     }
@@ -23,8 +23,8 @@ public enum NotifierToastType {
         return shorthand;
     }
     
-    public static NotifierToastType fromString(String type) {
-        for (NotifierToastType toastType : NotifierToastType.values()) {
+    public static NotifyAlert fromString(String type) {
+        for (NotifyAlert toastType : NotifyAlert.values()) {
             if (toastType.typeName.equalsIgnoreCase(type) || toastType.shorthand.equalsIgnoreCase(type))
                 return toastType;
         }

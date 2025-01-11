@@ -10,7 +10,7 @@ import javafx.util.Duration;
 
 import java.util.Map;
 
-public class NotifierAnimations {
+public class NotifyAnimation {
     private ChangeListener<Number> widthListener;
     private ChangeListener<Number> heightListener;
     private ChangeListener<Boolean> fullScreenListener;
@@ -22,7 +22,7 @@ public class NotifierAnimations {
     private Node notification;
     private String pos;
 
-    public void animate(Node notification, NotificationPos position, Stage stage, double durationInSec) {
+    public void animate(Node notification, NotifyPos position, Stage stage, double durationInSec) {
         // Get scene
         Scene scene = stage.getScene();
 
@@ -36,11 +36,11 @@ public class NotifierAnimations {
         // Define bounds
         double width, height, sceneWidth, sceneHeight;
 
-        // Helper Class
-        Helper helper = new Helper();
+        // NotifyUtils Class
+        NotifyUtils notifyUtils = new NotifyUtils();
 
         // get geometry
-        Map<String, Double> geometry = helper.getGeometry(notification,scene);
+        Map<String, Double> geometry = notifyUtils.getGeometry(notification,scene);
 
         // Set bounds
         width = geometry.get("width");
@@ -51,7 +51,7 @@ public class NotifierAnimations {
         sceneHeight = geometry.get("sceneHeight");
 
         // Define positioning
-        Map<String, Object> coordinate = helper.parsePosition(position,width,height,sceneWidth,sceneHeight);
+        Map<String, Object> coordinate = notifyUtils.parsePosition(position,width,height,sceneWidth,sceneHeight);
         fromX = (double) coordinate.get("fromX");
         fromY = (double) coordinate.get("fromY");
         toX = (double) coordinate.get("toX");
@@ -127,7 +127,7 @@ public class NotifierAnimations {
         scale.play();
     }
 
-    public void addNodeListeners(Node notification,NotificationPos position,Stage stage,Double duration) {
+    public void addNodeListeners(Node notification, NotifyPos position, Stage stage, Double duration) {
         // Remove old listeners
         this.removeListeners(stage);
 

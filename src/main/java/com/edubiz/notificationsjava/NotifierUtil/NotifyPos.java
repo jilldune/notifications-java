@@ -1,6 +1,6 @@
 package com.edubiz.notificationsjava.NotifierUtil;
 
-public enum NotificationPos {
+public enum NotifyPos {
     TOP("top"),
     TOP_LEFT("top-left"),
     TOP_RIGHT("top-right"),
@@ -13,7 +13,7 @@ public enum NotificationPos {
 
     private final String position;
 
-    NotificationPos(String position) {
+    NotifyPos(String position) {
         this.position = position;
     }
 
@@ -22,8 +22,8 @@ public enum NotificationPos {
     }
 
 
-    public static NotificationPos fromString(String position) {
-        for (NotificationPos pos : NotificationPos.values()) {
+    public static NotifyPos fromString(String position) {
+        for (NotifyPos pos : NotifyPos.values()) {
             if (pos.position.equalsIgnoreCase(position))
                 return pos;
         }

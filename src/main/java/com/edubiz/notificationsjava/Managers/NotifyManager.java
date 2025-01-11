@@ -1,10 +1,11 @@
 package com.edubiz.notificationsjava.Managers;
 
-import com.edubiz.notificationsjava.NotifierUtil.Helper;
-import com.edubiz.notificationsjava.Notify.Notifier;
+import com.edubiz.notificationsjava.NotifierUtil.NotifyUtils;
+import com.edubiz.notificationsjava.Notify.Dialog;
+import com.edubiz.notificationsjava.Notify.Notification;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyType;
-import com.edubiz.notificationsjava.Notify.PromptNotifier;
-import com.edubiz.notificationsjava.Notify.ToastNotifier;
+import com.edubiz.notificationsjava.Notify.Prompt;
+import com.edubiz.notificationsjava.Notify.Toast;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -20,7 +21,7 @@ import java.util.Queue;
 public class NotifyManager {
     private final AnchorPane root;
     private final Stage stage;
-    private final Queue<BaseNotifier> notificationQueue = new LinkedList<>();
+    private final Queue<NotifyBase> notificationQueue = new LinkedList<>();
     private boolean isNotificationDisplayed = false;
 
     public NotifyManager(Stage stage) {
@@ -57,15 +58,16 @@ public class NotifyManager {
     }
 
     public void shutDown() {
-        Helper.shutdownScheduler();
+        NotifyUtils.shutdownScheduler();
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends BaseNotifier>T create(NotifyType type) {
-        BaseNotifier notification = switch (type) {
-            case TOAST -> new ToastNotifier(stage);
-            case PROMPT -> new PromptNotifier(stage);
-            case NOTIFIER -> new Notifier(stage);
+    public <T extends NotifyBase>T create(NotifyType type) {
+        NotifyBase notification = switch (type) {
+            case TOAST -> new Toast(stage);
+            case PROMPT -> new Prompt(stage);
+            case DIALOG -> new Dialog(stage);
+            case NOTIFICATION -> new Notification(stage);
         };
 
         initializeNotification(notification);
@@ -77,7 +79,7 @@ public class NotifyManager {
         if (!notificationQueue.isEmpty()) {
             Platform.runLater(()->{
                 try {
-                    BaseNotifier notifier = notificationQueue.poll();
+                    NotifyBase notifier = notificationQueue.poll();
                     isNotificationDisplayed = true;
 
                     root.setManaged(false);
@@ -108,8 +110,8 @@ public class NotifyManager {
         }
     }
 
-    private synchronized void initializeNotification(BaseNotifier baseNotifier) {
-        notificationQueue.add(baseNotifier);
+    private synchronized void initializeNotification(NotifyBase notifyBase) {
+        notificationQueue.add(notifyBase);
 
         if (!isNotificationDisplayed) {
             displayNextNotification();

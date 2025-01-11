@@ -1,14 +1,13 @@
 package com.edubiz.notificationsjava.Notify;
 
-import com.edubiz.notificationsjava.Managers.BaseNotifier;
-import com.edubiz.notificationsjava.NotifierUtil.Helper;
-import com.edubiz.notificationsjava.NotifierUtil.NotificationPos;
-import com.edubiz.notificationsjava.NotifierUtil.NotifierInputType;
+import com.edubiz.notificationsjava.Managers.NotifyBase;
+import com.edubiz.notificationsjava.NotifierUtil.NotifyUtils;
+import com.edubiz.notificationsjava.NotifierUtil.NotifyPos;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -18,24 +17,17 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class PromptNotifier extends BaseNotifier {
-    private TextArea textArea;
-    private TextField textField;
-
+public class Prompt extends NotifyBase {
     //    class variables
-    private static boolean isTextField = true;
     private String headerText = "Prompt";
-    private NotifierInputType type = NotifierInputType.TEXT;
-    private String value = "";
-    private String placeHolder = "";
-    private String label = null;
-    private NotificationPos position = NotificationPos.CENTER;
+    private String message = "Prompt body text";
+    private NotifyPos position = NotifyPos.CENTER;
     private double durationInSeconds = 4.5;
     private Boolean autoClose = true;
     private Boolean animation = true;
     private final Map<String,Map<String,Object>> buttons = new LinkedHashMap<>();
 
-    public PromptNotifier(Stage stage) { super(stage, new VBox()); }
+    public Prompt(Stage stage) { super(stage, new VBox()); }
 
     private void createHead(@NotNull VBox parent, String headerText) {
         // create the header text
@@ -71,51 +63,22 @@ public class PromptNotifier extends BaseNotifier {
 
     // create MyNotifier message body
     private void createBody(VBox parent) {
-        // create a body container
-        VBox bodyPane = new VBox();
-        bodyPane.getStyleClass().add("prompt-body");
-
-        // create label
-        if (label != null) {
-            Label inputLabel = new Label();
-            inputLabel.setText(this.label);
-            inputLabel.setTextAlignment(TextAlignment.LEFT);
-            inputLabel.getStyleClass().add("prompt-label");
-
-            // Create a divider
-            VBox divider = new VBox();
-            divider.getStyleClass().add("prompt-divider");
-
-
-            bodyPane.getChildren().addAll(inputLabel,divider);
-        }
-
-        switch(this.type) {
-            case TEXT -> {
-                textField = new TextField();
-                textField.getStyleClass().addAll("prompt-text",type.getValue());
-                textField.setPromptText(this.placeHolder);
-                textField.setText(this.value);
-
-                isTextField = true;
-
-                bodyPane.getChildren().add(textField);
-            }
-            case TEXTAREA -> {
-                textArea = new TextArea();
-                textArea.getStyleClass().addAll("prompt-text",type.getValue());
-                textArea.setPromptText(this.placeHolder);
-                textArea.setText(this.value);
-
-                isTextField = false;
-
-                bodyPane.getChildren().add(textArea);
-            }
-        }
-
         // add to the parent
-        parent.getChildren().add(bodyPane);
+        parent.getChildren().add(getTextArea(this.message));
     }
+    @NotNull
+    private TextArea getTextArea(String bodyText) {
+        TextArea messageArea = new TextArea();
+        messageArea.setText(bodyText);
+        messageArea.setWrapText(true);
+        messageArea.setEditable(false);
+        messageArea.setFocusTraversable(false);
+        messageArea.setCursor(Cursor.DEFAULT);
+        messageArea.getStyleClass().add("notification-body");
+
+        return messageArea;
+    }
+
     // create the MyNotifier Footer
     private void createFooter(VBox parent,Map<String,Map<String,Object>> buttons) {
         if (buttons == null) return;
@@ -144,13 +107,6 @@ public class PromptNotifier extends BaseNotifier {
                         close();
                     });
                 }
-                else if (actionObj instanceof Consumer) {
-                    Consumer<String> action = (Consumer<String>) actionObj;
-                    button.setOnAction(e -> {
-                        action.accept(getUserInput());
-                        close();
-                    });
-                }
                 else {
                     Runnable defaultAction = () -> System.out.println(label + " clicked");
                     button.setOnAction(e -> {
@@ -172,15 +128,10 @@ public class PromptNotifier extends BaseNotifier {
     private void autoClosePrompt(Boolean autoClose, double duration) {
         if (!autoClose) return;
 
-        Helper.timeOut(this::run,duration == 0? this.durationInSeconds:duration);
+        NotifyUtils.timeOut(this::run,duration == 0? this.durationInSeconds:duration);
     }
     private void run() {
         close();
-    }
-    private String getUserInput() {
-        if (isTextField) return textField.getText().trim();
-
-        return textArea.getText().trim();
     }
     private VBox parent() {
         VBox vBox = (VBox) getLayout();
@@ -192,55 +143,39 @@ public class PromptNotifier extends BaseNotifier {
     
     // ========== Exposed creator Methods ==========
 
-    public PromptNotifier setHeader(String header) {
+    public Prompt setHeader(String header) {
         headerText = header;
         return this;
     }
-    public PromptNotifier setType(NotifierInputType type) {
-        this.type = type;
+    public Prompt setBody(String message) {
+        this.message = message;
         return this;
     }
-    public PromptNotifier setPlaceholder(String placeHolder) {
-        this.placeHolder = placeHolder;
-        return this;
-    }
-    public PromptNotifier setValue(String value) {
-        this.value = value;
-        return this;
-    }
-    public PromptNotifier setLabel(String label) {
-        this.label = label;
-        return this;
-    }
-    public PromptNotifier setPosition(NotificationPos position) {
+    public Prompt setPosition(NotifyPos position) {
         this.position = position;
         return this;
     }
-    public PromptNotifier setDuration(Double durationInSeconds) {
+    public Prompt setDuration(Double durationInSeconds) {
         this.durationInSeconds = durationInSeconds < .7? this.durationInSeconds:durationInSeconds;
         return this;
     }
-    public PromptNotifier autoClose(Boolean autoClose) {
+    public Prompt autoClose(Boolean autoClose) {
         this.autoClose = autoClose;
         return this;
     }
-    public PromptNotifier setAnimation(Boolean animation) {
+    public Prompt setAnimation(Boolean animation) {
         this.animation = animation;
         return this;
     }
-    public PromptNotifier setButton(String label,Consumer<String> action,String style) {
+    public Prompt setButton(String label, Consumer<String> action, String style) {
         this.buttons.put(label,Map.of("action",action,"style",style));
         return this;
     }
-    public PromptNotifier setButton(String label,Consumer<String> action) {
+    public Prompt setButton(String label, Runnable action) {
         this.buttons.put(label,Map.of("action",action));
         return this;
     }
-    public PromptNotifier setButton(String label,Runnable action) {
-        this.buttons.put(label,Map.of("action",action));
-        return this;
-    }
-    public PromptNotifier setButton(String label,Runnable action,String style) {
+    public Prompt setButton(String label, Runnable action, String style) {
         this.buttons.put(label,Map.of("action",action,"style",style));
         return this;
     }

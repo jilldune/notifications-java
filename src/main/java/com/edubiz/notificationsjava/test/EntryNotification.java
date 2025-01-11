@@ -1,9 +1,8 @@
 package com.edubiz.notificationsjava.test;
 
 import com.edubiz.notificationsjava.Managers.NotifyManager;
-import com.edubiz.notificationsjava.NotifierUtil.NotificationPos;
-import com.edubiz.notificationsjava.NotifierUtil.NotifierInputType;
-import com.edubiz.notificationsjava.NotifierUtil.NotifierToastType;
+import com.edubiz.notificationsjava.NotifierUtil.NotifyPos;
+import com.edubiz.notificationsjava.NotifierUtil.NotifyInput;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyType;
 import com.edubiz.notificationsjava.Notify.*;
 import javafx.application.Application;
@@ -25,9 +24,7 @@ public class EntryNotification extends Application {
 
         NotifyManager manager = new NotifyManager(stage);
 
-        stage.setOnCloseRequest(ev -> {
-            manager.shutDown();
-        });
+        stage.setOnCloseRequest(ev -> manager.shutDown());
 
         Button button = new Button("See MyNotifier");
         button.setCursor(Cursor.HAND);
@@ -35,22 +32,26 @@ public class EntryNotification extends Application {
 //            ToastNotifier toast = manager.create(NotifyType.TOAST);
 //            toast.create(NotifierToastType.SUCCESS,"This is a brave toast",NotificationPos.TOP,true,10.0);
 
-//
             // Prompt
-            PromptNotifier prompt = manager.create(NotifyType.PROMPT);
+            Prompt prompt = manager.create(NotifyType.PROMPT);
             prompt.setHeader("Prompt")
-                    .setLabel("Hi there this is a prompt \nI am doing great")
+                    .setBody("Hi there this is a prompt \nI am doing great")
                     .autoClose(false)
                     .setAnimation(true)
-                    .setPlaceholder("Hello placeholder")
-                    .setButton("cancel",()->{})
-                    .setButton("save",(text)->{
+                    .setButton("cancel",()->{
+                        Dialog dialog = manager.create(NotifyType.DIALOG);
+                        dialog.setHeader("Dialog Notification")
+                                .setLabel("This is a dialogue body\nTell us about you.")
+                                .setType(NotifyInput.TEXTAREA)
+                                .create();
+                    })
+                    .setButton("save",()->{
 //                        ToastNotifier  toastNotifier = manager.create(NotifyType.TOAST);
 //                        toastNotifier.create(NotifierToastType.SUCCESS,"Great Notification");
-                        Notifier notify = manager.create(NotifyType.NOTIFIER);
+                        Notification notify = manager.create(NotifyType.NOTIFICATION);
                         notify.setHeader("Notification")
-                                .setBody(text + "\nI am the new order")
-                                .setPosition(NotificationPos.CENTER)
+                                .setBody("I am the new order")
+                                .setPosition(NotifyPos.CENTER)
                                 .setAnimation(true)
 //                                .autoClose(false)
                                 .setDuration(5.5)
@@ -67,7 +68,7 @@ public class EntryNotification extends Application {
 //                                .setPlaceholder("Hello placeholder")
 //                                .setButton("cancel",()->{})
 //                                .setButton("save",(data)->{
-//                                    Notifier notify = manager.create(NotifyType.NOTIFIER);
+//                                    Notifier notify = manager.create(NotifyType.NOTIFICATION);
 //                                    notify.setHeader("Notification")
 //                                            .setBody(text + " " + data + "\nI am the new order")
 //                                            .setPosition(NotificationPos.CENTER)

@@ -1,17 +1,17 @@
 package com.edubiz.notificationsjava.NotifierUtil;
 
-public enum NotifierInputType {
+public enum NotifyInput {
     TEXT("text"),
     TEXTAREA("textarea");
 
     private final String value;
 
-    NotifierInputType(String value) { this.value = value; }
+    NotifyInput(String value) { this.value = value; }
 
     public String getValue() { return this.value; }
 
-    public static NotifierInputType fromString(String value) {
-        for (NotifierInputType input : NotifierInputType.values()) {
+    public static NotifyInput fromString(String value) {
+        for (NotifyInput input : NotifyInput.values()) {
             if (input.value.equalsIgnoreCase(value))
                 return input;
         }

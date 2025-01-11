@@ -1,8 +1,8 @@
 package com.edubiz.notificationsjava.Managers;
 
-import com.edubiz.notificationsjava.NotifierUtil.Helper;
-import com.edubiz.notificationsjava.NotifierUtil.NotificationPos;
-import com.edubiz.notificationsjava.NotifierUtil.NotifierAnimations;
+import com.edubiz.notificationsjava.NotifierUtil.NotifyUtils;
+import com.edubiz.notificationsjava.NotifierUtil.NotifyPos;
+import com.edubiz.notificationsjava.NotifierUtil.NotifyAnimation;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -13,21 +13,21 @@ import javafx.stage.Stage;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.edubiz.notificationsjava.NotifierUtil.Helper.timeOut;
+import static com.edubiz.notificationsjava.NotifierUtil.NotifyUtils.timeOut;
 
-public abstract class BaseNotifier {
+public abstract class NotifyBase {
     protected Stage stage;
     private final Region layout;
     private Node node = null;
     private AnchorPane root;
-    private NotifierAnimations animations;
+    private NotifyAnimation animations;
     private Boolean animation = true;
     private Boolean animateNotification = true;
-    private  NotificationPos position = NotificationPos.TOP;
+    private NotifyPos position = NotifyPos.TOP;
     private double duration = 5;
     private final Map<String, Object> closeCallbacks = new HashMap<>();
 
-    public BaseNotifier(Stage stage, Region layout) {
+    public NotifyBase(Stage stage, Region layout) {
         this.stage = stage;
         this.layout = layout;
     }
@@ -35,13 +35,13 @@ public abstract class BaseNotifier {
     public Region getLayout() { return this.layout; }
 
     // creates or applies the positions to the notification
-    protected void setInanimatePosition(Node node, NotificationPos position) {
+    protected void setInanimatePosition(Node node, NotifyPos position) {
         this.animation = false;
         Scene scene = stage.getScene();
-        Helper helper = new Helper();
+        NotifyUtils notifyUtils = new NotifyUtils();
 
         // get geometry
-        Map<String, Double> helperGeometry = helper.getGeometry(node,scene);
+        Map<String, Double> helperGeometry = notifyUtils.getGeometry(node,scene);
 
         // Set bounds
         double width = helperGeometry.get("width");
@@ -52,7 +52,7 @@ public abstract class BaseNotifier {
         double sceneHeight = helperGeometry.get("sceneHeight");
 
         // Define positioning
-        Map<String, Object> coordinate = helper.parsePosition(position,width,height,sceneWidth,sceneHeight);
+        Map<String, Object> coordinate = notifyUtils.parsePosition(position,width,height,sceneWidth,sceneHeight);
         double toX = (double) coordinate.get("toX");
         double toY = (double) coordinate.get("toY");
 
@@ -63,15 +63,15 @@ public abstract class BaseNotifier {
         root.setVisible(true);
         root.setManaged(true);
 
-        helper.addNodeListeners(stage,node,position,width,height);
+        notifyUtils.addNodeListeners(stage,node,position,width,height);
     }
 
-    protected void positioningRoute(Node node,NotificationPos position,Boolean animation,double duration) {
+    protected void positioningRoute(Node node, NotifyPos position, Boolean animation, double duration) {
         if (position == null) return;
 
         if (animation) {
             this.animation = true;
-            this.animations = new NotifierAnimations();
+            this.animations = new NotifyAnimation();
             this.animations.animate(node,position,stage,duration);
 
             root.setVisible(true);
@@ -84,11 +84,11 @@ public abstract class BaseNotifier {
     }
 
     // Method for displaying any type of notification
-    protected void show(Node node,NotificationPos position,Boolean animation,double duration) {
+    protected void show(Node node, NotifyPos position, Boolean animation, double duration) {
         setProps(node,position,animation,duration);
     }
 
-    private void setProps(Node node,NotificationPos pos,Boolean animation,double duration) {
+    private void setProps(Node node, NotifyPos pos, Boolean animation, double duration) {
         this.node = node;
         this.position = pos;
         this.animateNotification = animation;
@@ -124,8 +124,8 @@ public abstract class BaseNotifier {
                             callback.run();
                         }, .1);
                     }
-                    (new Helper()).removeListeners(stage);
-                    (new NotifierAnimations()).removeListeners(stage);
+                    (new NotifyUtils()).removeListeners(stage);
+                    (new NotifyAnimation()).removeListeners(stage);
                 });
 
                 return;
@@ -140,8 +140,8 @@ public abstract class BaseNotifier {
                     callback.run();
                 }, .1);
             }
-            (new Helper()).removeListeners(stage);
-            (new NotifierAnimations()).removeListeners(stage);
+            (new NotifyUtils()).removeListeners(stage);
+            (new NotifyAnimation()).removeListeners(stage);
         }
     }
 }

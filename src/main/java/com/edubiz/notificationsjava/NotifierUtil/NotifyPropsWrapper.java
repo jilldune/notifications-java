@@ -3,7 +3,7 @@ package com.edubiz.notificationsjava.NotifierUtil;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PropertiesWrapper {
+public class NotifyPropsWrapper {
     private final Map<String, Object> properties = new HashMap<>();
 
     public <T> void put(String key, T value) {
