@@ -325,7 +325,7 @@ $toastNeutral: #7f8cbd;
 }
 .dialog-body .dialog-text.textarea {
     -fx-min-height: 60px;
-    -fx-pref-height: 120px;
+    -fx-pref-height: 80px;
 }
 .dialog-body .dialog-text.textarea .content {
     -fx-background-radius: 0;
