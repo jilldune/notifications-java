@@ -323,17 +323,14 @@ $toastNeutral: #7f8cbd;
     -fx-background-color: inherit;
     -fx-border-color: transparent transparent #e4e4e4 transparent;
 }
-.dialog-body .dialog-text.textarea {
+.dialog-body .dialog-text.text-area {
     -fx-min-height: 60px;
     -fx-pref-height: 80px;
 }
-.dialog-body .dialog-text.textarea .content {
+.dialog-body .dialog-text.text-area .content {
     -fx-background-radius: 0;
     -fx-background-insets: 0;
     -fx-background-color: #fff;
-}
-.text-area > .scroll-pane {
-    -fx-padding: 0;
 }
 
 .dialog-footer {
@@ -345,4 +342,47 @@ $toastNeutral: #7f8cbd;
     -fx-border-radius: 5px;
     -fx-background-color: #e4e4e4;
     -fx-cursor: hand;
+}
+
+
+/* Target the ScrollPane of the TextArea */
+.text-area .scroll-pane {
+    -fx-background-color: transparent; /* Makes the ScrollPane background transparent */
+}
+
+/* Style the vertical scrollbar */
+.text-area .scroll-pane .scroll-bar:vertical {
+    -fx-background-color: transparent; /* Background of the scrollbar track */
+    -fx-pref-width: 15px; /* Width of the vertical scrollbar */
+}
+
+/* Style the horizontal scrollbar */
+.text-area .scroll-pane .scroll-bar:horizontal {
+    -fx-background-color: transparent; /* Background of the scrollbar track */
+    -fx-pref-height: 10px; /* Height of the horizontal scrollbar */
+}
+
+/* Style the scrollbar thumb (the draggable part) */
+.text-area .scroll-pane .scroll-bar .thumb {
+    -fx-background-color: #e3e3e3; /* Color of the thumb */
+    -fx-cursor: hand;
+}
+
+/* Style the scrollbar increment and decrement buttons */
+.text-area .scroll-pane .scroll-bar .increment-button,
+.text-area .scroll-pane .scroll-bar .decrement-button {
+    -fx-pref-height: 10px;
+    -fx-width: 10px;
+    -fx-background-color: #e4e4e4; /* Background color of the buttons */
+    -fx-cursor: hand;
+}
+
+/* Style the scrollbar track */
+.text-area .scroll-pane .scroll-bar .track {
+    -fx-background-color: transparent; /* Background color of the track */
+}
+
+/* On hover, change the scrollbar thumb color */
+.text-area .scroll-pane .scroll-bar .thumb:hover {
+    -fx-background-color: #e4e4e4b9; /* Hover color for thumb */
 }
