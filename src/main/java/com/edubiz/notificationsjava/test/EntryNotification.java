@@ -73,7 +73,7 @@ public class EntryNotification extends Application {
         stage.setTitle("MyNotifier Demo");
 
 
-        // Shoe the stage
+        // Show the stage
         stage.show();
     }
 
