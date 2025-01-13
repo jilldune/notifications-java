@@ -102,7 +102,7 @@ $toastNeutral: #7f8cbd;
     ================================
 */
 .notification {
-    -fx-pref-width: 350px;
+    -fx-min-width: 250px;
     -fx-text-fill: #eee;
     -fx-padding: 2px;
     -fx-border-radius: 3px;
@@ -120,7 +120,7 @@ $toastNeutral: #7f8cbd;
 
 .notification-title {
     -f-font-family: "Roboto Condensed";
-    -fx-pref-width: 306px;
+    -fx-pref-width: 210px;
     -fx-pref-height: 25px;
     -fx-text-fill: #000;
     -fx-font-weight: 700;
@@ -140,7 +140,7 @@ $toastNeutral: #7f8cbd;
 /*Notification body*/
 .notification-body {
     -f-font-family: "Poppins";
-    -fx-pref-width: 346;
+    -fx-pref-width: 250;
     -fx-pref-height: 60px;
     -fx-min-height: 50px;
     -fx-max-height: 100px;
@@ -174,14 +174,13 @@ $toastNeutral: #7f8cbd;
     -fx-cursor: hand;
 }
 
-
 /**
     ==========================
     ======== PROMPT ==========
     ==========================
 */
 .prompt {
-    -fx-min-width: 300px;
+    -fx-min-width: 250px;
     -fx-text-fill: #eee;
     -fx-padding: 2px;
     -fx-border-radius: 3px;
@@ -199,14 +198,87 @@ $toastNeutral: #7f8cbd;
 
 .prompt-title {
     -f-font-family: "Roboto Condensed";
-    -fx-pref-width: 260px;
+    -fx-min-width: 210px;
+    -fx-pref-height: 25px;
+    -fx-text-fill: #000;
+    -fx-font-weight: 700;
+}
+
+.prompt-close {
+    -fx-pref-width: 40px;
+    -fx-pref-height: 25px;
+    -fx-cursor: hand;
+    -fx-background-color: #eee;
+}
+
+/*prompt body*/
+/*Notification body*/
+.prompt-body {
+    -f-font-family: "Poppins";
+    -fx-pref-width: 250;
+    -fx-pref-height: 60px;
+    -fx-min-height: 50px;
+    -fx-max-height: 100px;
+    -fx-text-fill: #000;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-text-box-border: transparent;
+    -fx-padding: 5px 3px 5px 3px;
+    -fx-border-width: 0;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-background-color: white;
+    -fx-cursor: default;
+}
+.prompt-body .content {
+    -fx-cursor: default;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-background-color: #fff;
+}
+.prompt-footer {
+    -fx-padding: 5px 2px 5px 5px;
+    -fx-background-color: #eee;
+}
+.prompt-footer .button {
+    -fx-border-radius: 5px;
+    -fx-background-color: #e4e4e4;
+    -fx-cursor: hand;
+}
+
+/**
+    ==========================
+    ======== DIALOG ==========
+    ==========================
+*/
+.dialog {
+    -fx-min-width: 250px;
+    -fx-text-fill: #eee;
+    -fx-padding: 2px;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-background-color: #fff;
+}
+
+.dialog-head {
+    -fx-padding: 0 0 2px 0;
+    -fx-border: 0 0 2px 0;
+    -fx-border-style: solid;
+    -fx-border-color: transparent transparent #eee transparent;
+    -fx-background-color: white;
+}
+
+.dialog-title {
+    -f-font-family: "Roboto Condensed";
+    -fx-pref-width: 220px;
     -fx-pref-height: 25px;
     -fx-text-fill: #000;
     -fx-font-weight: 700;
     -fx-background-color: inherit;
 }
 
-.prompt-close {
+.dialog-close {
     -fx-pref-width: 40px;
     -fx-pref-height: 25px;
     -fx-cursor: hand;
@@ -215,25 +287,25 @@ $toastNeutral: #7f8cbd;
     -fx-background-color: #eee;
 }
 
-/*Notification body*/
-.prompt-body {
+/*dialog body*/
+.dialog-body {
     -f-font-family: "Poppins";
-    -fx-min-width: 296px;
+    -fx-min-width: 250px;
     -fx-text-fill: #000;
-    -fx-padding: 5px 3px 5px 3px;
+    -fx-padding: 3px;
     -fx-background-color: inherit
 }
-.prompt-body .prompt-label {
+.dialog-body .dialog-label {
     -fx-font-size: 12px !important;
     -fx-font-weight: 300;
     -fx-background-color: transparent;
 }
-.prompt-body .prompt-divider {
+.dialog-body .dialog-divider {
     -fx-pref-height: 10px;
 }
-.prompt-body .prompt-text {
-    -f-font-family: "Poppins";
-    -fx-pref-width: 296;
+.dialog-body .dialog-text {
+    -f-font-family: "Roboto Condensed";
+    -fx-pref-width: 250;
     -fx-text-fill: #000;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
@@ -243,30 +315,33 @@ $toastNeutral: #7f8cbd;
     -fx-border-color: transparent transparent #e3e3e3 transparent;
     -fx-background-insets: 0;
     -fx-background-radius: 0;
-    -fx-background-color: transparent;
+    -fx-background-color: white;
 }
-.prompt-body .prompt-text.text {
-    -fx-height: 30px;
+.dialog-body .dialog-text.text {
+    -fx-min-height: 30px;
     -fx-padding: 3px;
     -fx-background-color: inherit;
     -fx-border-color: transparent transparent #e4e4e4 transparent;
 }
-.prompt-body .prompt-text.textarea {
+.dialog-body .dialog-text.textarea {
     -fx-min-height: 60px;
-    -fx-max-height: 80px;
+    -fx-pref-height: 120px;
 }
-.prompt-body .prompt-text.textarea .content {
+.dialog-body .dialog-text.textarea .content {
     -fx-background-radius: 0;
     -fx-background-insets: 0;
     -fx-background-color: #fff;
 }
+.text-area > .scroll-pane {
+    -fx-padding: 0;
+}
 
-.prompt-footer {
+.dialog-footer {
     -fx-padding: 5px 2px 5px 5px;
     -fx-background-radius: 0 0 3px 3px;
     -fx-background-color: #eee;
 }
-.prompt-footer .button {
+.dialog-footer .button {
     -fx-border-radius: 5px;
     -fx-background-color: #e4e4e4;
     -fx-cursor: hand;

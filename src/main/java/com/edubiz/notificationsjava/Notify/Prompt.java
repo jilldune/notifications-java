@@ -74,7 +74,7 @@ public class Prompt extends NotifyBase {
         messageArea.setEditable(false);
         messageArea.setFocusTraversable(false);
         messageArea.setCursor(Cursor.DEFAULT);
-        messageArea.getStyleClass().add("notification-body");
+        messageArea.getStyleClass().add("prompt-body");
 
         return messageArea;
     }

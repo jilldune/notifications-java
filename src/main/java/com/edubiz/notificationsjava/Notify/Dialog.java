@@ -31,7 +31,7 @@ public class Dialog extends NotifyBase {
     private String label = null;
     private NotifyPos position = NotifyPos.CENTER;
     private double durationInSeconds = 4.5;
-    private Boolean autoClose = true;
+    private Boolean autoClose = false;
     private Boolean animation = true;
     private final Map<String,Map<String,Object>> buttons = new LinkedHashMap<>();
 
@@ -41,11 +41,11 @@ public class Dialog extends NotifyBase {
         // create the header text
         Label header = new Label(headerText);
         header.setTextOverrun(OverrunStyle.ELLIPSIS);
-        header.getStyleClass().add("prompt-title");
+        header.getStyleClass().add("dialog-title");
 
         // create the Icon
         HBox head = head(header);
-        head.getStyleClass().add("prompt-head");
+        head.getStyleClass().add("dialog-head");
 
         // set the header
         parent.getChildren().add(head);
@@ -58,7 +58,7 @@ public class Dialog extends NotifyBase {
         Label btnIcon = new Label();
         btnIcon.setGraphic(icon);
         btnIcon.setAlignment(Pos.CENTER);
-        btnIcon.getStyleClass().addAll("prompt-close","close-btn");
+        btnIcon.getStyleClass().addAll("dialog-close","close-btn");
 
         btnIcon.setOnMouseClicked(event -> close());
 
@@ -73,18 +73,18 @@ public class Dialog extends NotifyBase {
     private void createBody(VBox parent) {
         // create a body container
         VBox bodyPane = new VBox();
-        bodyPane.getStyleClass().add("prompt-body");
+        bodyPane.getStyleClass().add("dialog-body");
 
         // create label
         if (label != null) {
             Label inputLabel = new Label();
             inputLabel.setText(this.label);
             inputLabel.setTextAlignment(TextAlignment.LEFT);
-            inputLabel.getStyleClass().add("prompt-label");
+            inputLabel.getStyleClass().add("dialog-label");
 
             // Create a divider
             VBox divider = new VBox();
-            divider.getStyleClass().add("prompt-divider");
+            divider.getStyleClass().add("dialog-divider");
 
 
             bodyPane.getChildren().addAll(inputLabel,divider);
@@ -93,7 +93,7 @@ public class Dialog extends NotifyBase {
         switch(this.type) {
             case TEXT -> {
                 textField = new TextField();
-                textField.getStyleClass().addAll("prompt-text",type.getValue());
+                textField.getStyleClass().addAll("dialog-text",type.getValue());
                 textField.setPromptText(this.placeHolder);
                 textField.setText(this.value);
 
@@ -103,8 +103,9 @@ public class Dialog extends NotifyBase {
             }
             case TEXTAREA -> {
                 textArea = new TextArea();
-                textArea.getStyleClass().addAll("prompt-text",type.getValue());
+                textArea.getStyleClass().addAll("dialog-text",type.getValue());
                 textArea.setPromptText(this.placeHolder);
+                textArea.setWrapText(true);
                 textArea.setText(this.value);
 
                 isTextField = false;
@@ -121,7 +122,7 @@ public class Dialog extends NotifyBase {
         if (buttons == null) return;
 
         HBox buttonContainer = new HBox();
-        buttonContainer.getStyleClass().add("prompt-footer");
+        buttonContainer.getStyleClass().add("dialog-footer");
         buttonContainer.setSpacing(5);
         buttonContainer.setAlignment(Pos.CENTER_RIGHT);
 
@@ -185,7 +186,7 @@ public class Dialog extends NotifyBase {
     private VBox parent() {
         VBox vBox = (VBox) getLayout();
         vBox.setAlignment(Pos.CENTER);
-        vBox.getStyleClass().addAll("prompt","parent-container");
+        vBox.getStyleClass().addAll("dialog","parent-container");
 
         return vBox;
     }
@@ -245,7 +246,7 @@ public class Dialog extends NotifyBase {
         return this;
     }
     public void create() {
-        // create prompt pane
+        // create dialog pane
         VBox vBox = parent();
 
         // create the head
@@ -257,7 +258,7 @@ public class Dialog extends NotifyBase {
         // create footer
         createFooter(vBox, buttons);
 
-        // showing the prompt
+        // showing the dialog
         show(vBox,position,animation,durationInSeconds);
 
         // create the close function

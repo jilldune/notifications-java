@@ -26,6 +26,8 @@ public abstract class NotifyBase {
     private NotifyPos position = NotifyPos.TOP;
     private double duration = 5;
     private final Map<String, Object> closeCallbacks = new HashMap<>();
+    private Runnable onCloseRequest;
+    private Runnable onClosed;
 
     public NotifyBase(Stage stage, Region layout) {
         this.stage = stage;
@@ -83,6 +85,27 @@ public abstract class NotifyBase {
         setInanimatePosition(node,position);
     }
 
+    // A function fired right before the close of the notification
+    public void setOnCloseRequest(Runnable callback) {
+        if (callback != null)
+            this.onCloseRequest = callback;
+    }
+
+    // A function fired after the notification is closed
+    public void setOnClosed(Runnable callback) {
+        if (callback != null)
+            this.onClosed = callback;
+    }
+
+    private void callOnCloseRequest() {
+        if (this.onCloseRequest != null)
+            this.onCloseRequest.run();
+    }
+    private void callOnClosed() {
+        if (this.onClosed != null)
+            this.onClosed.run();
+    }
+
     // Method for displaying any type of notification
     protected void show(Node node, NotifyPos position, Boolean animation, double duration) {
         setProps(node,position,animation,duration);
@@ -114,7 +137,9 @@ public abstract class NotifyBase {
     private void run() {
         if (this.node != null) {
             if (this.animation != null) {
+                this.callOnCloseRequest();
                 this.animations.reverseTransition(() -> {
+                    this.callOnClosed();
                     this.root.setManaged(false);
                     this.root.setVisible(false);
 
@@ -131,6 +156,7 @@ public abstract class NotifyBase {
                 return;
             }
 
+            this.callOnCloseRequest();
             this.root.setManaged(false);
             this.root.setVisible(false);
             // checks if callback was provided to close function
@@ -142,6 +168,7 @@ public abstract class NotifyBase {
             }
             (new NotifyUtils()).removeListeners(stage);
             (new NotifyAnimation()).removeListeners(stage);
+            this.callOnClosed();
         }
     }
 }
