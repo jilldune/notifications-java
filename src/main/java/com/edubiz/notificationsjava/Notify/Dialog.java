@@ -121,11 +121,16 @@ public class Dialog extends NotifyBase {
     private void createFooter(VBox parent,Map<String,Map<String,Object>> buttons) {
         if (buttons == null) return;
 
+        // main footer container
+        VBox footerContainer = new VBox();
+        footerContainer.getStyleClass().add("dialog-footer");
+
         HBox buttonContainer = new HBox();
-        buttonContainer.getStyleClass().add("dialog-footer");
         buttonContainer.setSpacing(5);
         buttonContainer.setAlignment(Pos.CENTER_RIGHT);
+        buttonContainer.getStyleClass().add("button-container");
 
+        // create buttons
         buttons.forEach((label, properties) -> {
             if (properties != null) {
                 Button button = new Button(label);
@@ -167,7 +172,10 @@ public class Dialog extends NotifyBase {
             }
         });
 
-        parent.getChildren().add(buttonContainer);
+        // ADD BUTTONS TO THE FOOTER
+        footerContainer.getChildren().add(buttonContainer);
+
+        parent.getChildren().add(footerContainer);
     }
     // Auto closing the function
     private void autoClosePrompt(Boolean autoClose, double duration) {

@@ -87,10 +87,16 @@ public class Notification extends NotifyBase {
     private void createFooter(VBox parent,Map<String,Map<String,Object>> buttons) {
         if (buttons == null) return;
 
+        // main footer container
+        VBox footerContainer = new VBox();
+        footerContainer.getStyleClass().add("notification-footer");
+
         HBox buttonContainer = new HBox();
-        buttonContainer.getStyleClass().add("notification-footer");
         buttonContainer.setSpacing(5);
         buttonContainer.setAlignment(Pos.CENTER_RIGHT);
+        buttonContainer.getStyleClass().add("button-container");
+
+        // create buttons
         buttons.forEach((label,properties) -> {
             Button button = new Button(label);
 
@@ -119,7 +125,10 @@ public class Notification extends NotifyBase {
             buttonContainer.getChildren().add(button);
         });
 
-        parent.getChildren().add(buttonContainer);
+        // ADD BUTTONS TO THE FOOTER
+        footerContainer.getChildren().add(buttonContainer);
+
+        parent.getChildren().add(footerContainer);
     }
     // Auto closing the function
     private void autoCloseNotification(Boolean autoClose,double duration) {

@@ -33,6 +33,14 @@
 .close-btn:hover .icon {
     -fx-icon-color: #fff;
 }
+.button-container {
+    -fx-pref-width: 250px;
+    -fx-padding: 3px;
+    -fx-background-color: transparent;
+}
+.scroll-container {
+    -fx-background-color: red;
+}
 /**
     =================================
     ============== TOAST ============
@@ -90,7 +98,7 @@ $toastNeutral: #7f8cbd;
 .toast-message {
     -f-font-family: "Poppins";
     -fx-min-width: 40px;
-    -fx-max-width: 200px;
+    -fx-max-width: 150px;
     -fx-font-size: 12px;
     -fx-text-fill: #000;
     -fx-line-spacing: -3;
@@ -102,7 +110,7 @@ $toastNeutral: #7f8cbd;
     ================================
 */
 .notification {
-    -fx-min-width: 250px;
+    -fx-pref-width: 250px;
     -fx-text-fill: #eee;
     -fx-padding: 2px;
     -fx-border-radius: 3px;
@@ -180,7 +188,7 @@ $toastNeutral: #7f8cbd;
     ==========================
 */
 .prompt {
-    -fx-min-width: 250px;
+    -fx-pref-width: 250px;
     -fx-text-fill: #eee;
     -fx-padding: 2px;
     -fx-border-radius: 3px;
@@ -215,11 +223,12 @@ $toastNeutral: #7f8cbd;
 /*Notification body*/
 .prompt-body {
     -f-font-family: "Poppins";
-    -fx-pref-width: 250;
-    -fx-pref-height: 60px;
+    -fx-pref-width: 250px;
     -fx-min-height: 50px;
-    -fx-max-height: 100px;
+    -fx-max-height: 150px;
+    -fx-pref-height: 100px;
     -fx-text-fill: #000;
+    -fx-font-size: 12px;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
     -fx-text-box-border: transparent;
@@ -228,7 +237,7 @@ $toastNeutral: #7f8cbd;
     -fx-border-color: transparent;
     -fx-background-insets: 0;
     -fx-background-radius: 0;
-    -fx-background-color: white;
+    -fx-background-color: #fff;
     -fx-cursor: default;
 }
 .prompt-body .content {
@@ -238,11 +247,15 @@ $toastNeutral: #7f8cbd;
     -fx-background-color: #fff;
 }
 .prompt-footer {
-    -fx-padding: 5px 2px 5px 5px;
+    -fx-padding: 2px;
     -fx-background-color: #eee;
 }
+.prompt-footer .scroll-pane {
+    -fx-padding: 0;
+    -fx-background-color: green;
+}
 .prompt-footer .button {
-    -fx-border-radius: 5px;
+    -fx-background-radius: 1px;
     -fx-background-color: #e4e4e4;
     -fx-cursor: hand;
 }
@@ -253,7 +266,7 @@ $toastNeutral: #7f8cbd;
     ==========================
 */
 .dialog {
-    -fx-min-width: 250px;
+    -fx-pref-width: 250px;
     -fx-text-fill: #eee;
     -fx-padding: 2px;
     -fx-border-radius: 3px;
@@ -336,6 +349,7 @@ $toastNeutral: #7f8cbd;
 }
 
 .dialog-footer {
+    -fx-pref-width: 250px;
     -fx-padding: 5px 2px 5px 5px;
     -fx-background-radius: 0 0 3px 3px;
     -fx-background-color: #eee;
@@ -348,43 +362,48 @@ $toastNeutral: #7f8cbd;
 
 
 /* Target the ScrollPane of the TextArea */
-.text-area .scroll-pane {
+.scroll-pane {
     -fx-background-color: transparent; /* Makes the ScrollPane background transparent */
 }
 
 /* Style the vertical scrollbar */
-.text-area .scroll-pane .scroll-bar:vertical {
+.scroll-pane .scroll-bar:vertical {
     -fx-background-color: transparent; /* Background of the scrollbar track */
     -fx-pref-width: 15px; /* Width of the vertical scrollbar */
 }
 
 /* Style the horizontal scrollbar */
-.text-area .scroll-pane .scroll-bar:horizontal {
+.scroll-pane .scroll-bar:horizontal {
     -fx-background-color: transparent; /* Background of the scrollbar track */
-    -fx-pref-height: 10px; /* Height of the horizontal scrollbar */
+    -fx-pref-height: 15px; /* Height of the horizontal scrollbar */
 }
 
 /* Style the scrollbar thumb (the draggable part) */
-.text-area .scroll-pane .scroll-bar .thumb {
+.scroll-pane .scroll-bar .thumb {
     -fx-background-color: #e3e3e3; /* Color of the thumb */
     -fx-cursor: hand;
 }
 
 /* Style the scrollbar increment and decrement buttons */
-.text-area .scroll-pane .scroll-bar .increment-button,
-.text-area .scroll-pane .scroll-bar .decrement-button {
-    -fx-pref-height: 10px;
-    -fx-width: 10px;
-    -fx-background-color: #e4e4e4; /* Background color of the buttons */
+.scroll-pane .scroll-bar .increment-button,
+.scroll-pane .scroll-bar .decrement-button {
+    -fx-pref-height: 15px;
+    -fx-pref-width: 15px;
     -fx-cursor: hand;
+    -fx-padding: 0;
+    -fx-alignment: center;
+}
+.scroll-pane .scroll-bar .increment-button:hover,
+.scroll-pane .scroll-bar .decrement-button:hover {
+    -fx-background-color: transparent; /* Color of the thumb */
 }
 
 /* Style the scrollbar track */
-.text-area .scroll-pane .scroll-bar .track {
+.scroll-pane .scroll-bar .track {
     -fx-background-color: transparent; /* Background color of the track */
 }
 
 /* On hover, change the scrollbar thumb color */
-.text-area .scroll-pane .scroll-bar .thumb:hover {
+.scroll-pane .scroll-bar .thumb:hover {
     -fx-background-color: #e4e4e4b9; /* Hover color for thumb */
 }

@@ -3,6 +3,7 @@ package com.edubiz.notificationsjava.Notify;
 import com.edubiz.notificationsjava.Managers.NotifyBase;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyUtils;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyPos;
+import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
@@ -83,11 +84,18 @@ public class Prompt extends NotifyBase {
     private void createFooter(VBox parent,Map<String,Map<String,Object>> buttons) {
         if (buttons == null) return;
 
+        // main footer container
+        VBox footerContainer = new VBox();
+        footerContainer.getStyleClass().add("prompt-footer");
+        footerContainer.setAlignment(Pos.CENTER);
+
+        // BUTTON CONTAINER
         HBox buttonContainer = new HBox();
-        buttonContainer.getStyleClass().add("prompt-footer");
         buttonContainer.setSpacing(5);
         buttonContainer.setAlignment(Pos.CENTER_RIGHT);
+        buttonContainer.getStyleClass().add("button-container");
 
+        // CREATE/ADD BUTTONS
         buttons.forEach((label, properties) -> {
             if (properties != null) {
                 Button button = new Button(label);
@@ -122,7 +130,10 @@ public class Prompt extends NotifyBase {
             }
         });
 
-        parent.getChildren().add(buttonContainer);
+        // ADD BUTTONS TO THE FOOTER
+        footerContainer.getChildren().add(buttonContainer);
+
+        parent.getChildren().add(footerContainer);
     }
     // Auto closing the function
     private void autoClosePrompt(Boolean autoClose, double duration) {
