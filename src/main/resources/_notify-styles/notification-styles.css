@@ -304,8 +304,9 @@ $toastNeutral: #7f8cbd;
     -fx-pref-height: 10px;
 }
 .dialog-body .dialog-text {
+    -fx-pref-width: 250px;
     -f-font-family: "Roboto Condensed";
-    -fx-pref-width: 250;
+    -fx-font-size: 12px;
     -fx-text-fill: #000;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
@@ -326,6 +327,7 @@ $toastNeutral: #7f8cbd;
 .dialog-body .dialog-text.text-area {
     -fx-min-height: 60px;
     -fx-pref-height: 80px;
+    -fx-effect: none;
 }
 .dialog-body .dialog-text.text-area .content {
     -fx-background-radius: 0;
