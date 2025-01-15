@@ -96,7 +96,7 @@ $toastNeutral: #7f8cbd;
     -fx-icon-color: red;
 }
 .toast-message {
-    -f-font-family: "Poppins";
+    -fx-font-family: "Poppins";
     -fx-min-width: 40px;
     -fx-max-width: 150px;
     -fx-font-size: 12px;
@@ -127,7 +127,7 @@ $toastNeutral: #7f8cbd;
 }
 
 .notification-title {
-    -f-font-family: "Roboto Condensed";
+    -fx-font-family: "Roboto Condensed";
     -fx-pref-width: 210px;
     -fx-pref-height: 25px;
     -fx-text-fill: #000;
@@ -147,7 +147,7 @@ $toastNeutral: #7f8cbd;
 
 /*Notification body*/
 .notification-body {
-    -f-font-family: "Poppins";
+    -fx-font-family: "Poppins";
     -fx-pref-width: 250;
     -fx-pref-height: 60px;
     -fx-min-height: 50px;
@@ -205,7 +205,7 @@ $toastNeutral: #7f8cbd;
 }
 
 .prompt-title {
-    -f-font-family: "Roboto Condensed";
+    -fx-font-family: "Roboto Condensed";
     -fx-min-width: 210px;
     -fx-pref-height: 25px;
     -fx-text-fill: #000;
@@ -222,7 +222,7 @@ $toastNeutral: #7f8cbd;
 /*prompt body*/
 /*Notification body*/
 .prompt-body {
-    -f-font-family: "Poppins";
+    -fx-font-family: "Poppins";
     -fx-pref-width: 250px;
     -fx-min-height: 50px;
     -fx-max-height: 150px;
@@ -283,7 +283,7 @@ $toastNeutral: #7f8cbd;
 }
 
 .dialog-title {
-    -f-font-family: "Roboto Condensed";
+    -fx-font-family: "Roboto Condensed";
     -fx-pref-width: 220px;
     -fx-pref-height: 25px;
     -fx-text-fill: #000;
@@ -302,7 +302,7 @@ $toastNeutral: #7f8cbd;
 
 /*dialog body*/
 .dialog-body {
-    -f-font-family: "Poppins";
+    -fx-font-family: "Poppins";
     -fx-min-width: 250px;
     -fx-text-fill: #000;
     -fx-padding: 3px;
@@ -318,7 +318,7 @@ $toastNeutral: #7f8cbd;
 }
 .dialog-body .dialog-text {
     -fx-pref-width: 250px;
-    -f-font-family: "Roboto Condensed";
+    -fx-font-family: "Roboto Condensed";
     -fx-font-size: 12px;
     -fx-text-fill: #000;
     -fx-focus-color: transparent;
