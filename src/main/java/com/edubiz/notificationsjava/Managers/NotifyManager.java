@@ -54,7 +54,17 @@ public class NotifyManager {
 
     public void addStyleSheet(String styleSheetPath) {
         if (!root.getStylesheets().contains(styleSheetPath))
-            root.getStylesheets().add(styleSheetPath);
+            replaceStylesheets(styleSheetPath);
+    }
+
+    public void replaceStylesheets(String customSheet) {
+        root.getStylesheets().clear();
+        root.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/_notify-styles/notification-styles.css")).toExternalForm());
+        root.getStylesheets().add(customSheet);
+    }
+
+    public AnchorPane getRootPane() {
+        return root;
     }
 
     public void shutDown() {
