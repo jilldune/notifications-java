@@ -14,26 +14,33 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
-import java.util.LinkedList;
-import java.util.Objects;
-import java.util.Queue;
+import java.util.*;
 
 public class NotifyManager {
     private final AnchorPane root;
     private final Stage stage;
     private final Queue<NotifyBase> notificationQueue = new LinkedList<>();
     private boolean isNotificationDisplayed = false;
+    private final List<String> defaultLibraryStyles = new ArrayList<>(); // Default library styles
+    private final List<String> customStyleSheets = new ArrayList<>(); // User-added custom stylesheets
+
 
     public NotifyManager(Stage stage) {
         this.stage = stage;
         this.root = initRoot();
     }
 
+    /***
+     * Creates and initialises the root of the notifier on which all alerts/notification is drawn
+     * with all default styles and add to the window/stage of the calling window
+     *
+     * @return root[AnchorPane]
+     */
     private AnchorPane initRoot() {
         AnchorPane root = new AnchorPane();
 
         Platform.runLater(()->{
-            addStyleSheet(Objects.requireNonNull(getClass().getResource("/_notify-styles/notification-styles.css")).toExternalForm());
+            initStyles();
             root.getStyleClass().add("root");
             root.setVisible(false);
 
@@ -52,17 +59,43 @@ public class NotifyManager {
         return root;
     }
 
-    public void addStyleSheet(String styleSheetPath) {
-        if (!root.getStylesheets().contains(styleSheetPath))
-            replaceStylesheets(styleSheetPath);
+    /**
+     * Initializes the default library stylesheets.
+     */
+    private void initStyles() {
+        // Add your default library styles here
+        defaultLibraryStyles.add(Objects.requireNonNull(getClass().getResource("/_notify-styles/notification-styles.css")).toExternalForm());
+        replaceStylesheets(); // Apply the default styles initially
     }
 
-    public void replaceStylesheets(String customSheet) {
+    /// Ensures that library styles remain in place and custom styles are applied last.
+    /**
+     * Adds a custom stylesheet provided by the user.
+     *
+     * @param styleSheetURL the URL of the custom stylesheet to add.
+    */
+    public void addStyleSheet(String styleSheetURL) {
+        if (styleSheetURL != null && !styleSheetURL.trim().isEmpty()) {
+            this.customStyleSheets.add(styleSheetURL); // Maintain a list of user-added stylesheets
+            replaceStylesheets();
+        }
+    }
+
+    /**
+     * Clears and re-applies all stylesheets to the root pane.
+     * Ensures library styles are applied first, followed by custom styles.
+    */
+    private void replaceStylesheets() {
         root.getStylesheets().clear();
-        root.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/_notify-styles/notification-styles.css")).toExternalForm());
-        root.getStylesheets().add(customSheet);
+        root.getStylesheets().addAll(defaultLibraryStyles);
+        root.getStylesheets().addAll(customStyleSheets);
     }
 
+    /**
+     * Exposes the root pane for adding to the scene.
+     *
+     * @return the root AnchorPane.
+    */
     public AnchorPane getRootPane() {
         return root;
     }
