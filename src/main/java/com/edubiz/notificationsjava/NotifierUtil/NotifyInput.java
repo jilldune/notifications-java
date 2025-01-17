@@ -1,7 +1,8 @@
 package com.edubiz.notificationsjava.NotifierUtil;
 
 public enum NotifyInput {
-    TEXT("text"),
+    TEXT_FIELD("text"),
+    PASSWORD_FIELD("password"),
     TEXTAREA("textarea");
 
     private final String value;

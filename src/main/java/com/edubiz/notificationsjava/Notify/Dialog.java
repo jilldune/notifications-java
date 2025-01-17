@@ -21,11 +21,12 @@ import java.util.function.Consumer;
 public class Dialog extends NotifyBase {
     private TextArea textArea;
     private TextField textField;
+    private PasswordField passwordField;
 
     //    class variables
-    private static boolean isTextField = true;
+    private static String FIELD = "text";
     private String headerText = "Dialog";
-    private NotifyInput type = NotifyInput.TEXT;
+    private NotifyInput type = NotifyInput.TEXT_FIELD;
     private String value = "";
     private String placeHolder = "";
     private String label = null;
@@ -91,15 +92,25 @@ public class Dialog extends NotifyBase {
         }
 
         switch(this.type) {
-            case TEXT -> {
+            case TEXT_FIELD -> {
                 textField = new TextField();
                 textField.getStyleClass().addAll("dialog-text",type.getValue());
                 textField.setPromptText(this.placeHolder);
                 textField.setText(this.value);
 
-                isTextField = true;
+                FIELD = "TEXT_FIELD";
 
                 bodyPane.getChildren().add(textField);
+            }
+            case PASSWORD_FIELD -> {
+                passwordField = new PasswordField();
+                passwordField.getStyleClass().addAll("dialog-text",type.getValue());
+                passwordField.setPromptText(this.placeHolder);
+                passwordField.setText(this.value);
+
+                FIELD = "PASS";
+
+                bodyPane.getChildren().add(passwordField);
             }
             case TEXTAREA -> {
                 textArea = new TextArea();
@@ -108,7 +119,7 @@ public class Dialog extends NotifyBase {
                 textArea.setWrapText(true);
                 textArea.setText(this.value);
 
-                isTextField = false;
+                FIELD = "TEXT_FIELD-A";
 
                 bodyPane.getChildren().add(textArea);
             }
@@ -187,9 +198,15 @@ public class Dialog extends NotifyBase {
         close();
     }
     private String getUserInput() {
-        if (isTextField) return textField.getText().trim();
+        String value = "";
 
-        return textArea.getText().trim();
+        switch (FIELD.toLowerCase()) {
+            case "text" -> value = textField.getText().trim();
+            case "pass" -> value = passwordField.getText().trim();
+            case "text-a" -> value = textArea.getText().trim();
+        }
+
+        return value;
     }
     private VBox parent() {
         VBox vBox = (VBox) getLayout();
