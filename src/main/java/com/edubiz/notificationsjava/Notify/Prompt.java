@@ -3,7 +3,6 @@ package com.edubiz.notificationsjava.Notify;
 import com.edubiz.notificationsjava.Managers.NotifyBase;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyUtils;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyPos;
-import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
