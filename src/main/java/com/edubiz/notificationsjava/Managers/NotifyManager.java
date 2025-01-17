@@ -23,6 +23,7 @@ public class NotifyManager {
     private boolean isNotificationDisplayed = false;
     private final List<String> defaultLibraryStyles = new ArrayList<>(); // Default library styles
     private final List<String> customStyleSheets = new ArrayList<>(); // User-added custom stylesheets
+    private int rootTransparencyLevel = 1;
 
 
     public NotifyManager(Stage stage) {
@@ -42,6 +43,7 @@ public class NotifyManager {
         Platform.runLater(()->{
             initStyles();
             root.getStyleClass().add("root");
+            setRootTransparencyLevel(0);
             root.setVisible(false);
 
             Scene scene = this.stage.getScene();
@@ -57,6 +59,14 @@ public class NotifyManager {
         });
 
         return root;
+    }
+
+    private void setRootTransparencyLevel(int level) {
+        this.root.getStyleClass().clear();
+        this.root.getStyleClass().add("root");
+
+        if (level != 0)
+            this.root.getStyleClass().add("level" + level);
     }
 
     /**
@@ -96,8 +106,10 @@ public class NotifyManager {
      *
      * @return the root AnchorPane.
     */
-    public AnchorPane getRootPane() {
-        return root;
+    public AnchorPane getRootPane() { return root; }
+
+    public void backgroundTransparency(int level) {
+        this.rootTransparencyLevel = level;
     }
 
     public void shutDown() {
@@ -124,6 +136,9 @@ public class NotifyManager {
                 try {
                     NotifyBase notifier = notificationQueue.poll();
                     isNotificationDisplayed = true;
+
+                    // set background transparency
+                    this.setRootTransparencyLevel(this.rootTransparencyLevel);
 
                     root.setManaged(false);
                     root.setVisible(false);
