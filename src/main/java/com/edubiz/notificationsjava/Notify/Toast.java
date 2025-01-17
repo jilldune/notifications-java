@@ -25,10 +25,24 @@ public class Toast extends NotifyBase {
 
     public void create(NotifyAlert type, String message, NotifyPos position) { createToast(type,message,position,true,DURATION); }
 
-    public void create(NotifyAlert type, String message, double delayInSeconds) { createToast(type,message,DEFAULT_POSITION,true,delayInSeconds); }
+    public void create(NotifyAlert type, String message, Boolean animation) { createToast(type,message,DEFAULT_POSITION,animation,DURATION); }
 
-    public void create(NotifyAlert type, String message, NotifyPos position, boolean animation, double delayInSeconds) {
-        createToast(type,message,position,animation,delayInSeconds);
+    public void create(NotifyAlert type, String message, double durationInSeconds) { createToast(type,message,DEFAULT_POSITION,true,durationInSeconds); }
+
+    public void create(NotifyAlert type, String message, NotifyPos position, boolean animation) {
+        createToast(type,message,position,animation,DURATION);
+    }
+
+    public void create(NotifyAlert type, String message, NotifyPos position,double durationInSeconds) {
+        createToast(type,message,position,true,durationInSeconds);
+    }
+
+    public void create(NotifyAlert type, String message, boolean animation, double durationInSeconds) {
+        createToast(type,message,DEFAULT_POSITION,animation,durationInSeconds);
+    }
+
+    public void create(NotifyAlert type, String message, NotifyPos position, boolean animation, double durationInSeconds) {
+        createToast(type,message,position,animation,durationInSeconds);
     }
 
     private void createToast(NotifyAlert type, String message, NotifyPos position, boolean animation, double delayInSeconds) {
@@ -79,9 +93,6 @@ public class Toast extends NotifyBase {
 
         // set the components in the wrapper
         hBox.getChildren().addAll(iconWrapper,text);
-
-        // set auto-sizing
-        hBox.setMaxWidth(200);
 
         delayInSeconds = delayInSeconds < .7 ? DURATION:delayInSeconds;
 
