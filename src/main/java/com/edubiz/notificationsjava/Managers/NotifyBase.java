@@ -6,7 +6,6 @@ import com.edubiz.notificationsjava.NotifierUtil.NotifyAnimation;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
@@ -75,10 +74,10 @@ public abstract class NotifyBase {
         if (animation) {
             this.animation = true;
             this.animations = new NotifyAnimation();
-            this.animations.animate(node,position,stage,duration);
+            this.animations.animate(node,position,this.stage,duration);
 
-            root.setVisible(true);
-            root.setManaged(true);
+            this.root.setVisible(true);
+            this.root.setManaged(true);
 
             return;
         }
@@ -171,20 +170,5 @@ public abstract class NotifyBase {
             (new NotifyAnimation()).removeListeners(stage);
             this.callOnClosed();
         }
-    }
-
-    protected ScrollPane bindFooterScroll(Node footer) {
-        ScrollPane buttonContainerScroll = new ScrollPane();
-        buttonContainerScroll.setContent(footer);
-        buttonContainerScroll.setFitToHeight(true);
-
-        // Enable horizontal scrolling and disable vertical scrolling
-        buttonContainerScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        buttonContainerScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-
-        // Make sure the ScrollPane resizes based on the stage
-        buttonContainerScroll.setPannable(true); // Allow click-and-drag scrolling (optional)
-
-        return buttonContainerScroll;
     }
 }
