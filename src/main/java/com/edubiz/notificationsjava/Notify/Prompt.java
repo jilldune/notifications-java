@@ -23,7 +23,7 @@ public class Prompt extends NotifyBase {
     private String message = "Prompt body text";
     private NotifyPos position = NotifyPos.CENTER;
     private double durationInSeconds = 4.5;
-    private Boolean autoClose = true;
+    private Boolean autoClose = false;
     private Boolean animation = true;
     private final Map<String,Map<String,Object>> buttons = new LinkedHashMap<>();
 

@@ -27,7 +27,7 @@ public class Notification extends NotifyBase {
     private String body = "";
     private double durationInSeconds = 3.5;
     private NotifyPos position = NotifyPos.CENTER;
-    private Boolean autoClose = true;
+    private Boolean autoClose = false;
     private Boolean animation = true;
     private final Map<String,Map<String,Object>> buttons = new LinkedHashMap<>();
 
