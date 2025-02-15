@@ -1,6 +1,8 @@
 package com.edubiz.notificationsjava.Notify;
 
 import com.edubiz.notificationsjava.Managers.NotifyBase;
+import com.edubiz.notificationsjava.NotifierUtil.NotifyAlert;
+import com.edubiz.notificationsjava.NotifierUtil.NotifyType;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyUtils;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyPos;
 import javafx.geometry.Pos;
@@ -15,6 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
+import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.remixicon.RemixiconAL;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -29,6 +32,7 @@ public class Notification extends NotifyBase {
     private NotifyPos position = NotifyPos.CENTER;
     private Boolean autoClose = false;
     private Boolean animation = true;
+    private NotifyAlert alertType = NotifyAlert.NEUTRAL;
     private final Map<String,Map<String,Object>> buttons = new LinkedHashMap<>();
 
     public Notification(Stage stage) { super(stage, new VBox()); }
@@ -36,8 +40,39 @@ public class Notification extends NotifyBase {
     private void createHead(@NotNull VBox parent, String headerText) {
         // create the header text
         Label header = new Label(headerText);
+        String colorStyle = "";
+        Ikon iconCode = null;
+        switch (alertType) {
+            case SUCCESS -> {
+                colorStyle = alertType.getTypeName();
+                iconCode = RemixiconAL.CHECKBOX_CIRCLE_FILL;
+            }
+            case ERROR -> {
+                colorStyle = alertType.getTypeName();
+                iconCode = RemixiconAL.CLOSE_CIRCLE_FILL;
+            }
+            case ALERT -> {
+                colorStyle = alertType.getTypeName();
+                iconCode = RemixiconAL.ALERT_FILL;
+            }
+            case NEUTRAL -> {
+                colorStyle = alertType.getTypeName();
+                iconCode = RemixiconAL.INDETERMINATE_CIRCLE_FILL;
+            }
+            case INFO -> {
+                colorStyle = alertType.getTypeName();
+                iconCode = RemixiconAL.INFORMATION_FILL;
+            }
+            default -> {}
+        }
+        if (! colorStyle.equalsIgnoreCase("neutral") && iconCode != null) {
+            FontIcon icon = new FontIcon(iconCode);
+            icon.getStyleClass().add("icon");
+            header.setGraphic(icon);
+            header.setGraphicTextGap(2.0);
+        }
         header.setTextOverrun(OverrunStyle.ELLIPSIS);
-        header.getStyleClass().add("notification-title");
+        header.getStyleClass().addAll("notification-title",colorStyle);
 
         // create the Icon
         HBox head = getHead(header);
@@ -160,6 +195,10 @@ public class Notification extends NotifyBase {
     }
     public Notification setDuration(Double durationInSeconds) {
         this.durationInSeconds = (durationInSeconds < .7) ? this.durationInSeconds : durationInSeconds;
+        return this;
+    }
+    public Notification setAlertType(NotifyAlert type) {
+        this.alertType = type;
         return this;
     }
     public Notification autoClose(Boolean autoClose) {

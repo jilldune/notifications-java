@@ -50,11 +50,9 @@ public class EntryNotification extends Application {
                                 .setBody("I am a notification")
                                 .setPosition(NotifyPos.CENTER)
                                 .setAnimation(true)
-                                .autoClose(false)
+                                .setAlertType(NotifyAlert.ALERT)
                                 .setDuration(5.5)
-                                .setButton("exit", ()->{
-
-                                },"-fx-background-color: red;-fx-text-fill: white;")
+                                .setButton("exit", ()-> System.exit(0),"-fx-background-color: red;-fx-text-fill: white;")
                                 .setButton("cancel",()->{})
                                 .create();
                     })
