@@ -24,7 +24,7 @@ public class Dialog extends NotifyBase {
     private PasswordField passwordField;
 
     //    class variables
-    private static String FIELD = "text";
+    private static String FIELD = NotifyInput.TEXT_FIELD.getValue();
     private String headerText = "Dialog";
     private NotifyInput type = NotifyInput.TEXT_FIELD;
     private String value = "";
@@ -98,7 +98,7 @@ public class Dialog extends NotifyBase {
                 textField.setPromptText(this.placeHolder);
                 textField.setText(this.value);
 
-                FIELD = "TEXT_FIELD";
+                FIELD = this.type.getValue();
 
                 bodyPane.getChildren().add(textField);
             }
@@ -108,7 +108,7 @@ public class Dialog extends NotifyBase {
                 passwordField.setPromptText(this.placeHolder);
                 passwordField.setText(this.value);
 
-                FIELD = "PASS";
+                FIELD = this.type.getValue();
 
                 bodyPane.getChildren().add(passwordField);
             }
@@ -119,7 +119,7 @@ public class Dialog extends NotifyBase {
                 textArea.setWrapText(true);
                 textArea.setText(this.value);
 
-                FIELD = "TEXT_FIELD-A";
+                FIELD = this.type.getValue();
 
                 bodyPane.getChildren().add(textArea);
             }
@@ -202,8 +202,8 @@ public class Dialog extends NotifyBase {
 
         switch (FIELD.toLowerCase()) {
             case "text" -> value = textField.getText().trim();
-            case "pass" -> value = passwordField.getText().trim();
-            case "text-a" -> value = textArea.getText().trim();
+            case "password" -> value = passwordField.getText().trim();
+            case "textarea" -> value = textArea.getText().trim();
         }
 
         return value;
