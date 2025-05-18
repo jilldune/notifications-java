@@ -144,11 +144,11 @@ public class Dialog extends NotifyBase {
 
         Node input = getInput();
 
-        if (input instanceof TextField) {
-            ((TextField) input).setOnAction(handler);
-        } else if (input instanceof PasswordField) {
-            ((PasswordField) input).setOnAction(handler);
-        } else if (input instanceof TextArea) {
+        if (input instanceof TextField) ((TextField) input).setOnAction(handler);
+
+        if (input instanceof PasswordField) ((PasswordField) input).setOnAction(handler);
+
+        if (input instanceof TextArea) {
             input.setOnKeyPressed(e -> {
                 if (e.getCode() == KeyCode.ENTER && e.isControlDown()) {
                     handler.handle(new ActionEvent());
@@ -185,7 +185,7 @@ public class Dialog extends NotifyBase {
 
                 // bind action to button
                 Object actionObj = properties.get("action");
-                EventHandler<ActionEvent> handler = getActionEventEventHandler(label, actionObj);
+                EventHandler<ActionEvent> handler = getActionEventEventHandler(actionObj);
 
                 // bind action events
                 button.setOnAction(handler);
@@ -208,7 +208,7 @@ public class Dialog extends NotifyBase {
 
     @SuppressWarnings("unchecked")
     @NotNull
-    private EventHandler<ActionEvent> getActionEventEventHandler(String label, Object actionObj) {
+    private EventHandler<ActionEvent> getActionEventEventHandler(Object actionObj) {
         EventHandler<ActionEvent> handler;
         if (actionObj instanceof Runnable action) {
             handler = ev -> {
@@ -224,7 +224,7 @@ public class Dialog extends NotifyBase {
             };
         }
         else {
-            Runnable defaultAction = () -> System.out.println(label + " clicked");
+            Runnable defaultAction = () -> {};
             handler = e -> {
                 defaultAction.run();
                 close();
@@ -259,7 +259,6 @@ public class Dialog extends NotifyBase {
         return "";
     }
     private Node getInput() {
-        System.out.println(FIELD.toLowerCase());
         switch (FIELD.toLowerCase()) {
             case "text_field" -> {
               return textField;
