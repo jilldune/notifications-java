@@ -147,7 +147,7 @@ public class NotifyUtils {
         sceneHeight = scene.getHeight();
 
         // Set Values
-        geoObj.put("width",width);
+        geoObj.put("width", width);
         geoObj.put("height",height);
         geoObj.put("sceneWidth",sceneWidth);
         geoObj.put("sceneHeight",sceneHeight);

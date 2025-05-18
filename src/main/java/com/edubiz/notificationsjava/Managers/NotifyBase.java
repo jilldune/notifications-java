@@ -21,8 +21,8 @@ public abstract class NotifyBase {
     private Node node = null;
     private AnchorPane root;
     private NotifyAnimation animations;
-    private Boolean animation = true;
-    private Boolean animateNotification = true;
+    private boolean animation = true;
+    private boolean animateNotification = true;
     private NotifyPos position = NotifyPos.TOP;
     private double duration = 5;
     private final Map<String, Object> closeCallbacks = new HashMap<>();
@@ -107,11 +107,11 @@ public abstract class NotifyBase {
     }
 
     // Method for displaying any type of notification
-    protected void show(Node node, NotifyPos position, Boolean animation, double duration) {
+    protected void show(Node node, NotifyPos position, boolean animation, double duration) {
         setProps(node,position,animation,duration);
     }
 
-    private void setProps(Node node, NotifyPos pos, Boolean animation, double duration) {
+    private void setProps(Node node, NotifyPos pos, boolean animation, double duration) {
         this.node = node;
         this.position = pos;
         this.animateNotification = animation;
@@ -136,7 +136,7 @@ public abstract class NotifyBase {
 
     private void run() {
         if (this.node != null) {
-            if (this.animation != null) {
+            if (this.animation) {
                 this.callOnCloseRequest();
                 this.animations.reverseTransition(() -> {
                     this.callOnClosed();
