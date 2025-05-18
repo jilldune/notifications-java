@@ -4,8 +4,12 @@ import com.edubiz.notificationsjava.Managers.NotifyBase;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyUtils;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyPos;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyInput;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
@@ -16,6 +20,7 @@ import org.kordamp.ikonli.remixicon.RemixiconAL;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public class Dialog extends NotifyBase {
@@ -32,9 +37,11 @@ public class Dialog extends NotifyBase {
     private String label = null;
     private NotifyPos position = NotifyPos.CENTER;
     private double durationInSeconds = 4.5;
-    private Boolean autoClose = false;
-    private Boolean animation = true;
+    private boolean autoClose = false;
+    private boolean animation = true;
     private final Map<String,Map<String,Object>> buttons = new LinkedHashMap<>();
+    private boolean bindInputAction = false;
+    private Integer buttonIndex = null;
 
     public Dialog(Stage stage) { super(stage, new VBox()); }
 
@@ -108,7 +115,7 @@ public class Dialog extends NotifyBase {
                 passwordField.setPromptText(this.placeHolder);
                 passwordField.setText(this.value);
 
-                FIELD = "PASS";
+                FIELD = "PASSWORD";
 
                 bodyPane.getChildren().add(passwordField);
             }
@@ -119,7 +126,7 @@ public class Dialog extends NotifyBase {
                 textArea.setWrapText(true);
                 textArea.setText(this.value);
 
-                FIELD = "TEXT_FIELD-A";
+                FIELD = "TEXT_AREA";
 
                 bodyPane.getChildren().add(textArea);
             }
@@ -128,6 +135,28 @@ public class Dialog extends NotifyBase {
         // add to the parent
         parent.getChildren().add(bodyPane);
     }
+    // Bind input action
+    private void bindInputAction(int index,EventHandler<ActionEvent> handler) {
+        if (! bindInputAction) return;
+        if (buttonIndex == null) return;
+
+        if (buttonIndex != index) return;
+
+        Node input = getInput();
+
+        if (input instanceof TextField) {
+            ((TextField) input).setOnAction(handler);
+        } else if (input instanceof PasswordField) {
+            ((PasswordField) input).setOnAction(handler);
+        } else if (input instanceof TextArea) {
+            input.setOnKeyPressed(e -> {
+                if (e.getCode() == KeyCode.ENTER && e.isControlDown()) {
+                    handler.handle(new ActionEvent());
+                }
+            });
+        }
+    }
+
     // create the MyNotifier Footer
     private void createFooter(VBox parent,Map<String,Map<String,Object>> buttons) {
         if (buttons == null) return;
@@ -142,6 +171,7 @@ public class Dialog extends NotifyBase {
         buttonContainer.getStyleClass().add("button-container");
 
         // create buttons
+        AtomicInteger i = new AtomicInteger(0);
         buttons.forEach((label, properties) -> {
             if (properties != null) {
                 Button button = new Button(label);
@@ -155,32 +185,19 @@ public class Dialog extends NotifyBase {
 
                 // bind action to button
                 Object actionObj = properties.get("action");
-                if (actionObj instanceof Runnable action) {
-                    button.setOnAction(e -> {
-                        action.run();
-                        close();
-                    });
-                }
-                else if (actionObj instanceof Consumer) {
-                    Consumer<String> action = (Consumer<String>) actionObj;
-                    button.setOnAction(e -> {
-                        action.accept(getUserInput());
-                        close();
-                    });
-                }
-                else {
-                    Runnable defaultAction = () -> System.out.println(label + " clicked");
-                    button.setOnAction(e -> {
-                        defaultAction.run();
-                        close();
-                    });
-                }
+                EventHandler<ActionEvent> handler = getActionEventEventHandler(label, actionObj);
+
+                // bind action events
+                button.setOnAction(handler);
+                bindInputAction(i.get(),handler);
 
                 buttonContainer.getChildren().add(button);
             }
             else {
                 System.err.println("Properties map is null for button: " + label);
             }
+
+            i.getAndIncrement();
         });
 
         // ADD BUTTONS TO THE FOOTER
@@ -188,8 +205,37 @@ public class Dialog extends NotifyBase {
 
         parent.getChildren().add(footerContainer);
     }
+
+    @SuppressWarnings("unchecked")
+    @NotNull
+    private EventHandler<ActionEvent> getActionEventEventHandler(String label, Object actionObj) {
+        EventHandler<ActionEvent> handler;
+        if (actionObj instanceof Runnable action) {
+            handler = ev -> {
+                action.run();
+                close();
+            };
+        }
+        else if (actionObj instanceof Consumer) {
+            Consumer<String> action = (Consumer<String>) actionObj;
+            handler = ev -> {
+                action.accept(getUserInput());
+                close();
+            };
+        }
+        else {
+            Runnable defaultAction = () -> System.out.println(label + " clicked");
+            handler = e -> {
+                defaultAction.run();
+                close();
+            };
+        }
+
+        return handler;
+    }
+
     // Auto closing the function
-    private void autoClosePrompt(Boolean autoClose, double duration) {
+    private void autoClosePrompt(boolean autoClose, double duration) {
         if (!autoClose) return;
 
         NotifyUtils.timeOut(this::run,duration == 0? this.durationInSeconds:duration);
@@ -198,15 +244,35 @@ public class Dialog extends NotifyBase {
         close();
     }
     private String getUserInput() {
-        String value = "";
-
         switch (FIELD.toLowerCase()) {
-            case "text" -> value = textField.getText().trim();
-            case "pass" -> value = passwordField.getText().trim();
-            case "text-a" -> value = textArea.getText().trim();
+            case "text_field" -> {
+                return textField.getText().trim();
+            }
+            case "password" -> {
+                return passwordField.getText().trim();
+            }
+            case "text_area" -> {
+                return textArea.getText().trim();
+            }
         }
 
-        return value;
+        return "";
+    }
+    private Node getInput() {
+        System.out.println(FIELD.toLowerCase());
+        switch (FIELD.toLowerCase()) {
+            case "text_field" -> {
+              return textField;
+            }
+            case "password" -> {
+                return passwordField;
+            }
+            case "text_area" -> {
+                return textArea;
+            }
+        }
+
+        return null;
     }
     private VBox parent() {
         VBox vBox = (VBox) getLayout();
@@ -268,6 +334,12 @@ public class Dialog extends NotifyBase {
     }
     public Dialog setButton(String label, Runnable action, String style) {
         this.buttons.put(label,Map.of("action",action,"style",style));
+        return this;
+    }
+    public Dialog bindInputAction(int buttonIndex) {
+        bindInputAction = true;
+        this.buttonIndex = buttonIndex;
+
         return this;
     }
     public void create() {

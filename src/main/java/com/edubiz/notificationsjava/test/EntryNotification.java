@@ -39,10 +39,12 @@ public class EntryNotification extends Application {
                         dialog.setOnCloseRequest(()-> System.out.println("On close request..."));
                         dialog.setOnClosed(()-> System.out.println("on close..."));
                         dialog.setHeader("Dialog Notification")
+                                .setButton("save",(text) -> System.out.println(text))
+                                .setButton("cancel",() -> {})
+                                .bindInputAction(0)
                                 .setLabel("This is a dialogue body\nTell us about you.")
                                 .setType(NotifyInput.TEXTAREA)
                                 .create();
-
                     })
                     .setButton("notification",()->{
                         Notification notify = manager.create(NotifyType.NOTIFICATION);
