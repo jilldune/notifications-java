@@ -171,7 +171,6 @@ $toastNeutral: #7f8cbd;
     -fx-background-color: inherit;
 }
 
-
 .notification-close,
 .prompt-close,
 .dialog-close {
@@ -182,6 +181,28 @@ $toastNeutral: #7f8cbd;
     -fx-cursor: hand;
 }
 
+.notification-footer,
+.prompt-footer,
+.dialog-footer {
+    -fx-padding: 2px;
+    -fx-background-radius: 0;
+    -fx-background-color: #eee;
+}
+.notification-footer .button,
+.prompt-footer .button,
+.dialog-footer .button {
+    -fx-min-width: 40px;
+    -fx-background-radius: 0;
+    -fx-border-color: #e4e4e4;
+    -fx-background-color: #e4e4e4;
+    -fx-cursor: hand;
+}
+.notification-footer .button:hover,
+.prompt-footer .button:hover,
+.dialog-footer .button:hover {
+    -fx-border-color: #e4e4e4;
+    -fx-background-color: #eee;
+}
 /**
     ================================
     ======== NOTIFICATION ==========
@@ -228,21 +249,6 @@ $toastNeutral: #7f8cbd;
     -fx-background-color: #fff;
 }
 
-.notification-footer {
-    -fx-padding: 2px;
-    -fx-background-radius: 0;
-    -fx-background-color: #eee;
-}
-.notification-footer .button {
-    -fx-min-width: 40px;
-    -fx-background-radius: 0;
-    -fx-background-color: #e4e4e4;
-    -fx-cursor: hand;
-}
-.notification-footer .button:hover {
-    -fx-background-color: #eee;
-}
-
 /**
     ==========================
     ======== PROMPT ==========
@@ -275,19 +281,6 @@ $toastNeutral: #7f8cbd;
     -fx-background-radius: 0;
     -fx-background-insets: 0;
     -fx-background-color: #fff;
-}
-.prompt-footer {
-    -fx-padding: 2px;
-    -fx-background-color: #eee;
-}
-.prompt-footer .scroll-pane {
-    -fx-padding: 0;
-    -fx-background-color: green;
-}
-.prompt-footer .button {
-    -fx-background-radius: 1px;
-    -fx-background-color: #e4e4e4;
-    -fx-cursor: hand;
 }
 
 /**
@@ -342,18 +335,6 @@ $toastNeutral: #7f8cbd;
     -fx-background-radius: 0;
     -fx-background-insets: 0;
     -fx-background-color: #fff;
-}
-
-.dialog-footer {
-    -fx-pref-width: 250px;
-    -fx-padding: 5px 2px 5px 5px;
-    -fx-background-radius: 0 0 3px 3px;
-    -fx-background-color: #eee;
-}
-.dialog-footer .button {
-    -fx-border-radius: 5px;
-    -fx-background-color: #e4e4e4;
-    -fx-cursor: hand;
 }
 
 
