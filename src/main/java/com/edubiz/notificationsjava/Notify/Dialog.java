@@ -262,34 +262,20 @@ public class Dialog extends NotifyBase {
         close();
     }
     private String getUserInput() {
-        switch (FIELD.toLowerCase()) {
-            case "text" -> {
-                return textField.getText().trim();
-            }
-            case "password" -> {
-                return passwordField.getText().trim();
-            }
-            case "textarea" -> {
-                return textArea.getText().trim();
-            }
-        }
-
-        return "";
+        return switch (FIELD.toLowerCase()) {
+            case "text" -> textField.getText().trim();
+            case "password" -> passwordField.getText().trim();
+            case "textarea" -> textArea.getText().trim();
+            default -> throw new IllegalStateException("Unexpected value: " + FIELD.toLowerCase());
+        };
     }
     private Node getInput() {
-        switch (FIELD.toLowerCase()) {
-            case "text" -> {
-              return textField;
-            }
-            case "password" -> {
-                return passwordField;
-            }
-            case "textarea" -> {
-                return textArea;
-            }
-        }
-
-        return null;
+        return switch (FIELD.toLowerCase()) {
+            case "text" -> textField;
+            case "password" -> passwordField;
+            case "textarea" -> textArea;
+            default -> throw new IllegalStateException("Unexpected value: " + FIELD.toLowerCase());
+        };
     }
     private VBox parent() {
         VBox vBox = (VBox) getLayout();
