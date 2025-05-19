@@ -263,13 +263,13 @@ public class Dialog extends NotifyBase {
     }
     private String getUserInput() {
         switch (FIELD.toLowerCase()) {
-            case "text_field" -> {
+            case "text" -> {
                 return textField.getText().trim();
             }
             case "password" -> {
                 return passwordField.getText().trim();
             }
-            case "text_area" -> {
+            case "textarea" -> {
                 return textArea.getText().trim();
             }
         }
@@ -278,13 +278,13 @@ public class Dialog extends NotifyBase {
     }
     private Node getInput() {
         switch (FIELD.toLowerCase()) {
-            case "text_field" -> {
+            case "text" -> {
               return textField;
             }
             case "password" -> {
                 return passwordField;
             }
-            case "text_area" -> {
+            case "textarea" -> {
                 return textArea;
             }
         }
