@@ -28,7 +28,7 @@ public class Dialog extends NotifyBase {
     private PasswordField passwordField;
 
     //    class variables
-    private static String FIELD = "text";
+    private static String FIELD = NotifyInput.TEXT_FIELD.getValue();
     private String headerText = "Dialog";
     private NotifyInput type = NotifyInput.TEXT_FIELD;
     private String value = "";
@@ -123,7 +123,7 @@ public class Dialog extends NotifyBase {
                 textField.setPromptText(this.placeHolder);
                 textField.setText(this.value);
 
-                FIELD = "TEXT_FIELD";
+                FIELD = this.type.getValue();
 
                 bodyPane.getChildren().add(textField);
             }
@@ -133,7 +133,7 @@ public class Dialog extends NotifyBase {
                 passwordField.setPromptText(this.placeHolder);
                 passwordField.setText(this.value);
 
-                FIELD = "PASSWORD";
+                FIELD = this.type.getValue();
 
                 bodyPane.getChildren().add(passwordField);
             }
@@ -144,7 +144,7 @@ public class Dialog extends NotifyBase {
                 textArea.setWrapText(true);
                 textArea.setText(this.value);
 
-                FIELD = "TEXT_AREA";
+                FIELD = this.type.getValue();
 
                 bodyPane.getChildren().add(textArea);
             }
