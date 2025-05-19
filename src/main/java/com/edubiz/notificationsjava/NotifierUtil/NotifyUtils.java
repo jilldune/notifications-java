@@ -133,9 +133,18 @@ public class NotifyUtils {
             region.applyCss();
             region.layout();
 
-            width = region.prefWidth(-1);
-            height = region.prefHeight(-1);
-        } else {
+            width = region.getPrefWidth();
+            height = region.getPrefHeight();
+
+            if (width == Region.USE_COMPUTED_SIZE || Double.isNaN(width)) width = region.getMaxWidth();
+
+            if (height == Region.USE_COMPUTED_SIZE || Double.isNaN(height)) height = region.getMaxHeight();
+
+            // check if with is less than 0
+            if (width < 0) width = Math.max(width, Math.max(region.prefWidth(-1),region.getMinWidth()));
+            if (height < 0) height = Math.max(height, Math.max(region.prefHeight(-1),region.getMinHeight()));
+        }
+        else {
             Bounds bounds = node.getBoundsInLocal();
 
             width = bounds.getWidth();
