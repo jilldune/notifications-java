@@ -64,7 +64,6 @@
     -fx-icon-color: #fff;
 }
 .button-container {
-    -fx-pref-width: 250px;
     -fx-padding: 3px;
     -fx-background-color: transparent;
 }
@@ -192,6 +191,7 @@ $toastNeutral: #7f8cbd;
 .prompt-footer .button,
 .dialog-footer .button {
     -fx-min-width: 40px;
+    -fx-min-height: 25px;
     -fx-background-radius: 0;
     -fx-border-color: #e4e4e4;
     -fx-background-color: #e4e4e4;

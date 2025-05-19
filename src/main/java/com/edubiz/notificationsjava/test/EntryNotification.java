@@ -43,7 +43,7 @@ public class EntryNotification extends Application {
 
         VBox container = new VBox(10);
         container.getChildren().addAll(notification,prompt,toast,dialog);
-        container.setAlignment(Pos.TOP_CENTER);
+        container.setAlignment(Pos.CENTER);
         container.setFillWidth(true);
 
         root.getChildren().add(container);
@@ -80,11 +80,10 @@ public class EntryNotification extends Application {
         dialog.setCursor(Cursor.HAND);
         dialog.setOnAction(e -> {
             Dialog dialogNotification = manager.create(NotifyType.DIALOG);
-            dialogNotification.setOnCloseRequest(()-> System.out.println("On close request..."));
-            dialogNotification.setOnClosed(()-> System.out.println("on close..."));
             dialogNotification.setHeader("Dialog Notification")
                     .setButton("save",(text) -> System.out.println(text))
                     .setButton("cancel",() -> {})
+                    .setButton("cancel5 me",() -> {})
                     .bindInputAction(0)
                     .setLabel("This is a dialogue body\nTell us about you.")
                     .setType(NotifyInput.TEXTAREA)

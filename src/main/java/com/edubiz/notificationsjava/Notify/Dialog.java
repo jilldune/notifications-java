@@ -183,9 +183,10 @@ public class Dialog extends NotifyBase {
         VBox footerContainer = new VBox();
         footerContainer.getStyleClass().add("dialog-footer");
 
-        HBox buttonContainer = new HBox();
-        buttonContainer.setSpacing(5);
+        HBox buttonContainer = new HBox(5);
         buttonContainer.setAlignment(Pos.CENTER_RIGHT);
+        buttonContainer.setMinWidth(Region.USE_PREF_SIZE);
+        buttonContainer.setFillHeight(true);
         buttonContainer.getStyleClass().add("button-container");
 
         // create buttons
@@ -221,6 +222,7 @@ public class Dialog extends NotifyBase {
         // ADD BUTTONS TO THE FOOTER
         footerContainer.getChildren().add(buttonContainer);
 
+        // ADD THE FOOTER
         parent.getChildren().add(footerContainer);
     }
 
