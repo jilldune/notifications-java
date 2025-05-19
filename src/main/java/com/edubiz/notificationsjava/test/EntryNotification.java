@@ -49,13 +49,14 @@ public class EntryNotification extends Application {
                     .setButton("notification",()->{
                         Notification notify = manager.create(NotifyType.NOTIFICATION);
                         notify.setHeader("Notification")
-                                .setBody("I am a notification")
-                                .setPosition(NotifyPos.CENTER)
+                                .setBody("I am a notification for the next generation I am a notification for the next generation I am a notification for the next generation I am a notification for the next generation I am a notification for the next generation I am a notification for the next generation I am a notification for the next generation I am a notification for the next generation")
+                                .setPosition(NotifyPos.TOP)
                                 .setAnimation(true)
                                 .setAlertType(NotifyAlert.ALERT)
                                 .setDuration(5.5)
-                                .setButton("exit", ()-> System.exit(0),"-fx-background-color: red;-fx-text-fill: white;")
+                                .setButton("exit", ()-> System.exit(0),"-fx-background-color: red;-fx-border-color: red;-fx-text-fill: white;")
                                 .setButton("cancel",()->{})
+                                .setButton("cancel me",()->{})
                                 .create();
                     })
                     .setButton("toast",()->{
