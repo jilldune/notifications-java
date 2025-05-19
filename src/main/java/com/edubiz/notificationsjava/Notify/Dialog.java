@@ -10,8 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
@@ -60,18 +59,37 @@ public class Dialog extends NotifyBase {
     }
     @NotNull
     private HBox head(Label header) {
+        // header wrapper
+        BorderPane headerBorderPane = new BorderPane();
+        headerBorderPane.setBackground(Background.EMPTY);
+
         FontIcon icon = new FontIcon(RemixiconAL.CLOSE_FILL);
         icon.getStyleClass().add("icon");
 
-        Label btnIcon = new Label();
+        Button btnIcon = new Button();
         btnIcon.setGraphic(icon);
         btnIcon.setAlignment(Pos.CENTER);
         btnIcon.getStyleClass().addAll("dialog-close","close-btn");
 
-        btnIcon.setOnMouseClicked(event -> close());
+        btnIcon.setOnAction(event -> close());
+
+        // wrap header in an anchor pane
+        // main wrapper
+        AnchorPane wrapper = new AnchorPane();
+        wrapper.setPrefWidth(500);
+
+        headerBorderPane.setCenter(wrapper);
+        headerBorderPane.setRight(btnIcon);
+
+        // wrap header
+        AnchorPane.setTopAnchor(header,0.0);
+        AnchorPane.setLeftAnchor(header,0.0);
+        AnchorPane.setBottomAnchor(header, 0.0);
+
+        wrapper.getChildren().add(header);
 
         // create the head container
-        HBox head = new HBox(header,btnIcon);// Add label and close icon to the head
+        HBox head = new HBox(headerBorderPane);// Add label and close icon to the head
         head.setAlignment(Pos.CENTER_LEFT);
 
         return head;

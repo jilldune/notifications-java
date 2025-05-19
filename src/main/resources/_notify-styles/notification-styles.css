@@ -136,34 +136,58 @@ $toastNeutral: #7f8cbd;
 
 /**
     ================================
-    ======== NOTIFICATION ==========
+    ======== COMMON ==========
     ================================
 */
-.notification {
-    -fx-pref-width: 250px;
+.notification,
+.prompt,
+.dialog {
+    -fx-min-width: 250px;
+    -fx-max-width: 250px;
     -fx-text-fill: #eee;
-    -fx-padding: 2px;
-    -fx-border-radius: 3px;
-    -fx-background-radius: 3px;
+    -fx-padding: 0;
+    -fx-background-radius: 0;
     -fx-background-color: #fff;
 }
 
-.notification-head {
+.notification-head,
+.prompt-head,
+.dialog-head {
     -fx-padding: 0 0 2px 0;
-    -fx-border: 0 0 2px 0;
+    -fx-border: 0 0 1px 0;
     -fx-border-style: solid;
     -fx-border-color: transparent transparent #eee transparent;
     -fx-background-color: white;
 }
 
-.notification-title {
+.notification-title,
+.prompt-title,
+.dialog-title {
     -fx-font-family: "Roboto Condensed";
-    -fx-pref-width: 210px;
     -fx-pref-height: 25px;
     -fx-text-fill: #000;
     -fx-font-weight: 700;
+    -fx-padding: 0 0 0 3px;
     -fx-background-color: inherit;
 }
+
+
+.notification-close,
+.prompt-close,
+.dialog-close {
+    -fx-pref-width: 25px;
+    -fx-pref-height: 25px;
+    -fx-background-radius: 0;
+    -fx-background-color: #eee;
+    -fx-cursor: hand;
+}
+
+/**
+    ================================
+    ======== NOTIFICATION ==========
+    ================================
+*/
+
 .notification-title.success .icon {
     -fx-icon-color: #2ecc71;
 }
@@ -180,23 +204,11 @@ $toastNeutral: #7f8cbd;
     -fx-icon-color: #7f8cbd;
 }
 
-.notification-close {
-    -fx-pref-width: 40px;
-    -fx-pref-height: 25px;
-    -fx-cursor: hand;
-    -fx-border-radius: 3px;
-    -fx-background-radius: 3px;
-    -fx-background-color: #eee;
-}
-
-
 /*Notification body*/
 .notification-body {
     -fx-font-family: "Poppins";
-    -fx-pref-width: 250;
-    -fx-pref-height: 60px;
-    -fx-min-height: 50px;
-    -fx-max-height: 100px;
+    -fx-min-height: 60px;
+    -fx-max-height: 120px;
     -fx-text-fill: #000;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
@@ -217,14 +229,18 @@ $toastNeutral: #7f8cbd;
 }
 
 .notification-footer {
-    -fx-padding: 5px 2px 5px 5px;
-    -fx-background-radius: 0 0 3px 3px;
+    -fx-padding: 2px;
+    -fx-background-radius: 0;
     -fx-background-color: #eee;
 }
 .notification-footer .button {
-    -fx-border-radius: 5px;
+    -fx-min-width: 40px;
+    -fx-background-radius: 0;
     -fx-background-color: #e4e4e4;
     -fx-cursor: hand;
+}
+.notification-footer .button:hover {
+    -fx-background-color: #eee;
 }
 
 /**
@@ -232,37 +248,6 @@ $toastNeutral: #7f8cbd;
     ======== PROMPT ==========
     ==========================
 */
-.prompt {
-    -fx-pref-width: 250px;
-    -fx-text-fill: #eee;
-    -fx-padding: 2px;
-    -fx-border-radius: 3px;
-    -fx-background-radius: 3px;
-    -fx-background-color: #fff;
-}
-
-.prompt-head {
-    -fx-padding: 0 0 2px 0;
-    -fx-border: 0 0 2px 0;
-    -fx-border-style: solid;
-    -fx-border-color: transparent transparent #eee transparent;
-    -fx-background-color: white;
-}
-
-.prompt-title {
-    -fx-font-family: "Roboto Condensed";
-    -fx-min-width: 210px;
-    -fx-pref-height: 25px;
-    -fx-text-fill: #000;
-    -fx-font-weight: 700;
-}
-
-.prompt-close {
-    -fx-pref-width: 40px;
-    -fx-pref-height: 25px;
-    -fx-cursor: hand;
-    -fx-background-color: #eee;
-}
 
 /*prompt body*/
 /*Notification body*/
@@ -310,40 +295,6 @@ $toastNeutral: #7f8cbd;
     ======== DIALOG ==========
     ==========================
 */
-.dialog {
-    -fx-pref-width: 250px;
-    -fx-text-fill: #eee;
-    -fx-padding: 2px;
-    -fx-border-radius: 3px;
-    -fx-background-radius: 3px;
-    -fx-background-color: #fff;
-}
-
-.dialog-head {
-    -fx-padding: 0 0 2px 0;
-    -fx-border: 0 0 2px 0;
-    -fx-border-style: solid;
-    -fx-border-color: transparent transparent #eee transparent;
-    -fx-background-color: white;
-}
-
-.dialog-title {
-    -fx-font-family: "Roboto Condensed";
-    -fx-pref-width: 220px;
-    -fx-pref-height: 25px;
-    -fx-text-fill: #000;
-    -fx-font-weight: 700;
-    -fx-background-color: inherit;
-}
-
-.dialog-close {
-    -fx-pref-width: 40px;
-    -fx-pref-height: 25px;
-    -fx-cursor: hand;
-    -fx-border-radius: 3px;
-    -fx-background-radius: 3px;
-    -fx-background-color: #eee;
-}
 
 /*dialog body*/
 .dialog-body {

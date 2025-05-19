@@ -2,7 +2,6 @@ package com.edubiz.notificationsjava.Notify;
 
 import com.edubiz.notificationsjava.Managers.NotifyBase;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyAlert;
-import com.edubiz.notificationsjava.NotifierUtil.NotifyType;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyUtils;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyPos;
 import javafx.geometry.Pos;
@@ -13,8 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 import org.kordamp.ikonli.Ikon;
@@ -42,6 +40,7 @@ public class Notification extends NotifyBase {
         Label header = new Label(headerText);
         String colorStyle = "";
         Ikon iconCode = null;
+
         switch (alertType) {
             case SUCCESS -> {
                 colorStyle = alertType.getTypeName();
@@ -65,12 +64,14 @@ public class Notification extends NotifyBase {
             }
             default -> {}
         }
+
         if (! colorStyle.equalsIgnoreCase("neutral") && iconCode != null) {
             FontIcon icon = new FontIcon(iconCode);
             icon.getStyleClass().add("icon");
             header.setGraphic(icon);
             header.setGraphicTextGap(2.0);
         }
+
         header.setTextOverrun(OverrunStyle.ELLIPSIS);
         header.getStyleClass().addAll("notification-title",colorStyle);
 
@@ -83,18 +84,37 @@ public class Notification extends NotifyBase {
     }
     @NotNull
     private HBox getHead(Label header) {
+        // header wrapper
+        BorderPane headerBorderPane = new BorderPane();
+        headerBorderPane.setBackground(Background.EMPTY);
+
         FontIcon icon = new FontIcon(RemixiconAL.CLOSE_FILL);
         icon.getStyleClass().add("icon");
 
-        Label btnIcon = new Label();
+        Button btnIcon = new Button();
         btnIcon.setGraphic(icon);
         btnIcon.setAlignment(Pos.CENTER);
         btnIcon.getStyleClass().addAll("notification-close","close-btn");
 
-        btnIcon.setOnMouseClicked(event -> close());
+        btnIcon.setOnAction(event -> close());
+
+        // wrap header in an anchor pane
+        // main wrapper
+        AnchorPane wrapper = new AnchorPane();
+        wrapper.setPrefWidth(500);
+
+        headerBorderPane.setCenter(wrapper);
+        headerBorderPane.setRight(btnIcon);
+
+        // wrap header
+        AnchorPane.setTopAnchor(header,0.0);
+        AnchorPane.setLeftAnchor(header,0.0);
+        AnchorPane.setBottomAnchor(header, 0.0);
+
+        wrapper.getChildren().add(header);
 
         // create the head container
-        HBox head = new HBox(header,btnIcon);// Add label and close icon to the head
+        HBox head = new HBox(headerBorderPane);// Add label and close icon to the head
         head.setAlignment(Pos.CENTER_LEFT);
 
         return head;
@@ -103,10 +123,12 @@ public class Notification extends NotifyBase {
     // create MyNotifier message body
     private void createBody(VBox parent, String bodyText) {
         // add to the parent
-        parent.getChildren().add(getTextArea(bodyText));
+        parent.getChildren().add(getBody(bodyText));
     }
     @NotNull
-    private TextArea getTextArea(String bodyText) {
+    private AnchorPane getBody(String bodyText) {
+        AnchorPane body = new AnchorPane();
+
         TextArea messageArea = new TextArea();
         messageArea.setText(bodyText);
         messageArea.setWrapText(true);
@@ -115,7 +137,16 @@ public class Notification extends NotifyBase {
         messageArea.setCursor(Cursor.DEFAULT);
         messageArea.getStyleClass().add("notification-body");
 
-        return messageArea;
+        // set anchor positions
+        AnchorPane.setTopAnchor(messageArea,0.0);
+        AnchorPane.setRightAnchor(messageArea,0.0);
+        AnchorPane.setBottomAnchor(messageArea,0.0);
+        AnchorPane.setLeftAnchor(messageArea,0.0);
+
+        // add to main body
+        body.getChildren().add(messageArea);
+
+        return body;
     }
 
     // create the MyNotifier Footer
@@ -179,7 +210,7 @@ public class Notification extends NotifyBase {
         return vBox;
     }
 
-    // =============== Plain Methods ==================
+    // =============== Exposed Methods ==================
 
     public Notification setHeader(String headerText) {
         this.headerText = headerText;
