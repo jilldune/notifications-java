@@ -26,7 +26,7 @@ public class Notification extends NotifyBase {
     //    class variables
     private String headerText = "Notifier";
     private String body = "";
-    private double durationInSeconds = 3.5;
+    private double durationInSeconds = .5;
     private NotifyPos position = NotifyPos.CENTER;
     private Boolean autoClose = false;
     private Boolean animation = true;
@@ -200,7 +200,7 @@ public class Notification extends NotifyBase {
     private void autoCloseNotification(Boolean autoClose,double duration) {
         if (!autoClose) return;
 
-        NotifyUtils.timeOut(this::run,duration == 0? this.durationInSeconds:duration);
+        NotifyUtils.timeOut(this::run,duration <= 0? this.durationInSeconds:duration);
     }
     private VBox parent() {
         VBox vBox = (VBox) getLayout();
@@ -225,7 +225,7 @@ public class Notification extends NotifyBase {
         return this;
     }
     public Notification setDuration(Double durationInSeconds) {
-        this.durationInSeconds = (durationInSeconds < .7) ? this.durationInSeconds : durationInSeconds;
+        this.durationInSeconds = durationInSeconds;
         return this;
     }
     public Notification setAlertType(NotifyAlert type) {

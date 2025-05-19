@@ -24,7 +24,7 @@ public abstract class NotifyBase {
     private boolean animation = true;
     private boolean animateNotification = true;
     private NotifyPos position = NotifyPos.TOP;
-    private double duration = 5;
+    private double duration = 0.5;
     private final Map<String, Object> closeCallbacks = new HashMap<>();
     private Runnable onCloseRequest;
     private Runnable onClosed;

@@ -1,7 +1,6 @@
 package com.edubiz.notificationsjava.Notify;
 
 import com.edubiz.notificationsjava.Managers.NotifyBase;
-import com.edubiz.notificationsjava.NotifierUtil.NotifyUtils;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyPos;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyAlert;
 import javafx.geometry.Pos;
@@ -9,13 +8,16 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.NotNull;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.remixicon.RemixiconAL;
 
+import static com.edubiz.notificationsjava.NotifierUtil.NotifyUtils.timeOut;
+
 public class Toast extends NotifyBase {
-    private final double DURATION = 4.5;
-    private final NotifyPos DEFAULT_POSITION = NotifyPos.TOP_RIGHT;
+    private final double DURATION = 2;
+    private final NotifyPos DEFAULT_POSITION = NotifyPos.TOP;
 
     public Toast(Stage stage) {
         super(stage, new HBox());
@@ -47,31 +49,8 @@ public class Toast extends NotifyBase {
 
     private void createToast(NotifyAlert type, String message, NotifyPos position, boolean animation, double delayInSeconds) {
         // get/configure the toast type
-        String colorStyle;
-        Ikon iconCode;
-        switch (type) {
-            case SUCCESS -> {
-                colorStyle = type.getTypeName();
-                iconCode = RemixiconAL.CHECKBOX_CIRCLE_FILL;
-            }
-            case ERROR -> {
-                colorStyle = type.getTypeName();
-                iconCode = RemixiconAL.CLOSE_CIRCLE_FILL;
-            }
-            case ALERT -> {
-                colorStyle = type.getTypeName();
-                iconCode = RemixiconAL.ALERT_FILL;
-            }
-            case NEUTRAL -> {
-                colorStyle = type.getTypeName();
-                iconCode = RemixiconAL.INDETERMINATE_CIRCLE_FILL;
-            }
-            case INFO -> {
-                colorStyle = type.getTypeName();
-                iconCode = RemixiconAL.INFORMATION_FILL;
-            }
-            default -> throw new IllegalArgumentException("Unknown Toast Type");
-        }
+        Ikon iconCode = getIkon(type); // icon
+        String colorStyle = type.getTypeName(); // color style
 
         // create child pane
         HBox hBox = (HBox) getLayout();
@@ -94,16 +73,25 @@ public class Toast extends NotifyBase {
         // set the components in the wrapper
         hBox.getChildren().addAll(iconWrapper,text);
 
-        delayInSeconds = delayInSeconds < .7 ? DURATION:delayInSeconds;
-
         show(hBox,position,animation,delayInSeconds);
 
         autoCloseToast(delayInSeconds);
     }
 
+    @NotNull
+    private static Ikon getIkon(NotifyAlert type) {
+        return switch (type) {
+            case SUCCESS -> RemixiconAL.CHECKBOX_CIRCLE_FILL;
+            case ERROR -> RemixiconAL.CLOSE_CIRCLE_FILL;
+            case ALERT -> RemixiconAL.ALERT_FILL;
+            case NEUTRAL -> RemixiconAL.INDETERMINATE_CIRCLE_FILL;
+            case INFO -> RemixiconAL.INFORMATION_FILL;
+        };
+    }
+
     // Auto closing the function
     private void autoCloseToast(double duration) {
-        NotifyUtils.timeOut(this::run,duration);
+        timeOut(this::run,duration);
     }
 
     private void run() {

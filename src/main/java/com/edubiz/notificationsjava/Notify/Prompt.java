@@ -21,7 +21,7 @@ public class Prompt extends NotifyBase {
     private String headerText = "Prompt";
     private String message = "Prompt body text";
     private NotifyPos position = NotifyPos.CENTER;
-    private double durationInSeconds = 4.5;
+    private double durationInSeconds = .5;
     private Boolean autoClose = false;
     private Boolean animation = true;
     private final Map<String,Map<String,Object>> buttons = new LinkedHashMap<>();
@@ -156,7 +156,7 @@ public class Prompt extends NotifyBase {
     private void autoClosePrompt(Boolean autoClose, double duration) {
         if (!autoClose) return;
 
-        NotifyUtils.timeOut(this::run,duration == 0? this.durationInSeconds:duration);
+        NotifyUtils.timeOut(this::run,duration <= 0? this.durationInSeconds:duration);
     }
     private void run() {
         close();
@@ -184,7 +184,7 @@ public class Prompt extends NotifyBase {
         return this;
     }
     public Prompt setDuration(Double durationInSeconds) {
-        this.durationInSeconds = durationInSeconds < .7? this.durationInSeconds:durationInSeconds;
+        this.durationInSeconds = durationInSeconds;
         return this;
     }
     public Prompt autoClose(Boolean autoClose) {

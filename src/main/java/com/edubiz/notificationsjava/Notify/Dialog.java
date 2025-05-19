@@ -35,7 +35,7 @@ public class Dialog extends NotifyBase {
     private String placeHolder = "";
     private String label = null;
     private NotifyPos position = NotifyPos.CENTER;
-    private double durationInSeconds = 4.5;
+    private double durationInSeconds = .5;
     private boolean autoClose = false;
     private boolean animation = true;
     private final Map<String,Map<String,Object>> buttons = new LinkedHashMap<>();
@@ -256,7 +256,7 @@ public class Dialog extends NotifyBase {
     private void autoClosePrompt(boolean autoClose, double duration) {
         if (!autoClose) return;
 
-        NotifyUtils.timeOut(this::run,duration == 0? this.durationInSeconds:duration);
+        NotifyUtils.timeOut(this::run,duration <= 0? this.durationInSeconds:duration);
     }
     private void run() {
         close();
