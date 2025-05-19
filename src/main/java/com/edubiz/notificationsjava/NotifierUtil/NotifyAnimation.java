@@ -28,7 +28,6 @@ public class NotifyAnimation {
 
         // Get duration
         duration = durationInSec <= 0 ? 0.5 : durationInSec;
-        System.out.println(durationInSec);
 
         // Create the translation
         TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(duration), notification);
