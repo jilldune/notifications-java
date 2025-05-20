@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 public class EntryNotification extends Application {
     @Override
     public void start(Stage stage) {
-        // create  the root
+        // create the root
         StackPane root = new StackPane();
         root.setPrefSize(800,600);
         root.setStyle("-fx-background-color: red;");
