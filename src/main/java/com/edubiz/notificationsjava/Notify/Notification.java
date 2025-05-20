@@ -143,7 +143,7 @@ public class Notification extends NotifyBase {
         AnchorPane.setBottomAnchor(messageArea,0.0);
         AnchorPane.setLeftAnchor(messageArea,0.0);
 
-        // add to main body
+        // add to the main body
         body.getChildren().add(messageArea);
 
         return body;

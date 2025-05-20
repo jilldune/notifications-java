@@ -32,7 +32,7 @@ public class NotifyManager {
     }
 
     /***
-     * Creates and initialises the root of the notifier on which all alerts/notification is drawn
+     * Creates and initializes the root of the notifier on which all alerts/notification is drawn
      * with all default styles and add to the window/stage of the calling window
      *
      * @return root[AnchorPane]
@@ -52,7 +52,7 @@ public class NotifyManager {
             if(! ((Pane) userRoot).getChildren().contains(root)) {
                 ((Pane) userRoot).getChildren().add(root);
 
-                // bind to scene
+                // bind to a scene
                 root.prefWidthProperty().bind(scene.widthProperty());
                 root.prefHeightProperty().bind(scene.heightProperty());
             }
