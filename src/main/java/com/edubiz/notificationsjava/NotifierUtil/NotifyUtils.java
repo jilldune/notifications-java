@@ -25,7 +25,7 @@ public class NotifyUtils {
         scheduler.schedule(taskFunc, durationInMillis, TimeUnit.MILLISECONDS);
     }
 
-    // Call this method to properly shut down the scheduler when application is closing
+    // Call this method to properly shut down the scheduler when the application is closing
     public static void shutdownScheduler() {
         scheduler.shutdown();
     }

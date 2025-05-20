@@ -36,7 +36,7 @@ public class EntryNotification extends Application {
         toast.setCursor(Cursor.HAND);
         toast.setOnAction(e -> {
             Toast  toastNotifier = manager.create(NotifyType.TOAST);
-            toastNotifier.create(NotifyAlert.SUCCESS,"I am a toast",0.0);
+            toastNotifier.create(NotifyAlert.SUCCESS,"I am a toast");
         });
         // PROMPT
         Button prompt = getPrompt(manager);

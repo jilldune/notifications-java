@@ -16,7 +16,7 @@ import org.kordamp.ikonli.remixicon.RemixiconAL;
 import static com.edubiz.notificationsjava.NotifierUtil.NotifyUtils.timeOut;
 
 public class Toast extends NotifyBase {
-    private final double DURATION = 2;
+    private final double DURATION = .7;
     private final NotifyPos DEFAULT_POSITION = NotifyPos.TOP;
 
     public Toast(Stage stage) {

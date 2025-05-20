@@ -10,6 +10,8 @@ import javafx.util.Duration;
 
 import java.util.Map;
 
+import static com.edubiz.notificationsjava.NotifierUtil.NotifyUtils.timeOut;
+
 public class NotifyAnimation {
     private ChangeListener<Number> widthListener;
     private ChangeListener<Number> heightListener;
@@ -79,19 +81,21 @@ public class NotifyAnimation {
     // Reverses the transition
     public void reverseTransition(Runnable callback) {
         if (fromX != 0.0 || fromY != 0.0 || toX != 0.0 || toY != 0.0) {
-            if (pos.equals("center")) {
-                popOut(notification, toX, toY, duration,callback);
-                return;
-            }
+            timeOut(() -> {
+                if (pos.equals("center")) {
+                    popOut(notification, toX, toY, duration,callback);
+                    return;
+                }
 
-            TranslateTransition reverse = new TranslateTransition(Duration.seconds(duration),notification);
-            reverse.setFromX(toX);
-            reverse.setFromY(toY);
-            reverse.setToX(fromX);
-            reverse.setToY(fromY);
-            reverse.setOnFinished(actionEvent -> callback.run());
+                TranslateTransition reverse = new TranslateTransition(Duration.seconds(duration),notification);
+                reverse.setFromX(toX);
+                reverse.setFromY(toY);
+                reverse.setToX(fromX);
+                reverse.setToY(fromY);
+                reverse.setOnFinished(actionEvent -> callback.run());
 
-            reverse.play();
+                reverse.play();
+            },.5);
         }
     }
 
