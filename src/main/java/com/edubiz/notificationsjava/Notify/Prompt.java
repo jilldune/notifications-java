@@ -128,15 +128,13 @@ public class Prompt extends NotifyBase {
                 Object actionObj = properties.get("action");
                 if (actionObj instanceof Runnable action) {
                     button.setOnAction(e -> {
-                        action.run();
-                        close();
+                        close(action);
                     });
                 }
                 else {
                     Runnable defaultAction = () -> System.out.println(label + " clicked");
                     button.setOnAction(e -> {
-                        defaultAction.run();
-                        close();
+                        close(defaultAction);
                     });
                 }
 
@@ -168,7 +166,7 @@ public class Prompt extends NotifyBase {
 
         return vBox;
     }
-    
+
     // ========== Exposed creator Methods ==========
 
     public Prompt setHeader(String header) {

@@ -20,7 +20,7 @@ public abstract class NotifyBase {
     private final Region layout;
     private Node node = null;
     private AnchorPane root;
-    private NotifyAnimation animations;
+    private final NotifyAnimation animations;
     private boolean animation = true;
     private boolean animateNotification = true;
     private NotifyPos position = NotifyPos.TOP;
@@ -32,6 +32,7 @@ public abstract class NotifyBase {
     public NotifyBase(Stage stage, Region layout) {
         this.stage = stage;
         this.layout = layout;
+        this.animations = new NotifyAnimation();
     }
 
     public Region getLayout() { return this.layout; }
@@ -73,7 +74,6 @@ public abstract class NotifyBase {
 
         if (animation) {
             this.animation = true;
-            this.animations = new NotifyAnimation();
             this.animations.animate(node,position,this.stage,duration);
 
             this.root.setVisible(true);
@@ -118,10 +118,6 @@ public abstract class NotifyBase {
         this.duration = duration;
     }
 
-    protected void close() {
-        Platform.runLater(this::run);
-    }
-
     public void display(Runnable callback) {
         // Setting the position of the notification type
         positioningRoute(this.node,this.position,this.animateNotification,this.duration);
@@ -134,12 +130,20 @@ public abstract class NotifyBase {
         this.root = root;
     }
 
-    private void run() {
+    protected void close() {
+        close(() -> {});
+    }
+    protected void close(Runnable run) {
+        Platform.runLater(() -> {
+            run(run);
+        });
+    }
+
+    private void run(Runnable next) {
         if (this.node != null) {
             if (this.animation) {
                 this.callOnCloseRequest();
                 this.animations.reverseTransition(() -> {
-                    this.callOnClosed();
                     this.root.setManaged(false);
                     this.root.setVisible(false);
 
@@ -151,6 +155,9 @@ public abstract class NotifyBase {
                     }
                     (new NotifyUtils()).removeListeners(stage);
                     (new NotifyAnimation()).removeListeners(stage);
+
+                    this.callOnClosed();
+                    next.run();
                 });
 
                 return;
@@ -169,6 +176,7 @@ public abstract class NotifyBase {
             (new NotifyUtils()).removeListeners(stage);
             (new NotifyAnimation()).removeListeners(stage);
             this.callOnClosed();
+            next.run();
         }
     }
 }

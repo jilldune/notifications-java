@@ -4,6 +4,7 @@ import com.edubiz.notificationsjava.Managers.NotifyBase;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyAlert;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyUtils;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyPos;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
@@ -21,6 +22,8 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static com.edubiz.notificationsjava.NotifierUtil.NotifyUtils.timeOut;
 
 public class Notification extends NotifyBase {
     //    class variables
@@ -183,10 +186,7 @@ public class Notification extends NotifyBase {
             // bind action to button
             Runnable action = (Runnable) properties.getOrDefault("action", (Runnable) () -> System.out.println(label + " clicked"));
 
-            button.setOnAction(e -> {
-                action.run();
-                close();
-            });
+            button.setOnAction(e -> close(action));
 
             buttonContainer.getChildren().add(button);
         });
@@ -198,9 +198,11 @@ public class Notification extends NotifyBase {
     }
     // Auto closing the function
     private void autoCloseNotification(Boolean autoClose,double duration) {
-        if (!autoClose) return;
+        if (! autoClose) return;
 
-        NotifyUtils.timeOut(this::run,duration <= 0? this.durationInSeconds:duration);
+        Platform.runLater(() -> {
+            timeOut(this::run,duration <= 0? this.durationInSeconds:duration);
+        });
     }
     private VBox parent() {
         VBox vBox = (VBox) getLayout();

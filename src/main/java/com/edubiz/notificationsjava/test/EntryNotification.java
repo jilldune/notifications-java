@@ -105,7 +105,10 @@ public class EntryNotification extends Application {
                     .setAlertType(NotifyAlert.ALERT)
                     .setButton("exit", ()-> System.exit(0),"-fx-background-color: red;-fx-border-color: red;-fx-text-fill: white;")
                     .setButton("cancel",()->{})
-                    .setButton("cancel me",()->{})
+                    .setButton("cancel me",()->{
+                        Toast toast = manager.create(NotifyType.TOAST);
+                        toast.create(NotifyAlert.ERROR,"something happened");
+                    })
                     .create();
         });
         return notification;

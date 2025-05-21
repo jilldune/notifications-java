@@ -232,22 +232,19 @@ public class Dialog extends NotifyBase {
         EventHandler<ActionEvent> handler;
         if (actionObj instanceof Runnable action) {
             handler = ev -> {
-                action.run();
-                close();
+                close(action);
             };
         }
         else if (actionObj instanceof Consumer) {
             Consumer<String> action = (Consumer<String>) actionObj;
             handler = ev -> {
-                action.accept(getUserInput());
-                close();
+                close(() -> action.accept(getUserInput()));
             };
         }
         else {
             Runnable defaultAction = () -> {};
             handler = e -> {
-                defaultAction.run();
-                close();
+                close(defaultAction);
             };
         }
 
