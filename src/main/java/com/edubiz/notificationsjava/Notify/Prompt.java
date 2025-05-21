@@ -127,15 +127,11 @@ public class Prompt extends NotifyBase {
                 // bind action to button
                 Object actionObj = properties.get("action");
                 if (actionObj instanceof Runnable action) {
-                    button.setOnAction(e -> {
-                        close(action);
-                    });
+                    button.setOnAction(e -> close(action));
                 }
                 else {
                     Runnable defaultAction = () -> System.out.println(label + " clicked");
-                    button.setOnAction(e -> {
-                        close(defaultAction);
-                    });
+                    button.setOnAction(e -> close(defaultAction));
                 }
 
                 buttonContainer.getChildren().add(button);
