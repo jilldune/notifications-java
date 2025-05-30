@@ -1,9 +1,9 @@
-package com.edubiz.notificationsjava.Notify;
+package com.octalinc.notificationsjava.Notify;
 
-import com.edubiz.notificationsjava.Managers.NotifyBase;
-import com.edubiz.notificationsjava.NotifierUtil.NotifyUtils;
-import com.edubiz.notificationsjava.NotifierUtil.NotifyPos;
-import com.edubiz.notificationsjava.NotifierUtil.NotifyInput;
+import com.octalinc.notificationsjava.Managers.NotifyBase;
+import com.octalinc.notificationsjava.NotifierUtil.NotifyUtils;
+import com.octalinc.notificationsjava.NotifierUtil.NotifyPos;
+import com.octalinc.notificationsjava.NotifierUtil.NotifyInput;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;

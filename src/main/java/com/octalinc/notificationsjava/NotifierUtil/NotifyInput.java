@@ -1,4 +1,4 @@
-package com.edubiz.notificationsjava.NotifierUtil;
+package com.octalinc.notificationsjava.NotifierUtil;
 
 public enum NotifyInput {
     TEXT_FIELD("text"),

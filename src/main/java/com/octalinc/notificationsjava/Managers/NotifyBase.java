@@ -1,8 +1,8 @@
-package com.edubiz.notificationsjava.Managers;
+package com.octalinc.notificationsjava.Managers;
 
-import com.edubiz.notificationsjava.NotifierUtil.NotifyUtils;
-import com.edubiz.notificationsjava.NotifierUtil.NotifyPos;
-import com.edubiz.notificationsjava.NotifierUtil.NotifyAnimation;
+import com.octalinc.notificationsjava.NotifierUtil.NotifyUtils;
+import com.octalinc.notificationsjava.NotifierUtil.NotifyPos;
+import com.octalinc.notificationsjava.NotifierUtil.NotifyAnimation;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.edubiz.notificationsjava.NotifierUtil.NotifyUtils.timeOut;
+import static com.octalinc.notificationsjava.NotifierUtil.NotifyUtils.timeOut;
 
 public abstract class NotifyBase {
     protected Stage stage;

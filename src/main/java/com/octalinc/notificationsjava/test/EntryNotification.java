@@ -1,11 +1,14 @@
-package com.edubiz.notificationsjava.test;
+package com.octalinc.notificationsjava.test;
 
-import com.edubiz.notificationsjava.Managers.NotifyManager;
-import com.edubiz.notificationsjava.NotifierUtil.NotifyAlert;
-import com.edubiz.notificationsjava.NotifierUtil.NotifyPos;
-import com.edubiz.notificationsjava.NotifierUtil.NotifyInput;
-import com.edubiz.notificationsjava.NotifierUtil.NotifyType;
-import com.edubiz.notificationsjava.Notify.*;
+import com.octalinc.notificationsjava.Managers.NotifyManager;
+import com.octalinc.notificationsjava.NotifierUtil.NotifyAlert;
+import com.octalinc.notificationsjava.NotifierUtil.NotifyPos;
+import com.octalinc.notificationsjava.NotifierUtil.NotifyInput;
+import com.octalinc.notificationsjava.NotifierUtil.NotifyType;
+import com.octalinc.notificationsjava.Notify.Dialog;
+import com.octalinc.notificationsjava.Notify.Notification;
+import com.octalinc.notificationsjava.Notify.Prompt;
+import com.octalinc.notificationsjava.Notify.Toast;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -34,7 +37,7 @@ public class EntryNotification extends Application {
         Button toast = new Button("Toast");
         toast.setCursor(Cursor.HAND);
         toast.setOnAction(e -> {
-            Toast  toastNotifier = manager.create(NotifyType.TOAST);
+            Toast toastNotifier = manager.create(NotifyType.TOAST);
             toastNotifier.create(NotifyAlert.SUCCESS,"I am a toast");
         });
         // PROMPT

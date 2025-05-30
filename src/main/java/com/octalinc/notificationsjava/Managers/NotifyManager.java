@@ -1,11 +1,11 @@
-package com.edubiz.notificationsjava.Managers;
+package com.octalinc.notificationsjava.Managers;
 
-import com.edubiz.notificationsjava.NotifierUtil.NotifyUtils;
-import com.edubiz.notificationsjava.Notify.Dialog;
-import com.edubiz.notificationsjava.Notify.Notification;
-import com.edubiz.notificationsjava.NotifierUtil.NotifyType;
-import com.edubiz.notificationsjava.Notify.Prompt;
-import com.edubiz.notificationsjava.Notify.Toast;
+import com.octalinc.notificationsjava.NotifierUtil.NotifyUtils;
+import com.octalinc.notificationsjava.Notify.Dialog;
+import com.octalinc.notificationsjava.Notify.Notification;
+import com.octalinc.notificationsjava.NotifierUtil.NotifyType;
+import com.octalinc.notificationsjava.Notify.Prompt;
+import com.octalinc.notificationsjava.Notify.Toast;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

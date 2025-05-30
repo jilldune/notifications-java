@@ -1,4 +1,4 @@
-module com.edubiz.notificationsjava {
+module com.octalinc.notificationsjava {
     requires javafx.controls;
     requires javafx.fxml;
 
@@ -7,12 +7,12 @@ module com.edubiz.notificationsjava {
     requires org.kordamp.ikonli.remixicon;
     requires java.desktop;
 
-    exports com.edubiz.notificationsjava.Managers;
-    opens com.edubiz.notificationsjava.Managers to javafx.fxml;
-    exports com.edubiz.notificationsjava.NotifierUtil;
-    opens com.edubiz.notificationsjava.NotifierUtil to javafx.fxml;
-    exports com.edubiz.notificationsjava.Notify;
-    opens com.edubiz.notificationsjava.Notify to javafx.fxml;
+    exports com.octalinc.notificationsjava.Managers;
+    opens com.octalinc.notificationsjava.Managers to javafx.fxml;
+    exports com.octalinc.notificationsjava.NotifierUtil;
+    opens com.octalinc.notificationsjava.NotifierUtil to javafx.fxml;
+    exports com.octalinc.notificationsjava.Notify;
+    opens com.octalinc.notificationsjava.Notify to javafx.fxml;
 
     //    exports com.edubiz.notificationsjava.test;
 }

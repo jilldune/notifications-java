@@ -1,4 +1,4 @@
-package com.edubiz.notificationsjava.NotifierUtil;
+package com.octalinc.notificationsjava.NotifierUtil;
 
 import java.util.HashMap;
 import java.util.Map;

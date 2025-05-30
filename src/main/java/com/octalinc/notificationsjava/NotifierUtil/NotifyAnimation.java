@@ -1,4 +1,4 @@
-package com.edubiz.notificationsjava.NotifierUtil;
+package com.octalinc.notificationsjava.NotifierUtil;
 
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
@@ -10,7 +10,7 @@ import javafx.util.Duration;
 
 import java.util.Map;
 
-import static com.edubiz.notificationsjava.NotifierUtil.NotifyUtils.timeOut;
+import static com.octalinc.notificationsjava.NotifierUtil.NotifyUtils.timeOut;
 
 public class NotifyAnimation {
     private ChangeListener<Number> widthListener;

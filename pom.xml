@@ -195,7 +195,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.edubiz.notificationsjava.test.EntryNotification</mainClass>
+                            <mainClass>com.octalinc.notificationsjava.test.EntryNotification</mainClass>
                         </configuration>
                     </execution>
                 </executions>

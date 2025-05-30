@@ -1,8 +1,8 @@
-package com.edubiz.notificationsjava.Notify;
+package com.octalinc.notificationsjava.Notify;
 
-import com.edubiz.notificationsjava.Managers.NotifyBase;
-import com.edubiz.notificationsjava.NotifierUtil.NotifyPos;
-import com.edubiz.notificationsjava.NotifierUtil.NotifyAlert;
+import com.octalinc.notificationsjava.Managers.NotifyBase;
+import com.octalinc.notificationsjava.NotifierUtil.NotifyPos;
+import com.octalinc.notificationsjava.NotifierUtil.NotifyAlert;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -12,7 +12,7 @@ import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.remixicon.RemixiconAL;
 
-import static com.edubiz.notificationsjava.NotifierUtil.NotifyUtils.timeOut;
+import static com.octalinc.notificationsjava.NotifierUtil.NotifyUtils.timeOut;
 
 public class Toast extends NotifyBase {
     private final double DURATION = .7;

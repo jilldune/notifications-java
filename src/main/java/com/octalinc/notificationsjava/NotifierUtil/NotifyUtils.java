@@ -1,4 +1,4 @@
-package com.edubiz.notificationsjava.NotifierUtil;
+package com.octalinc.notificationsjava.NotifierUtil;
 
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Bounds;
