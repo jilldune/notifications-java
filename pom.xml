@@ -6,14 +6,16 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.edubiz</groupId>
     <artifactId>notifications-java</artifactId>
-    <version>${env.RELEASE_VERSION}</version>
     <name>notifications-java</name>
     <packaging>jar</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.10.2</junit.version>
+        <release.version>1.0.0</release.version>
     </properties>
+
+    <version>${env.RELEASE_VERSION}</version>
 
     <dependencies>
         <!-- JavaFX provided by user runtime -->
