@@ -25,11 +25,11 @@ jobs:
       - name: Extract version from Git tag
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
 
-      #- name: Build with Maven
-      #  run: mvn clean package -Drelease.version=${{ env.RELEASE_VERSION }}
+      - name: Set Maven version from Git tag
+        run: mvn versions:set -DnewVersion=${{ env.RELEASE_VERSION }} -DgenerateBackupPoms=false
 
       - name: Build with Maven
-        run: mvn versions:set -DnewVersion=${{ env.RELEASE_VERSION }} && mvn clean package
+        run: mvn clean package
 
       - name: Create Release
         uses: softprops/action-gh-release@v2

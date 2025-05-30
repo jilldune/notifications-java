@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.octalinc</groupId>
     <artifactId>notifications-java</artifactId>
-    <version>${release.version}</version>
+    <version>0.0.0</version>
     <name>notifications-java</name>
     <packaging>jar</packaging>
 
