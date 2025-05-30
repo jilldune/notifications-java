@@ -14,7 +14,6 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.jetbrains.annotations.NotNull;
 
 public class EntryNotification extends Application {
     @Override
@@ -56,8 +55,6 @@ public class EntryNotification extends Application {
         // Show the stage
         stage.show();
     }
-
-    @NotNull
     private static Button getPrompt(NotifyManager manager) {
         Button prompt = new Button("Prompt");
         prompt.setCursor(Cursor.HAND);
@@ -74,7 +71,6 @@ public class EntryNotification extends Application {
         return prompt;
     }
 
-    @NotNull
     private static Button getDialog(NotifyManager manager) {
         Button dialog = new Button("Dialog");
         dialog.setCursor(Cursor.HAND);
@@ -91,8 +87,6 @@ public class EntryNotification extends Application {
         });
         return dialog;
     }
-
-    @NotNull
     private static Button getNotification(NotifyManager manager) {
         Button notification = new Button("Notification");
         notification.setCursor(Cursor.HAND);

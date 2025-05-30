@@ -13,7 +13,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import org.jetbrains.annotations.NotNull;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.remixicon.RemixiconAL;
 
@@ -44,7 +43,7 @@ public class Dialog extends NotifyBase {
 
     public Dialog(Stage stage) { super(stage, new VBox()); }
 
-    private void createHead(@NotNull VBox parent, String headerText) {
+    private void createHead(VBox parent, String headerText) {
         // create the header text
         Label header = new Label(headerText);
         header.setTextOverrun(OverrunStyle.ELLIPSIS);
@@ -57,7 +56,7 @@ public class Dialog extends NotifyBase {
         // set the header
         parent.getChildren().add(head);
     }
-    @NotNull
+
     private HBox head(Label header) {
         // header wrapper
         BorderPane headerBorderPane = new BorderPane();
@@ -227,25 +226,18 @@ public class Dialog extends NotifyBase {
     }
 
     @SuppressWarnings("unchecked")
-    @NotNull
     private EventHandler<ActionEvent> getActionEventEventHandler(Object actionObj) {
         EventHandler<ActionEvent> handler;
         if (actionObj instanceof Runnable action) {
-            handler = ev -> {
-                close(action);
-            };
+            handler = ev -> close(action);
         }
         else if (actionObj instanceof Consumer) {
             Consumer<String> action = (Consumer<String>) actionObj;
-            handler = ev -> {
-                close(() -> action.accept(getUserInput()));
-            };
+            handler = ev -> close(() -> action.accept(getUserInput()));
         }
         else {
             Runnable defaultAction = () -> {};
-            handler = e -> {
-                close(defaultAction);
-            };
+            handler = e -> close(defaultAction);
         }
 
         return handler;

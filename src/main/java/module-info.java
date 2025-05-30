@@ -5,7 +5,6 @@ module com.edubiz.notificationsjava {
     requires org.kordamp.ikonli.core;
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.ikonli.remixicon;
-    requires annotations;
     requires java.desktop;
 
     exports com.edubiz.notificationsjava.Managers;
@@ -15,5 +14,5 @@ module com.edubiz.notificationsjava {
     exports com.edubiz.notificationsjava.Notify;
     opens com.edubiz.notificationsjava.Notify to javafx.fxml;
 
-    exports com.edubiz.notificationsjava.test;
+//    exports com.edubiz.notificationsjava.test;
 }

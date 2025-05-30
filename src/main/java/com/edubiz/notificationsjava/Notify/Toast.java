@@ -8,7 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import org.jetbrains.annotations.NotNull;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.remixicon.RemixiconAL;
@@ -77,8 +76,6 @@ public class Toast extends NotifyBase {
 
         autoCloseToast(delayInSeconds);
     }
-
-    @NotNull
     private static Ikon getIkon(NotifyAlert type) {
         return switch (type) {
             case SUCCESS -> RemixiconAL.CHECKBOX_CIRCLE_FILL;

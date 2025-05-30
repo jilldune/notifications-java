@@ -134,9 +134,7 @@ public abstract class NotifyBase {
         close(() -> {});
     }
     protected void close(Runnable run) {
-        Platform.runLater(() -> {
-            run(run);
-        });
+        Platform.runLater(() -> run(run));
     }
 
     private void run(Runnable next) {

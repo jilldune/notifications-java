@@ -8,7 +8,6 @@ import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import org.jetbrains.annotations.NotNull;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.remixicon.RemixiconAL;
 
@@ -28,7 +27,7 @@ public class Prompt extends NotifyBase {
 
     public Prompt(Stage stage) { super(stage, new VBox()); }
 
-    private void createHead(@NotNull VBox parent, String headerText) {
+    private void createHead(VBox parent, String headerText) {
         // create the header text
         Label header = new Label(headerText);
         header.setTextOverrun(OverrunStyle.ELLIPSIS);
@@ -41,7 +40,6 @@ public class Prompt extends NotifyBase {
         // set the header
         parent.getChildren().add(head);
     }
-    @NotNull
     private HBox head(Label header) {
         // header wrapper
         BorderPane headerBorderPane = new BorderPane();
@@ -84,7 +82,7 @@ public class Prompt extends NotifyBase {
         // add to the parent
         parent.getChildren().add(getTextArea(this.message));
     }
-    @NotNull
+
     private TextArea getTextArea(String bodyText) {
         TextArea messageArea = new TextArea();
         messageArea.setText(bodyText);

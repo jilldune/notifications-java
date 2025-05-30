@@ -2,7 +2,6 @@ package com.edubiz.notificationsjava.Notify;
 
 import com.edubiz.notificationsjava.Managers.NotifyBase;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyAlert;
-import com.edubiz.notificationsjava.NotifierUtil.NotifyUtils;
 import com.edubiz.notificationsjava.NotifierUtil.NotifyPos;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -15,7 +14,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import org.jetbrains.annotations.NotNull;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.remixicon.RemixiconAL;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -38,7 +36,7 @@ public class Notification extends NotifyBase {
 
     public Notification(Stage stage) { super(stage, new VBox()); }
 
-    private void createHead(@NotNull VBox parent, String headerText) {
+    private void createHead(VBox parent, String headerText) {
         // create the header text
         Label header = new Label(headerText);
         String colorStyle = "";
@@ -85,7 +83,6 @@ public class Notification extends NotifyBase {
         // set the header
         parent.getChildren().add(head);
     }
-    @NotNull
     private HBox getHead(Label header) {
         // header wrapper
         BorderPane headerBorderPane = new BorderPane();
@@ -128,7 +125,6 @@ public class Notification extends NotifyBase {
         // add to the parent
         parent.getChildren().add(getBody(bodyText));
     }
-    @NotNull
     private AnchorPane getBody(String bodyText) {
         AnchorPane body = new AnchorPane();
 
@@ -200,9 +196,7 @@ public class Notification extends NotifyBase {
     private void autoCloseNotification(Boolean autoClose,double duration) {
         if (! autoClose) return;
 
-        Platform.runLater(() -> {
-            timeOut(this::run,duration <= 0? this.durationInSeconds:duration);
-        });
+        Platform.runLater(() -> timeOut(this::run,duration <= 0? this.durationInSeconds:duration));
     }
     private VBox parent() {
         VBox vBox = (VBox) getLayout();
