@@ -72,7 +72,7 @@
     <build>
         <!-- filename -->
         <!--suppress UnresolvedMavenProperty -->
-        <finalName>notifications-java-v${release.version.sanitized}</finalName>
+        <finalName>${project.artifactId}</finalName>
 
         <resources>
             <resource>
@@ -88,16 +88,19 @@
                 <version>3.4.0</version>
                 <executions>
                     <execution>
-                        <id>sanitize-version</id>
-                        <phase>validate</phase>
+                        <id>rename-jar</id>
+                        <phase>package</phase>
                         <goals>
-                            <goal>regex-property</goal>
+                            <goal>attach-artifact</goal>
                         </goals>
                         <configuration>
-                            <name>release.version.sanitized</name>
-                            <value>${project.version}</value>
-                            <regex>\.</regex>
-                            <replacement>_</replacement>
+                            <artifacts>
+                                <artifact>
+                                    <file>${project.build.directory}/${project.build.finalName}.jar</file>
+                                    <type>jar</type>
+                                    <classifier>v${project.version}</classifier>
+                                </artifact>
+                            </artifacts>
                         </configuration>
                     </execution>
                 </executions>
@@ -172,6 +175,11 @@
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
+                        <manifestEntries>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Implementation-Vendor>Your Name or Org</Implementation-Vendor>
+                        </manifestEntries>
                     </archive>
                     <forceCreation>true</forceCreation>
                     <skipIfEmpty>true</skipIfEmpty>
