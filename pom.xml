@@ -71,7 +71,8 @@
 
     <build>
         <!-- filename -->
-        <finalName>notifications-java-v${project.version}</finalName>
+        <!--suppress UnresolvedMavenProperty -->
+        <finalName>notifications-java-v${release.version.sanitized}</finalName>
 
         <resources>
             <resource>
@@ -80,6 +81,28 @@
         </resources>
 
         <plugins>
+            <!-- build helper -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.4.0</version>
+                <executions>
+                    <execution>
+                        <id>sanitize-version</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>regex-property</goal>
+                        </goals>
+                        <configuration>
+                            <name>release.version.sanitized</name>
+                            <value>${project.version}</value>
+                            <regex>\.</regex>
+                            <replacement>_</replacement>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- Java compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -128,7 +151,6 @@
                                     <excludes>
                                         <exclude>META-INF/LICENSE</exclude>
                                         <exclude>META-INF/MANIFEST.MF</exclude>
-<!--                                        <exclude>module-info.class</exclude>-->
                                     </excludes>
                                 </filter>
                             </filters>
