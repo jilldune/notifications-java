@@ -72,7 +72,9 @@
     <build>
         <!-- filename -->
         <!--suppress UnresolvedMavenProperty -->
-        <finalName>${project.artifactId}</finalName>
+<!--        <finalName>${project.artifactId}</finalName>-->
+        <finalName>${project.artifactId}-v${project.version}</finalName>
+
 
         <resources>
             <resource>
