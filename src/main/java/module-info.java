@@ -14,5 +14,5 @@ module com.edubiz.notificationsjava {
     exports com.edubiz.notificationsjava.Notify;
     opens com.edubiz.notificationsjava.Notify to javafx.fxml;
 
-//    exports com.edubiz.notificationsjava.test;
+    //    exports com.edubiz.notificationsjava.test;
 }
