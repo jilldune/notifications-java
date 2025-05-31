@@ -18,7 +18,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class EntryNotification extends Application {
+public class TestFile extends Application {
     @Override
     public void start(Stage stage) {
         // create the root
