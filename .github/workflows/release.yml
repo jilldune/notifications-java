@@ -25,12 +25,26 @@ jobs:
       - name: 🧱 Build with Maven
         run: mvn clean package
 
-      - name: 📝 Rename jar with version prefix
+      - name: 🔍 Find and rename JAR
+        id: jar
         run: |
-          JAR_NAME=notifications-java-${RELEASE_VERSION#v}.jar
-          mv target/$JAR_NAME target/notifications-java-${RELEASE_VERSION}.jar
+          echo "🔍 Looking for .jar in target/"
+          ORIGINAL_JAR=$(find target -maxdepth 1 -name "*.jar" | head -n 1)
+          echo "Found: $ORIGINAL_JAR"
+          
+          if [ -z "$ORIGINAL_JAR" ]; then
+            echo "❌ No JAR found. Aborting."
+            exit 1
+          fi
+
+          NEW_JAR_NAME="notifications-java-${RELEASE_VERSION}.jar"
+          cp "$ORIGINAL_JAR" "target/$NEW_JAR_NAME"
+          echo "JAR_NAME=$NEW_JAR_NAME" >> $GITHUB_ENV
+          echo "✅ Renamed to: $NEW_JAR_NAME"
 
       - name: 📦 Upload Release Artifact
         uses: softprops/action-gh-release@v1
         with:
-          files: target/notifications-java-${{ env.RELEASE_VERSION }}.jar
+          files: target/${{ env.JAR_NAME }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
