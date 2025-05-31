@@ -12,6 +12,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
       - name: ⬇️ Checkout code
         uses: actions/checkout@v4
@@ -43,7 +46,7 @@ jobs:
           echo "✅ Renamed to: $NEW_JAR_NAME"
 
       - name: 📦 Upload Release Artifact
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: target/${{ env.JAR_NAME }}
         env:
