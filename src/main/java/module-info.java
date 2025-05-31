@@ -14,5 +14,5 @@ module com.octalinc.notificationsjava {
     exports com.octalinc.notificationsjava.Notify;
     opens com.octalinc.notificationsjava.Notify to javafx.fxml;
 
-    //    exports com.edubiz.notificationsjava.test;
+//    exports com.octalinc.notificationsjava.test;
 }
