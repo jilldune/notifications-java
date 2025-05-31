@@ -1,4 +1,4 @@
-package com.octalinc.notificationsjava.test;
+package com.octalinc.notificationsjava;
 
 import com.octalinc.notificationsjava.Managers.NotifyManager;
 import com.octalinc.notificationsjava.NotifierUtil.NotifyAlert;
