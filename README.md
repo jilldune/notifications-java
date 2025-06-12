@@ -16,7 +16,12 @@ Currently not published to Maven Central. To use this in your project:
 
 **Download the jar file and include in tour project**
 
-Usage example
+## ⚙️ Usage
+
+Use the manager 'NotifyManager' for all notifications that belongs to a particular Stage. this avoids the creation of the manager instance multiple times which can distrust your scene graph entirely or get an unexpected behaviours.
+
+example:
+
 ```java
 import com.edubiz.notificationsjava.NotifyManager;
 import com.edubiz.notificationsjava.notification.NotifyType;
@@ -27,13 +32,13 @@ import javafx.stage.Stage;
 public class Main extends Application {
     @Override
     public void start(Stage stage) {
-        // Initialize NotifyManager
+        // Initialize manager
         NotifyManager manager = new NotifyManager(stage);
 
         // Create a toast notification
         Toast toast = manager.create(NotifyType.TOAST);
-
         // Show the toast with a message
+// this creates and shows the toast
         toast.create("Hello from notifications-java!");
     }
 
