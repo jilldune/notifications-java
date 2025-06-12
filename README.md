@@ -14,11 +14,7 @@ and more — powered by [Ikonli](https://kordamp.org/ikonli/) and [ControlsFX](h
 
 Currently not published to Maven Central. To use this in your project:
 
-1. **Build the shaded JAR:**
-
-```bash
-mvn clean package
-```
+**Download the jar file and include in tour project**
 
 Usage example
 ```java
