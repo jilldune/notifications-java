@@ -13,4 +13,5 @@ module com.octalinc.notificationsjava {
     opens com.octalinc.notificationsjava.NotifierUtil to javafx.fxml;
     exports com.octalinc.notificationsjava.Notify;
     opens com.octalinc.notificationsjava.Notify to javafx.fxml;
+    exports com.octalinc.notificationsjava.enums;
 }
