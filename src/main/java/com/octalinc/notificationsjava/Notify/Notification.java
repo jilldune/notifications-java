@@ -3,267 +3,467 @@ package com.octalinc.notificationsjava.Notify;
 import com.octalinc.notificationsjava.Managers.NotifyBase;
 import com.octalinc.notificationsjava.NotifierUtil.NotifyAlert;
 import com.octalinc.notificationsjava.NotifierUtil.NotifyPos;
-import javafx.application.Platform;
+
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+
 import org.kordamp.ikonli.Ikon;
-import org.kordamp.ikonli.remixicon.RemixiconAL;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.remixicon.RemixiconAL;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.octalinc.notificationsjava.NotifierUtil.NotifyUtils.timeOut;
-
 public class Notification extends NotifyBase {
-    //    class variables
+
+    // ---------------------------------------------------------
+    // CONFIGURATION
+    // ---------------------------------------------------------
+
+    private static final double DEFAULT_ANIMATION_DURATION = 0.5;
+    private static final double DEFAULT_DISPLAY_DURATION = 0.5;
+
     private String headerText = "Notifier";
     private String body = "";
-    private double durationInSeconds = .5;
-    private NotifyPos position = NotifyPos.CENTER;
-    private Boolean autoClose = false;
-    private Boolean animation = true;
-    private NotifyAlert alertType = NotifyAlert.NEUTRAL;
-    private final Map<String,Map<String,Object>> buttons = new LinkedHashMap<>();
 
-    public Notification(Stage stage) { super(stage, new VBox()); }
+    private double animationDuration = DEFAULT_ANIMATION_DURATION;
+    private double displayDuration = DEFAULT_DISPLAY_DURATION;
+
+    private NotifyPos position = NotifyPos.CENTER;
+
+    private boolean autoClose = false;
+    private boolean animation = true;
+
+    private NotifyAlert alertType = NotifyAlert.NEUTRAL;
+
+    private final Map<String, Map<String, Object>> buttons =
+            new LinkedHashMap<>();
+
+    public Notification(Stage stage) {
+        super(stage, new VBox());
+    }
+
+    // ---------------------------------------------------------
+    // HEADER
+    // ---------------------------------------------------------
 
     private void createHead(VBox parent, String headerText) {
-        // create the header text
+
         Label header = new Label(headerText);
-        String colorStyle = "";
-        Ikon iconCode = null;
 
-        switch (alertType) {
-            case SUCCESS -> {
-                colorStyle = alertType.getTypeName();
-                iconCode = RemixiconAL.CHECKBOX_CIRCLE_FILL;
-            }
-            case ERROR -> {
-                colorStyle = alertType.getTypeName();
-                iconCode = RemixiconAL.CLOSE_CIRCLE_FILL;
-            }
-            case ALERT -> {
-                colorStyle = alertType.getTypeName();
-                iconCode = RemixiconAL.ALERT_FILL;
-            }
-            case NEUTRAL -> {
-                colorStyle = alertType.getTypeName();
-                iconCode = RemixiconAL.INDETERMINATE_CIRCLE_FILL;
-            }
-            case INFO -> {
-                colorStyle = alertType.getTypeName();
-                iconCode = RemixiconAL.INFORMATION_FILL;
-            }
-            default -> {}
-        }
+        String colorStyle = alertType.getTypeName();
+        Ikon iconCode = getIkon(alertType);
 
-        if (! colorStyle.equalsIgnoreCase("neutral") && iconCode != null) {
+        if (alertType != NotifyAlert.NEUTRAL) {
+
             FontIcon icon = new FontIcon(iconCode);
+
             icon.getStyleClass().add("icon");
+
             header.setGraphic(icon);
             header.setGraphicTextGap(2.0);
         }
 
         header.setTextOverrun(OverrunStyle.ELLIPSIS);
-        header.getStyleClass().addAll("notification-title",colorStyle);
 
-        // create the Icon
+        header.getStyleClass().addAll(
+                "notification-title",
+                colorStyle
+        );
+
         HBox head = getHead(header);
+
         head.getStyleClass().add("notification-head");
 
-        // set the header
         parent.getChildren().add(head);
     }
+
     private HBox getHead(Label header) {
-        // header wrapper
+
         BorderPane headerBorderPane = new BorderPane();
+
         headerBorderPane.setBackground(Background.EMPTY);
 
+        // Close icon
         FontIcon icon = new FontIcon(RemixiconAL.CLOSE_FILL);
+
         icon.getStyleClass().add("icon");
 
         Button btnIcon = new Button();
+
         btnIcon.setGraphic(icon);
         btnIcon.setAlignment(Pos.CENTER);
-        btnIcon.getStyleClass().addAll("notification-close","close-btn");
+
+        btnIcon.getStyleClass().addAll(
+                "notification-close",
+                "close-btn"
+        );
 
         btnIcon.setOnAction(event -> close());
 
-        // wrap header in an anchor pane
-        // main wrapper
+        // Header wrapper
         AnchorPane wrapper = new AnchorPane();
+
         wrapper.setPrefWidth(500);
 
-        headerBorderPane.setCenter(wrapper);
-        headerBorderPane.setRight(btnIcon);
-
-        // wrap header
-        AnchorPane.setTopAnchor(header,0.0);
-        AnchorPane.setLeftAnchor(header,0.0);
+        AnchorPane.setTopAnchor(header, 0.0);
+        AnchorPane.setLeftAnchor(header, 0.0);
         AnchorPane.setBottomAnchor(header, 0.0);
 
         wrapper.getChildren().add(header);
 
-        // create the head container
-        HBox head = new HBox(headerBorderPane);// Add label and close icon to the head
+        headerBorderPane.setCenter(wrapper);
+        headerBorderPane.setRight(btnIcon);
+
+        HBox head = new HBox(headerBorderPane);
+
         head.setAlignment(Pos.CENTER_LEFT);
 
         return head;
     }
 
-    // create MyNotifier message body
+    // ---------------------------------------------------------
+    // BODY
+    // ---------------------------------------------------------
+
     private void createBody(VBox parent, String bodyText) {
-        // add to the parent
-        parent.getChildren().add(getBody(bodyText));
+
+        parent.getChildren().add(
+                getBody(bodyText)
+        );
     }
+
     private AnchorPane getBody(String bodyText) {
-        AnchorPane body = new AnchorPane();
+
+        AnchorPane bodyContainer = new AnchorPane();
 
         TextArea messageArea = new TextArea();
+
         messageArea.setText(bodyText);
         messageArea.setWrapText(true);
         messageArea.setEditable(false);
         messageArea.setFocusTraversable(false);
         messageArea.setCursor(Cursor.DEFAULT);
+
         messageArea.getStyleClass().add("notification-body");
 
-        // set anchor positions
-        AnchorPane.setTopAnchor(messageArea,0.0);
-        AnchorPane.setRightAnchor(messageArea,0.0);
-        AnchorPane.setBottomAnchor(messageArea,0.0);
-        AnchorPane.setLeftAnchor(messageArea,0.0);
+        AnchorPane.setTopAnchor(messageArea, 0.0);
+        AnchorPane.setRightAnchor(messageArea, 0.0);
+        AnchorPane.setBottomAnchor(messageArea, 0.0);
+        AnchorPane.setLeftAnchor(messageArea, 0.0);
 
-        // add to the main body
-        body.getChildren().add(messageArea);
+        bodyContainer.getChildren().add(messageArea);
 
-        return body;
+        return bodyContainer;
     }
 
-    // create the MyNotifier Footer
-    private void createFooter(VBox parent,Map<String,Map<String,Object>> buttons) {
-        if (buttons == null) return;
+    // ---------------------------------------------------------
+    // FOOTER / BUTTONS
+    // ---------------------------------------------------------
 
-        // main footer container
+    private void createFooter(
+            VBox parent,
+            Map<String, Map<String, Object>> buttons
+    ) {
+
+        if (buttons == null || buttons.isEmpty()) {
+            return;
+        }
+
         VBox footerContainer = new VBox();
+
         footerContainer.getStyleClass().add("notification-footer");
 
         HBox buttonContainer = new HBox();
+
         buttonContainer.setSpacing(5);
         buttonContainer.setAlignment(Pos.CENTER_RIGHT);
+
         buttonContainer.getStyleClass().add("button-container");
 
-        // create buttons
-        buttons.forEach((label,properties) -> {
+        buttons.forEach((label, properties) -> {
+
+            if (properties == null) {
+                return;
+            }
+
             Button button = new Button(label);
 
-            // apply style if provided
-            String styles = (String) properties.getOrDefault("style","");
-            button.setStyle(styles);
+            // Optional style
+            Object styleObject = properties.get("style");
+
+            if (styleObject instanceof String styles &&
+                    !styles.isBlank()) {
+
+                button.setStyle(styles);
+            }
+
             button.getStyleClass().add("button");
 
-            // apply icon if provided
-            String iconUrl = (String) properties.get("icon");
-            if (iconUrl != null) {
-                ImageView icon = new ImageView(new Image(iconUrl));
+            // Optional icon
+            Object iconObject = properties.get("icon");
+
+            if (iconObject instanceof String iconUrl &&
+                    !iconUrl.isBlank()) {
+
+                Image image = new Image(iconUrl, true);
+
+                ImageView icon = new ImageView(image);
+
                 icon.setFitWidth(16);
                 icon.setFitHeight(16);
+
                 button.setGraphic(icon);
             }
 
-            // bind action to button
-            Runnable action = (Runnable) properties.getOrDefault("action", (Runnable) () -> System.out.println(label + " clicked"));
+            // Button action
+            Object actionObject = properties.get("action");
 
-            button.setOnAction(e -> close(action));
+            if (actionObject instanceof Runnable action) {
+
+                button.setOnAction(event -> close(action));
+
+            } else {
+
+                button.setOnAction(event -> close());
+            }
 
             buttonContainer.getChildren().add(button);
         });
 
-        // ADD BUTTONS TO THE FOOTER
         footerContainer.getChildren().add(buttonContainer);
 
         parent.getChildren().add(footerContainer);
     }
-    // Auto closing the function
-    private void autoCloseNotification(Boolean autoClose,double duration) {
-        if (! autoClose) return;
 
-        Platform.runLater(() -> timeOut(this::run,duration <= 0? this.durationInSeconds:duration));
-    }
+    // ---------------------------------------------------------
+    // ROOT CONTAINER
+    // ---------------------------------------------------------
+
     private VBox parent() {
+
         VBox vBox = (VBox) getLayout();
+
         vBox.setAlignment(Pos.CENTER);
-        vBox.getStyleClass().addAll("notification","parent-container");
+
+        vBox.getStyleClass().addAll(
+                "notification",
+                "parent-container"
+        );
 
         return vBox;
     }
 
-    // =============== Exposed Methods ==================
+    // ---------------------------------------------------------
+    // ICON MAPPING
+    // ---------------------------------------------------------
+
+    private static Ikon getIkon(NotifyAlert type) {
+
+        return switch (type) {
+
+            case SUCCESS ->
+                    RemixiconAL.CHECKBOX_CIRCLE_FILL;
+
+            case ERROR ->
+                    RemixiconAL.CLOSE_CIRCLE_FILL;
+
+            case ALERT ->
+                    RemixiconAL.ALERT_FILL;
+
+            case NEUTRAL ->
+                    RemixiconAL.INDETERMINATE_CIRCLE_FILL;
+
+            case INFO ->
+                    RemixiconAL.INFORMATION_FILL;
+        };
+    }
+
+    // ---------------------------------------------------------
+    // PUBLIC CONFIGURATION API
+    // ---------------------------------------------------------
 
     public Notification setHeader(String headerText) {
+
         this.headerText = headerText;
+
         return this;
     }
+
     public Notification setBody(String body) {
+
         this.body = body;
+
         return this;
     }
+
     public Notification setPosition(NotifyPos position) {
+
         this.position = position;
+
         return this;
     }
+
+    /*
+     * Controls entrance and exit animation duration.
+     */
     public Notification setDuration(Double durationInSeconds) {
-        this.durationInSeconds = durationInSeconds;
+
+        validateDuration(durationInSeconds);
+
+        this.animationDuration = durationInSeconds;
+
         return this;
     }
+
+    /*
+     * Controls how long the notification remains visible
+     * when auto-close is enabled.
+     */
+    public Notification setDisplayDuration(Double durationInSeconds) {
+
+        validateDuration(durationInSeconds);
+
+        this.displayDuration = durationInSeconds;
+
+        return this;
+    }
+
     public Notification setAlertType(NotifyAlert type) {
+
+        if (type == null) {
+            throw new IllegalArgumentException(
+                    "Notification alert type cannot be null."
+            );
+        }
+
         this.alertType = type;
+
         return this;
     }
+
     public Notification autoClose(Boolean autoClose) {
-        this.autoClose = autoClose;
+
+        this.autoClose = Boolean.TRUE.equals(autoClose);
+
         return this;
     }
+
     public Notification setAnimation(Boolean animation) {
-        this.animation = animation;
+
+        this.animation = Boolean.TRUE.equals(animation);
+
         return this;
     }
-    public Notification setButton(String label, Runnable action, String style) {
-        this.buttons.put(label,Map.of("action",action,"style",style));
+
+    // ---------------------------------------------------------
+    // BUTTON CONFIGURATION
+    // ---------------------------------------------------------
+
+    public Notification setButton(
+            String label,
+            Runnable action,
+            String style
+    ) {
+
+        Map<String, Object> properties = new LinkedHashMap<>();
+
+        properties.put("action", action);
+        properties.put("style", style);
+
+        buttons.put(label, properties);
+
         return this;
     }
-    public Notification setButton(String label, Runnable action) {
-        this.buttons.put(label,Map.of("action",action));
+
+    public Notification setButton(
+            String label,
+            Runnable action
+    ) {
+
+        Map<String, Object> properties = new LinkedHashMap<>();
+
+        properties.put("action", action);
+
+        buttons.put(label, properties);
+
         return this;
     }
+
+    /*
+     * Allows a button to have an icon URL.
+     */
+    public Notification setButton(
+            String label,
+            Runnable action,
+            String style,
+            String iconUrl
+    ) {
+
+        Map<String, Object> properties = new LinkedHashMap<>();
+
+        properties.put("action", action);
+        properties.put("style", style);
+        properties.put("icon", iconUrl);
+
+        buttons.put(label, properties);
+
+        return this;
+    }
+
+    // ---------------------------------------------------------
+    // VALIDATION
+    // ---------------------------------------------------------
+
+    private void validateDuration(Double duration) {
+
+        if (duration == null ||
+                !Double.isFinite(duration) ||
+                duration < 0) {
+
+            throw new IllegalArgumentException(
+                    "Duration must be a finite, non-negative value."
+            );
+        }
+    }
+
+    // ---------------------------------------------------------
+    // CREATE
+    // ---------------------------------------------------------
 
     public void create() {
-        // create prompt pane
+
+        if (headerText == null || body == null) {
+
+            throw new IllegalStateException(
+                    "Notification header and body cannot be null."
+            );
+        }
+
         VBox vBox = parent();
 
-        // create the head
-        createHead(vBox, this.headerText);
+        createHead(vBox, headerText);
 
-        // create the body
-        createBody(vBox, this.body);
+        createBody(vBox, body);
 
-        // create footer
-        createFooter(vBox, this.buttons);
+        createFooter(vBox, buttons);
 
-        // showing the notification
-        show(vBox, this.position, this.animation, this.durationInSeconds);
-
-        // create the close function
-        autoCloseNotification(this.autoClose, this.durationInSeconds);
+        /*
+         * Submit the fully configured notification
+         * to the shared lifecycle.
+         */
+        show(
+                vBox,
+                position,
+                animation,
+                animationDuration,
+                autoClose,
+                displayDuration
+        );
     }
-
-    private void run() { close(); }
 }

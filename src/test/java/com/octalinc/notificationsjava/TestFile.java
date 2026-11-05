@@ -31,8 +31,6 @@ public class TestFile extends Application {
         stage.setOnCloseRequest(ev -> manager.shutDown());
 
         Button notification = getNotification(manager);
-        // DIALOG
-        Button dialog = getDialog(manager);
         // TOAST
         Button toast = new Button("Toast");
         toast.setCursor(Cursor.HAND);
@@ -40,11 +38,16 @@ public class TestFile extends Application {
             Toast toastNotifier = manager.create(NotifyType.TOAST);
             toastNotifier.create(NotifyAlert.SUCCESS,"I am a toast");
         });
+
+        Button threeToast = createThreeToast(manager);
+
+        // DIALOG
+        Button dialog = getDialog(manager);
         // PROMPT
         Button prompt = getPrompt(manager);
 
         VBox container = new VBox(10);
-        container.getChildren().addAll(notification,prompt,toast,dialog);
+        container.getChildren().addAll(toast, threeToast, notification,prompt,dialog);
         container.setAlignment(Pos.CENTER);
         container.setFillWidth(true);
 
@@ -58,6 +61,23 @@ public class TestFile extends Application {
         // Show the stage
         stage.show();
     }
+
+    private static Button createThreeToast(NotifyManager manager) {
+        Button threeToast = new Button("Three Toasts");
+        threeToast.setCursor(Cursor.HAND);
+        threeToast.setOnAction(e -> {
+            Toast toastNotifier = manager.create(NotifyType.TOAST);
+            toastNotifier.create(NotifyAlert.SUCCESS,"First toast:: 1");
+
+            Toast toastNotifier1 = manager.create(NotifyType.TOAST);
+            toastNotifier1.create(NotifyAlert.ERROR,"Second toast:: 2");
+
+            Toast toastNotifier2 = manager.create(NotifyType.TOAST);
+            toastNotifier2.create(NotifyAlert.ALERT,"Third toast:: 3");
+        });
+        return threeToast;
+    }
+
     private static Button getPrompt(NotifyManager manager) {
         Button prompt = new Button("Prompt");
         prompt.setCursor(Cursor.HAND);
@@ -87,6 +107,16 @@ public class TestFile extends Application {
                     .setLabel("This is a dialogue body\nTell us about you.")
                     .setType(NotifyInput.TEXTAREA)
                     .create();
+
+            Dialog dialog1 = manager.create(NotifyType.DIALOG);
+            dialog1.setHeader("Description")
+                    .setType(NotifyInput.TEXTAREA)
+                    .setLabel("Enter description")
+                    .setPlaceholder("Write something...")
+                    .setButton("Submit", input -> System.out.println(input))
+                    .setButton("Cancel", () -> {})
+                    .bindInputAction(0)
+                    .create();
         });
         return dialog;
     }
@@ -106,6 +136,19 @@ public class TestFile extends Application {
                         Toast toast = manager.create(NotifyType.TOAST);
                         toast.create(NotifyAlert.ERROR,"something happened");
                     })
+                    .create();
+
+            Notification notification1 = manager.create(NotifyType.NOTIFICATION);
+            notification1.setHeader("Payment Successful")
+                    .setBody("The payment has been processed successfully.")
+                    .setAlertType(NotifyAlert.SUCCESS)
+                    .setPosition(NotifyPos.TOP_RIGHT)
+                    .setAnimation(true)
+                    .setDuration(0.5)
+                    .setDisplayDuration(5.0)
+                    .autoClose(true)
+                    .setButton("View Receipt", () -> System.out.println("Opening receipt..."))
+                    .setButton("Dismiss", () -> System.out.println("Notification dismissed."))
                     .create();
         });
         return notification;
