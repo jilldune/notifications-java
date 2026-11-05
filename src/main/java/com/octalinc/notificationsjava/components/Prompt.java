@@ -1,7 +1,7 @@
-package com.octalinc.notificationsjava.Notify;
+package com.octalinc.notificationsjava.components;
 
-import com.octalinc.notificationsjava.Managers.NotifyBase;
-import com.octalinc.notificationsjava.NotifierUtil.NotifyPos;
+import com.octalinc.notificationsjava.core.NotifyBase;
+import com.octalinc.notificationsjava.enums.NotifyPos;
 
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;

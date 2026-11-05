@@ -1,8 +1,8 @@
-package com.octalinc.notificationsjava.Notify;
+package com.octalinc.notificationsjava.components;
 
-import com.octalinc.notificationsjava.Managers.NotifyBase;
-import com.octalinc.notificationsjava.NotifierUtil.NotifyPos;
-import com.octalinc.notificationsjava.NotifierUtil.NotifyInput;
+import com.octalinc.notificationsjava.core.NotifyBase;
+import com.octalinc.notificationsjava.enums.NotifyPos;
+import com.octalinc.notificationsjava.enums.NotifyInput;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

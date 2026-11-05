@@ -7,11 +7,12 @@ module com.octalinc.notificationsjava {
     requires org.kordamp.ikonli.remixicon;
     requires java.desktop;
 
-    exports com.octalinc.notificationsjava.Managers;
-    opens com.octalinc.notificationsjava.Managers to javafx.fxml;
-    exports com.octalinc.notificationsjava.NotifierUtil;
-    opens com.octalinc.notificationsjava.NotifierUtil to javafx.fxml;
-    exports com.octalinc.notificationsjava.Notify;
-    opens com.octalinc.notificationsjava.Notify to javafx.fxml;
+    exports com.octalinc.notificationsjava.core;
+    opens com.octalinc.notificationsjava.core to javafx.fxml;
+    exports com.octalinc.notificationsjava.utils;
+    opens com.octalinc.notificationsjava.utils to javafx.fxml;
+    exports com.octalinc.notificationsjava.components;
+    opens com.octalinc.notificationsjava.components to javafx.fxml;
     exports com.octalinc.notificationsjava.enums;
+    opens com.octalinc.notificationsjava.enums to javafx.fxml;
 }

@@ -1,14 +1,14 @@
 package com.octalinc.notificationsjava;
 
-import com.octalinc.notificationsjava.Managers.NotifyManager;
-import com.octalinc.notificationsjava.NotifierUtil.NotifyAlert;
-import com.octalinc.notificationsjava.NotifierUtil.NotifyPos;
-import com.octalinc.notificationsjava.NotifierUtil.NotifyInput;
-import com.octalinc.notificationsjava.NotifierUtil.NotifyType;
-import com.octalinc.notificationsjava.Notify.Dialog;
-import com.octalinc.notificationsjava.Notify.Notification;
-import com.octalinc.notificationsjava.Notify.Prompt;
-import com.octalinc.notificationsjava.Notify.Toast;
+import com.octalinc.notificationsjava.core.NotifyManager;
+import com.octalinc.notificationsjava.enums.NotifyAlert;
+import com.octalinc.notificationsjava.enums.NotifyPos;
+import com.octalinc.notificationsjava.enums.NotifyInput;
+import com.octalinc.notificationsjava.enums.NotifyType;
+import com.octalinc.notificationsjava.components.Dialog;
+import com.octalinc.notificationsjava.components.Notification;
+import com.octalinc.notificationsjava.components.Prompt;
+import com.octalinc.notificationsjava.components.Toast;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;

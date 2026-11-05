@@ -1,5 +1,6 @@
-package com.octalinc.notificationsjava.NotifierUtil;
+package com.octalinc.notificationsjava.utils;
 
+import com.octalinc.notificationsjava.enums.NotifyPos;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Bounds;
@@ -71,7 +72,7 @@ public class NotifyUtils {
     // POSITION CALCULATION
     // ---------------------------------------------------------
 
-    public NotifyCoord parsePosition(
+    public NotifyCoordinate parsePosition(
             NotifyPos position,
             double width,
             double height,
@@ -177,7 +178,7 @@ public class NotifyUtils {
             }
         }
 
-        return new NotifyCoord(
+        return new NotifyCoordinate(
                 fromX,
                 fromY,
                 toX,
@@ -373,7 +374,7 @@ public class NotifyUtils {
         Map<String, Double> geometry =
                 getGeometry(attachedNode, attachedScene);
 
-        NotifyCoord coordinates =
+        NotifyCoordinate coordinates =
                 parsePosition(
                         attachedPosition,
                         geometry.get("width"),

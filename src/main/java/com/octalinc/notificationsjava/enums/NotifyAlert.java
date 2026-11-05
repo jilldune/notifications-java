@@ -1,4 +1,4 @@
-package com.octalinc.notificationsjava.NotifierUtil;
+package com.octalinc.notificationsjava.enums;
 
 public enum NotifyAlert {
     SUCCESS("success","s"),

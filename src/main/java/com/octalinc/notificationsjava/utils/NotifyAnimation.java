@@ -1,5 +1,6 @@
-package com.octalinc.notificationsjava.NotifierUtil;
+package com.octalinc.notificationsjava.utils;
 
+import com.octalinc.notificationsjava.enums.NotifyPos;
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.beans.value.ChangeListener;
@@ -198,7 +199,7 @@ public class NotifyAnimation {
         double sceneWidth = geometry.get("sceneWidth");
         double sceneHeight = geometry.get("sceneHeight");
 
-        NotifyCoord coordinates =
+        NotifyCoordinate coordinates =
                 notifyUtils.parsePosition(
                         position,
                         width,

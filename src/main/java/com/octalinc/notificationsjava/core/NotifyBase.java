@@ -1,9 +1,9 @@
-package com.octalinc.notificationsjava.Managers;
+package com.octalinc.notificationsjava.core;
 
-import com.octalinc.notificationsjava.NotifierUtil.NotifyAnimation;
-import com.octalinc.notificationsjava.NotifierUtil.NotifyCoord;
-import com.octalinc.notificationsjava.NotifierUtil.NotifyPos;
-import com.octalinc.notificationsjava.NotifierUtil.NotifyUtils;
+import com.octalinc.notificationsjava.utils.NotifyAnimation;
+import com.octalinc.notificationsjava.utils.NotifyCoordinate;
+import com.octalinc.notificationsjava.enums.NotifyPos;
+import com.octalinc.notificationsjava.utils.NotifyUtils;
 import com.octalinc.notificationsjava.enums.Lifecycle;
 
 import javafx.animation.PauseTransition;
@@ -348,7 +348,7 @@ public abstract class NotifyBase {
 
         double sceneHeight = geometry.get("sceneHeight");
 
-        NotifyCoord coordinates = notifyUtils.parsePosition(
+        NotifyCoordinate coordinates = notifyUtils.parsePosition(
                 position,
                 width,
                 height,

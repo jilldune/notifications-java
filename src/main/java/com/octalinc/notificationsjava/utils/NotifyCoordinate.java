@@ -1,6 +1,6 @@
-package com.octalinc.notificationsjava.NotifierUtil;
+package com.octalinc.notificationsjava.utils;
 
-public record NotifyCoord(
+public record NotifyCoordinate(
         double fromX,
         double fromY,
         double toX,
@@ -9,7 +9,7 @@ public record NotifyCoord(
         String position
 ) {
 
-    public NotifyCoord {
+    public NotifyCoordinate {
         if (position == null || position.isBlank()) {
             position = "center";
         }

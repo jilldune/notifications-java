@@ -1,10 +1,10 @@
-package com.octalinc.notificationsjava.Managers;
+package com.octalinc.notificationsjava.core;
 
-import com.octalinc.notificationsjava.NotifierUtil.NotifyType;
-import com.octalinc.notificationsjava.Notify.Dialog;
-import com.octalinc.notificationsjava.Notify.Notification;
-import com.octalinc.notificationsjava.Notify.Prompt;
-import com.octalinc.notificationsjava.Notify.Toast;
+import com.octalinc.notificationsjava.enums.NotifyType;
+import com.octalinc.notificationsjava.components.Dialog;
+import com.octalinc.notificationsjava.components.Notification;
+import com.octalinc.notificationsjava.components.Prompt;
+import com.octalinc.notificationsjava.components.Toast;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
