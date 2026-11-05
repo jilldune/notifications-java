@@ -1,231 +1,429 @@
 package com.octalinc.notificationsjava.NotifierUtil;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.Region;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class NotifyUtils {
+
     private ChangeListener<Number> widthListener;
     private ChangeListener<Number> heightListener;
     private ChangeListener<Boolean> fullScreenListener;
-    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    public static void timeOut(Runnable taskFunc, double durationInSeconds) {
-        long durationInMillis = (long) (durationInSeconds * 1000); // Convert seconds to milliseconds
-        scheduler.schedule(taskFunc, durationInMillis, TimeUnit.MILLISECONDS);
+    private Scene attachedScene;
+    private Stage attachedStage;
+
+    private Node attachedNode;
+    private NotifyPos attachedPosition;
+
+    /*
+     * Daemon thread prevents the scheduler from keeping
+     * the application alive after the JavaFX application exits.
+     */
+    private static final ScheduledExecutorService scheduler =
+            Executors.newSingleThreadScheduledExecutor(runnable -> {
+                Thread thread = new Thread(runnable, "Notify-Scheduler");
+                thread.setDaemon(true);
+                return thread;
+            });
+
+    // ---------------------------------------------------------
+    // TIMEOUT
+    // ---------------------------------------------------------
+
+    public static void timeOut(
+            Runnable taskFunc,
+            double durationInSeconds
+    ) {
+
+        if (taskFunc == null) {
+            return;
+        }
+
+        long durationInMillis = Math.max(
+                0,
+                (long) (durationInSeconds * 1000)
+        );
+
+        scheduler.schedule(
+                () -> Platform.runLater(taskFunc),
+                durationInMillis,
+                TimeUnit.MILLISECONDS
+        );
     }
 
-    // Call this method to properly shut down the scheduler when the application is closing
     public static void shutdownScheduler() {
-        scheduler.shutdown();
+        scheduler.shutdownNow();
     }
 
-    public Map<String, Object> parsePosition(NotifyPos position, double width, double height, double sceneWidth, double sceneHeight) {
-        // Define positioning
+    // ---------------------------------------------------------
+    // POSITION CALCULATION
+    // ---------------------------------------------------------
+
+    public NotifyCoord parsePosition(
+            NotifyPos position,
+            double width,
+            double height,
+            double sceneWidth,
+            double sceneHeight
+    ) {
+
         double fromX;
         double fromY;
         double toX;
         double toY;
+
         double pad = 10.0;
 
-        // Process the notification position
         String nPos = extractPosition(position);
 
-        //Set the positions
         switch (nPos) {
+
             case "right" -> {
                 double y = (sceneHeight - height) / 2;
 
                 fromX = sceneWidth;
-                toX = (sceneWidth - width) - pad;
+                toX = sceneWidth - width - pad;
+
                 fromY = y;
                 toY = y;
             }
+
             case "left" -> {
                 double y = (sceneHeight - height) / 2;
 
                 fromX = -width;
-                toX = 0 + pad;
+                toX = pad;
+
                 fromY = y;
                 toY = y;
             }
+
             case "bottom" -> {
                 double x = (sceneWidth - width) / 2;
 
                 fromY = sceneHeight;
-                toY = (sceneHeight - height) - pad;
+                toY = sceneHeight - height - pad;
+
                 fromX = x;
                 toX = x;
             }
+
             case "center" -> {
-                fromX = 0.0;
-                fromY = 0.0;
+
+                fromX = 0;
+                fromY = 0;
+
                 toX = (sceneWidth - width) / 2;
                 toY = (sceneHeight - height) / 2;
             }
+
             case "top-left" -> {
+
                 fromX = -width;
                 fromY = -height;
-                toX = 0 + pad;
-                toY = 0 + pad;
+
+                toX = pad;
+                toY = pad;
             }
+
             case "top-right" -> {
+
                 fromX = sceneWidth;
                 fromY = -height;
-                toX = (sceneWidth - width) - pad;
-                toY = 0 + pad;
+
+                toX = sceneWidth - width - pad;
+                toY = pad;
             }
+
             case "bottom-left" -> {
+
                 fromX = -width;
                 fromY = sceneHeight;
-                toX = 0 + pad;
-                toY = (sceneHeight - height) - pad;
+
+                toX = pad;
+                toY = sceneHeight - height - pad;
             }
+
             case "bottom-right" -> {
+
                 fromX = sceneWidth;
                 fromY = sceneHeight;
-                toX = (sceneWidth - width) - pad;
-                toY = (sceneHeight - height) - pad;
+
+                toX = sceneWidth - width - pad;
+                toY = sceneHeight - height - pad;
             }
+
             default -> {
+
                 double x = (sceneWidth - width) / 2;
 
                 fromY = -height;
                 fromX = x;
-                toY = 0 + pad;
+
+                toY = pad;
                 toX = x;
             }
         }
 
-        NotifyCoord coordinates = new NotifyCoord(fromX,fromY,toX,toY,pad,nPos);
-
-        return coordinates.getCoordinates();
+        return new NotifyCoord(
+                fromX,
+                fromY,
+                toX,
+                toY,
+                pad,
+                nPos
+        );
     }
 
     public String extractPosition(NotifyPos position) {
-        // Process the notification position first
-        String nPos = "";
-        switch (position) {
-            case TOP,TOP_LEFT,TOP_RIGHT,LEFT,RIGHT,BOTTOM,BOTTOM_LEFT,BOTTOM_RIGHT,CENTER ->  nPos = position.getPosition();
-        }
 
-        return nPos;
+        return Objects.requireNonNullElse(position, NotifyPos.TOP).getPosition();
+
     }
 
-    public Map<String, Double> getGeometry(Node node, Scene scene) {
-        // create Map Object
-        Map<String, Double> geoObj = new HashMap<>();
+    // ---------------------------------------------------------
+    // GEOMETRY
+    // ---------------------------------------------------------
 
-        // Define bounds
-        double width, height, sceneWidth, sceneHeight;
+    public Map<String, Double> getGeometry(
+            Node node,
+            Scene scene
+    ) {
+
+        if (node == null || scene == null) {
+            throw new IllegalArgumentException(
+                    "Node and Scene cannot be null."
+            );
+        }
+
+        /*
+         * CSS and layout must be applied before calculating
+         * dimensions.
+         */
+        node.applyCss();
+        node.autosize();
+        // node.layout();
+
+        double width;
+        double height;
 
         if (node instanceof Region region) {
-            region.applyCss();
-            region.layout();
 
-            width = region.getPrefWidth();
-            height = region.getPrefHeight();
+            width = resolveDimension(
+                    region,
+                    true
+            );
 
-            if (width == Region.USE_COMPUTED_SIZE || Double.isNaN(width)) width = region.getMaxWidth();
+            height = resolveDimension(
+                    region,
+                    false
+            );
 
-            if (height == Region.USE_COMPUTED_SIZE || Double.isNaN(height)) height = region.getMaxHeight();
+        } else {
 
-            // check if with is less than 0
-            if (width < 0) width = Math.max(width, Math.max(region.prefWidth(-1),region.getMinWidth()));
-            if (height < 0) height = Math.max(height, Math.max(region.prefHeight(-1),region.getMinHeight()));
-        }
-        else {
-            Bounds bounds = node.getBoundsInLocal();
+            Bounds bounds = node.getLayoutBounds();
 
             width = bounds.getWidth();
             height = bounds.getHeight();
         }
 
-        // Get the scene bounds
-        sceneWidth = scene.getWidth();
-        sceneHeight = scene.getHeight();
+        Map<String, Double> geometry = new HashMap<>();
 
-        // Set Values
-        geoObj.put("width", width);
-        geoObj.put("height",height);
-        geoObj.put("sceneWidth",sceneWidth);
-        geoObj.put("sceneHeight",sceneHeight);
+        geometry.put("width", width);
+        geometry.put("height", height);
 
-        return geoObj;
+        geometry.put("sceneWidth", scene.getWidth());
+        geometry.put("sceneHeight", scene.getHeight());
+
+        return geometry;
     }
 
+    private double resolveDimension(
+            Region region,
+            boolean horizontal
+    ) {
 
-    // Add listeners
-    public void addNodeListeners(Stage stage, Node node, NotifyPos position, Double width, Double height) {
-        // Get scene
-        Scene scene = stage.getScene();
+        double layoutSize = horizontal
+                ? region.getLayoutBounds().getWidth()
+                : region.getLayoutBounds().getHeight();
 
-        // AddListeners to update positions
-        // Width
-        widthListener = (obs,oldVal,newV) -> {
-            double updatedSceneWidth = newV.doubleValue();
-            double updatedSceneHeight = scene.getHeight();
+        double prefSize = horizontal
+                ? region.prefWidth(-1)
+                : region.prefHeight(-1);
 
-            Map<String, Object> updatedCoordinate = parsePosition(position,width,height,updatedSceneWidth,updatedSceneHeight);
+        double minSize = horizontal
+                ? region.minWidth(-1)
+                : region.minHeight(-1);
 
-            // Initial Position
-            node.setLayoutX((double) updatedCoordinate.get("toX"));
-            node.setLayoutY((double) updatedCoordinate.get("toY"));
-        };
-        scene.widthProperty().addListener(widthListener);
+        double maxSize = horizontal
+                ? region.maxWidth(-1)
+                : region.maxHeight(-1);
 
-        // Height
-        heightListener = (obs,oldVal,newV) -> {
-            double updatedSceneWidth = scene.getWidth();
-            double updatedSceneHeight = newV.doubleValue();
+        /*
+         * Prefer the computed preferred size.
+         */
+        double size = prefSize;
 
-            Map<String, Object> updatedCoordinate = parsePosition(position,width,height,updatedSceneWidth, updatedSceneHeight);
+        /*
+         * Fall back to the actual layout bounds if
+         * preferred size is unavailable.
+         */
+        if (!isValidDimension(size)) {
+            size = layoutSize;
+        }
 
-            // Initial Position
-            node.setLayoutX((double) updatedCoordinate.get("toX"));
-            node.setLayoutY((double) updatedCoordinate.get("toY"));
-        };
-        scene.heightProperty().addListener(heightListener);
+        /*
+         * Last fallback.
+         */
+        if (!isValidDimension(size)) {
+            size = minSize;
+        }
 
-        // Full screen mode
-        fullScreenListener = (obs,wasFullScreen,isFullScreen) -> {
-            if (isFullScreen) {
-                double fullScreenWidth = Screen.getPrimary().getBounds().getWidth();
-                double fullScreenHeight = Screen.getPrimary().getBounds().getHeight();
+        /*
+         * Prevent invalid or excessively large dimensions.
+         */
+        size = Math.max(minSize, size);
 
-                Map<String, Object> updatedCoordinate = parsePosition(position,width,height,fullScreenWidth,fullScreenHeight);
+        if (isValidDimension(maxSize)) {
+            size = Math.min(maxSize, size);
+        }
 
-                // Initial Position
-                node.setLayoutX((double) updatedCoordinate.get("toX"));
-                node.setLayoutY((double) updatedCoordinate.get("toY"));
+        return Math.max(0, size);
+    }
+
+    private boolean isValidDimension(double value) {
+
+        return Double.isFinite(value) && value >= 0;
+    }
+
+    // ---------------------------------------------------------
+    // RESPONSIVE POSITIONING
+    // ---------------------------------------------------------
+
+    public void addNodeListeners(
+            Stage stage,
+            Node node,
+            NotifyPos position
+    ) {
+
+        removeListeners();
+
+        if (stage == null || stage.getScene() == null || node == null) {
+            return;
+        }
+
+        this.attachedStage = stage;
+        this.attachedScene = stage.getScene();
+
+        this.attachedNode = node;
+        this.attachedPosition = position;
+
+        /*
+         * Scene width changes.
+         */
+        widthListener = (observable, oldValue, newValue) ->
+                reposition();
+
+        attachedScene.widthProperty().addListener(widthListener);
+
+        /*
+         * Scene height changes.
+         */
+        heightListener = (observable, oldValue, newValue) ->
+                reposition();
+
+        attachedScene.heightProperty().addListener(heightListener);
+
+        /*
+         * Fullscreen changes.
+         * Scene dimensions remain our source of truth.
+         */
+        fullScreenListener = (observable, oldValue, newValue) ->
+                Platform.runLater(this::reposition);
+
+        attachedStage.fullScreenProperty()
+                .addListener(fullScreenListener);
+    }
+
+    private void reposition() {
+
+        if (attachedScene == null ||
+                attachedNode == null ||
+                attachedPosition == null) {
+            return;
+        }
+
+        if (!Platform.isFxApplicationThread()) {
+            Platform.runLater(this::reposition);
+            return;
+        }
+
+        Map<String, Double> geometry =
+                getGeometry(attachedNode, attachedScene);
+
+        NotifyCoord coordinates =
+                parsePosition(
+                        attachedPosition,
+                        geometry.get("width"),
+                        geometry.get("height"),
+                        attachedScene.getWidth(),
+                        attachedScene.getHeight()
+                );
+
+        attachedNode.setLayoutX(coordinates.toX());
+
+        attachedNode.setLayoutY(coordinates.toY());
+    }
+
+    // ---------------------------------------------------------
+    // LISTENER CLEANUP
+    // ---------------------------------------------------------
+
+    public void removeListeners() {
+
+        if (attachedScene != null) {
+
+            if (widthListener != null) {
+
+                attachedScene.widthProperty()
+                        .removeListener(widthListener);
+
+                widthListener = null;
             }
-        };
-        stage.fullScreenProperty().addListener(fullScreenListener);
-    }
 
-    public void removeListeners(Stage stage) {
-        Scene scene = stage.getScene();
+            if (heightListener != null) {
 
-        if (widthListener != null) {
-            scene.widthProperty().removeListener(widthListener);
-            widthListener = null;
+                attachedScene.heightProperty()
+                        .removeListener(heightListener);
+
+                heightListener = null;
+            }
         }
-        if (heightListener != null) {
-            scene.heightProperty().removeListener(heightListener);
-            heightListener = null;
+
+        if (attachedStage != null && fullScreenListener != null) {
+
+            attachedStage.fullScreenProperty()
+                    .removeListener(fullScreenListener);
+
+            fullScreenListener = null;
         }
-        if (fullScreenListener != null) {
-            stage.fullScreenProperty().removeListener(fullScreenListener);
-        }
+
+        attachedScene = null;
+        attachedStage = null;
+
+        attachedNode = null;
+        attachedPosition = null;
     }
 }

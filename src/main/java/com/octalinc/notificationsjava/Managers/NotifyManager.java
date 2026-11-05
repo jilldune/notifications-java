@@ -1,178 +1,617 @@
 package com.octalinc.notificationsjava.Managers;
 
-import com.octalinc.notificationsjava.NotifierUtil.NotifyUtils;
+import com.octalinc.notificationsjava.NotifierUtil.NotifyType;
 import com.octalinc.notificationsjava.Notify.Dialog;
 import com.octalinc.notificationsjava.Notify.Notification;
-import com.octalinc.notificationsjava.NotifierUtil.NotifyType;
 import com.octalinc.notificationsjava.Notify.Prompt;
 import com.octalinc.notificationsjava.Notify.Toast;
+
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Queue;
 
 public class NotifyManager {
-    private final AnchorPane root;
+
     private final Stage stage;
-    private final Queue<NotifyBase> notificationQueue = new LinkedList<>();
+
+    /*
+     * Notification overlay.
+     */
+    private final AnchorPane root;
+
+    /*
+     * Container holding the application's original root
+     * and the notification overlay.
+     */
+    private StackPane host;
+
+    /*
+     * Original application root.
+     */
+    private Parent applicationRoot;
+
+    private Scene attachedScene;
+
+    private ChangeListener<Parent> sceneRootListener;
+
+    private ChangeListener<Scene> stageSceneListener;
+
+    /*
+     * Notification queue.
+     */
+    private final Queue<NotifyBase> notificationQueue =
+            new ArrayDeque<>();
+
+    private NotifyBase activeNotification;
+
     private boolean isNotificationDisplayed = false;
-    private final List<String> defaultLibraryStyles = new ArrayList<>(); // Default library styles
-    private final List<String> customStyleSheets = new ArrayList<>(); // User-added custom stylesheets
+
+    private boolean dispatchScheduled = false;
+
+    private boolean initialized = false;
+
+    private boolean disposed = false;
+
+    /*
+     * Stylesheets.
+     */
+    private final List<String> defaultLibraryStyles =
+            new ArrayList<>();
+
+    private final List<String> customStyleSheets =
+            new ArrayList<>();
+
     private int rootTransparencyLevel = 1;
 
+    // ---------------------------------------------------------
+    // CONSTRUCTOR
+    // ---------------------------------------------------------
 
     public NotifyManager(Stage stage) {
-        this.stage = stage;
-        this.root = initRoot();
+
+        requireFxThread();
+
+        this.stage = Objects.requireNonNull(stage);
+
+        this.root = new AnchorPane();
+
+        initializeRoot();
+
+        initializeStageListener();
+
+        attachScene(stage.getScene());
     }
 
-    /***
-     * Creates and initializes the root of the notifier on which all alerts/notification is drawn
-     * with all default styles and add to the window/stage of the calling window
-     *
-     * @return root[AnchorPane]
-     */
-    private AnchorPane initRoot() {
-        AnchorPane root = new AnchorPane();
+    // ---------------------------------------------------------
+    // INITIALIZATION
+    // ---------------------------------------------------------
+    private void initializeRoot() {
 
-        Platform.runLater(()->{
-            initStyles();
-            root.getStyleClass().add("root");
-            setRootTransparencyLevel(0);
-            root.setVisible(false);
+        root.getStyleClass().add("root");
 
-            Scene scene = this.stage.getScene();
-            Parent userRoot = scene.getRoot();
+        root.setVisible(false);
+        root.setManaged(false);
 
-            if(! ((Pane) userRoot).getChildren().contains(root)) {
-                ((Pane) userRoot).getChildren().add(root);
+        /*
+         * Do not let the empty overlay intercept events
+         * intended for the application underneath it.
+         */
+        root.setPickOnBounds(false);
 
-                // bind to a scene
-                root.prefWidthProperty().bind(scene.widthProperty());
-                root.prefHeightProperty().bind(scene.heightProperty());
+        root.setMaxSize(
+                Double.MAX_VALUE,
+                Double.MAX_VALUE
+        );
+
+        initialized = true;
+
+        initializeStyles();
+    }
+
+    private void initializeStyles() {
+
+        String stylesheet = Objects.requireNonNull(
+                getClass().getResource(
+                        "/_notify-styles/notification-styles.css"
+                ),
+                "Notification stylesheet was not found."
+        ).toExternalForm();
+
+        defaultLibraryStyles.clear();
+
+        defaultLibraryStyles.add(stylesheet);
+
+        replaceStylesheets();
+    }
+
+    // ---------------------------------------------------------
+    // SCENE MANAGEMENT
+    // ---------------------------------------------------------
+
+    private void initializeStageListener() {
+
+        stageSceneListener = (observable, oldScene, newScene) -> {
+
+            detachScene();
+
+            attachScene(newScene);
+        };
+
+        stage.sceneProperty().addListener(stageSceneListener);
+    }
+
+    private void attachScene(Scene scene) {
+
+        if (disposed || scene == null) {
+            return;
+        }
+
+        attachedScene = scene;
+
+        applicationRoot = scene.getRoot();
+
+        /*
+         * Create an overlay host.
+         */
+        host = new StackPane();
+
+        host.setAlignment(Pos.TOP_LEFT);
+
+        host.getChildren().addAll(
+                applicationRoot,
+                root
+        );
+
+        /*
+         * Make the overlay fill the host.
+         */
+        StackPane.setAlignment(root, Pos.TOP_LEFT);
+
+        scene.setRoot(host);
+
+        /*
+         * Listen for application root replacement.
+         */
+        sceneRootListener = (observable, oldRoot, newRoot) -> {
+
+            if (newRoot == host || disposed || newRoot == null) {
+                return;
             }
-        });
 
-        return root;
+            replaceApplicationRoot(newRoot);
+        };
+
+        scene.rootProperty().addListener(sceneRootListener);
+
+        /*
+         * Keep the overlay dimensions synchronized.
+         */
+        root.prefWidthProperty().bind(host.widthProperty());
+        root.prefHeightProperty().bind(host.heightProperty());
+
+        /*
+         * Reapply stylesheets.
+         */
+        replaceStylesheets();
     }
 
-    private void setRootTransparencyLevel(int level) {
-        this.root.getStyleClass().clear();
-        this.root.getStyleClass().add("root");
+    private void replaceApplicationRoot(Parent newRoot) {
 
-        if (level != 0)
-            this.root.getStyleClass().add("level" + level);
-    }
+        if (host == null || newRoot == null) {
+            return;
+        }
 
-    /**
-     * Initializes the default library stylesheets.
-     */
-    private void initStyles() {
-        // Add your default library styles here
-        defaultLibraryStyles.add(Objects.requireNonNull(getClass().getResource("/_notify-styles/notification-styles.css")).toExternalForm());
-        replaceStylesheets(); // Apply the default styles initially
-    }
+        applicationRoot = newRoot;
 
-    /// Ensures that library styles remain in place and custom styles are applied last.
-    /**
-     * Adds a custom stylesheet provided by the user.
-     *
-     * @param styleSheetURL the URL of the custom stylesheet to add.
-    */
-    public void addStyleSheet(String styleSheetURL) {
-        if (styleSheetURL != null && !styleSheetURL.trim().isEmpty()) {
-            this.customStyleSheets.add(styleSheetURL); // Maintain a list of user-added stylesheets
-            replaceStylesheets();
+        /*
+         * The new application root becomes the background
+         * of the notification host.
+         */
+        host.getChildren().setAll(
+                applicationRoot,
+                root
+        );
+
+        /*
+         * Restore the host as the actual Scene root.
+         *
+         * The root listener recognizes host and therefore
+         * does not recursively wrap it.
+         */
+        if (attachedScene.getRoot() != host) {
+            attachedScene.setRoot(host);
         }
     }
 
-    /**
-     * Clears and re-applies all stylesheets to the root pane.
-     * Ensures library styles are applied first, followed by custom styles.
-    */
-    private void replaceStylesheets() {
-        root.getStylesheets().clear();
-        root.getStylesheets().addAll(defaultLibraryStyles);
-        root.getStylesheets().addAll(customStyleSheets);
+    private void detachScene() {
+
+        if (attachedScene == null) {
+            return;
+        }
+
+        /*
+         * Remove the root listener first.
+         * This prevents our restoration from triggering
+         * replaceApplicationRoot().
+         */
+        if (sceneRootListener != null) {
+
+            attachedScene.rootProperty()
+                    .removeListener(sceneRootListener);
+
+            sceneRootListener = null;
+        }
+
+        /*
+         * Unbind overlay dimensions.
+         */
+        root.prefWidthProperty().unbind();
+        root.prefHeightProperty().unbind();
+
+        /*
+         * Keep references before clearing the fields.
+         */
+        Scene scene = attachedScene;
+        StackPane currentHost = host;
+        Parent currentApplicationRoot = applicationRoot;
+
+        /*
+         * Detach our nodes from the host.
+         *
+         * This is important because applicationRoot must
+         * have no parent before it can become the Scene root.
+         */
+        if (currentHost != null) {
+
+            currentHost.getChildren().remove(root);
+
+            if (currentApplicationRoot != null) {
+                currentHost.getChildren().remove(currentApplicationRoot);
+            }
+        }
+
+        /*
+         * Restore the application root only if our host
+         * is still installed as the Scene root.
+         *
+         * If another part of the application has already
+         * replaced the Scene root, leave that replacement intact.
+         */
+        if (scene.getRoot() == currentHost &&
+                currentApplicationRoot != null) {
+
+            scene.setRoot(currentApplicationRoot);
+        }
+
+        /*
+         * Release references.
+         */
+        attachedScene = null;
+        applicationRoot = null;
+        host = null;
     }
 
-    /**
-     * Exposes the root pane for adding to the scene.
-     *
-     * @return the root AnchorPane.
-    */
-    public AnchorPane getRootPane() { return root; }
+    // ---------------------------------------------------------
+    // STYLESHEETS
+    // ---------------------------------------------------------
+
+    public void addStyleSheet(String styleSheetURL) {
+
+        runOnFxThread(() -> {
+
+            if (disposed || styleSheetURL == null ||
+                    styleSheetURL.isBlank()) {
+                return;
+            }
+
+            if (!customStyleSheets.contains(styleSheetURL)) {
+                customStyleSheets.add(styleSheetURL);
+            }
+
+            replaceStylesheets();
+        });
+    }
+
+    private void replaceStylesheets() {
+
+        if (!initialized) {
+            return;
+        }
+
+        root.getStylesheets().setAll(
+                defaultLibraryStyles
+        );
+
+        root.getStylesheets().addAll(
+                customStyleSheets
+        );
+    }
+
+    // ---------------------------------------------------------
+    // ROOT CONFIGURATION
+    // ---------------------------------------------------------
+
+    private void setRootTransparencyLevel(int level) {
+
+        root.getStyleClass().removeIf(
+                style -> style.matches("level\\d+")
+        );
+
+        if (level > 0) {
+            root.getStyleClass().add("level" + level);
+        }
+    }
 
     public void backgroundTransparency(int level) {
-        this.rootTransparencyLevel = level;
+
+        if (level < 0) {
+            throw new IllegalArgumentException(
+                    "Transparency level cannot be negative."
+            );
+        }
+
+        runOnFxThread(() -> {
+
+            if (disposed) {
+                return;
+            }
+
+            rootTransparencyLevel = level;
+
+            setRootTransparencyLevel(level);
+        });
     }
 
-    public void shutDown() {
-        NotifyUtils.shutdownScheduler();
+    public AnchorPane getRootPane() {
+        return root;
     }
+
+    // ---------------------------------------------------------
+    // NOTIFICATION FACTORY
+    // ---------------------------------------------------------
 
     @SuppressWarnings("unchecked")
-    public <T extends NotifyBase>T create(NotifyType type) {
-        NotifyBase notification = switch (type) {
+    public <T extends NotifyBase> T create(NotifyType type) {
+
+        requireFxThread();
+
+        if (disposed) {
+            throw new IllegalStateException(
+                    "NotifyManager has already been disposed."
+            );
+        }
+
+        NotifyBase notification = switch (Objects.requireNonNull(type)) {
+
             case TOAST -> new Toast(stage);
+
             case PROMPT -> new Prompt(stage);
+
             case DIALOG -> new Dialog(stage);
+
             case NOTIFICATION -> new Notification(stage);
         };
 
-        initializeNotification(notification);
+        /*
+         * Supply the queue submission callback.
+         *
+         * The notification will invoke this only after
+         * its component has finished building its UI.
+         */
+        notification.setSubmitter(this::initializeNotification);
 
         return (T) notification;
     }
 
-    private synchronized void displayNextNotification() {
-        if (!notificationQueue.isEmpty()) {
-            Platform.runLater(()->{
-                try {
-                    NotifyBase notifier = notificationQueue.poll();
-                    isNotificationDisplayed = true;
+    // ---------------------------------------------------------
+    // QUEUE MANAGEMENT
+    // ---------------------------------------------------------
 
-                    // set background transparency
-                    this.setRootTransparencyLevel(this.rootTransparencyLevel);
+    private void initializeNotification(NotifyBase notification) {
 
-                    root.setManaged(false);
-                    root.setVisible(false);
+        if (disposed) {
+            notification.dispose();
+            return;
+        }
 
-                    // Add the root to the notifier class
-                    assert notifier != null;
-                    notifier.setRoot(root);
+        notificationQueue.offer(notification);
 
-                    // Get the layout region
-                    Region layout = notifier.getLayout();
+        scheduleNextNotification();
+    }
 
-                    // clear the root component
-                    root.getChildren().clear();
+    private void scheduleNextNotification() {
 
-                    // Add the layout to the root
-                    root.getChildren().add(layout);
+        if (disposed ||
+                isNotificationDisplayed ||
+                dispatchScheduled ||
+                notificationQueue.isEmpty()) {
+            return;
+        }
 
-                    notifier.display(() -> {
-                        isNotificationDisplayed = false;
-                        this.displayNextNotification();
-                    });
-                } catch (Exception e) {
-                    System.err.println(e.getMessage());
-                    e.getCause();
-                }
-            });
+        dispatchScheduled = true;
+
+        Platform.runLater(() -> {
+
+            dispatchScheduled = false;
+
+            displayNextNotification();
+        });
+    }
+
+    private void displayNextNotification() {
+
+        if (disposed ||
+                isNotificationDisplayed ||
+                notificationQueue.isEmpty()) {
+            return;
+        }
+
+        NotifyBase notifier = notificationQueue.poll();
+
+        if (notifier == null) {
+            return;
+        }
+
+        isNotificationDisplayed = true;
+
+        activeNotification = notifier;
+
+        try {
+
+            /*
+             * Apply background configuration.
+             */
+            setRootTransparencyLevel(rootTransparencyLevel);
+
+            /*
+             * Reset the overlay.
+             */
+            root.getChildren().clear();
+
+            root.setManaged(false);
+            root.setVisible(false);
+
+            /*
+             * Attach notification.
+             */
+            notifier.setRoot(root);
+
+            Region layout = notifier.getLayout();
+
+            root.getChildren().add(layout);
+
+            /*
+             * Display notification.
+             */
+            notifier.display(() -> notificationFinished(notifier));
+
+        } catch (Exception e) {
+
+            System.err.println(
+                    "Failed to display notification: " + e.getMessage()
+            );
+
+            e.printStackTrace();
+
+            notificationFinished(notifier);
         }
     }
 
-    private synchronized void initializeNotification(NotifyBase notifyBase) {
-        notificationQueue.add(notifyBase);
+    private void notificationFinished(NotifyBase notification) {
 
-        if (!isNotificationDisplayed) {
-            displayNextNotification();
+        runOnFxThread(() -> {
+
+            /*
+             * Ignore callbacks from notifications that
+             * are no longer active.
+             */
+            if (activeNotification != notification) {
+                return;
+            }
+
+            activeNotification = null;
+
+            isNotificationDisplayed = false;
+
+            root.getChildren().clear();
+
+            root.setVisible(false);
+            root.setManaged(false);
+
+            scheduleNextNotification();
+        });
+    }
+
+    // ---------------------------------------------------------
+    // SHUTDOWN
+    // ---------------------------------------------------------
+
+    public void shutDown() {
+
+        runOnFxThread(this::dispose);
+    }
+
+    public void dispose() {
+
+        requireFxThread();
+
+        if (disposed) {
+            return;
+        }
+
+        disposed = true;
+
+        // Dispose the currently displayed notification.
+        if (activeNotification != null) {
+            activeNotification.dispose();
+            activeNotification = null;
+        }
+
+        // Dispose notifications waiting in the queue.
+        while (!notificationQueue.isEmpty()) {
+
+            NotifyBase notification = notificationQueue.poll();
+
+            if (notification != null) {
+                notification.dispose();
+            }
+        }
+
+        dispatchScheduled = false;
+        isNotificationDisplayed = false;
+
+        // Remove Stage listener.
+        if (stageSceneListener != null) {
+
+            stage.sceneProperty()
+                    .removeListener(stageSceneListener);
+
+            stageSceneListener = null;
+        }
+
+        detachScene();
+
+        root.getChildren().clear();
+
+        root.setVisible(false);
+        root.setManaged(false);
+
+        customStyleSheets.clear();
+        defaultLibraryStyles.clear();
+    }
+
+    // ---------------------------------------------------------
+    // THREAD MANAGEMENT
+    // ---------------------------------------------------------
+
+    private void requireFxThread() {
+
+        if (!Platform.isFxApplicationThread()) {
+
+            throw new IllegalStateException(
+                    "NotifyManager must be accessed from the JavaFX Application Thread."
+            );
+        }
+    }
+
+    private void runOnFxThread(Runnable task) {
+
+        if (Platform.isFxApplicationThread()) {
+            task.run();
+        } else {
+            Platform.runLater(task);
         }
     }
 }

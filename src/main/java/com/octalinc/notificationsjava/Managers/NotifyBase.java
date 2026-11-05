@@ -1,180 +1,527 @@
 package com.octalinc.notificationsjava.Managers;
 
-import com.octalinc.notificationsjava.NotifierUtil.NotifyUtils;
-import com.octalinc.notificationsjava.NotifierUtil.NotifyPos;
 import com.octalinc.notificationsjava.NotifierUtil.NotifyAnimation;
+import com.octalinc.notificationsjava.NotifierUtil.NotifyCoord;
+import com.octalinc.notificationsjava.NotifierUtil.NotifyPos;
+import com.octalinc.notificationsjava.NotifierUtil.NotifyUtils;
+import com.octalinc.notificationsjava.enums.Lifecycle;
+
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
-import java.util.HashMap;
 import java.util.Map;
-
-import static com.octalinc.notificationsjava.NotifierUtil.NotifyUtils.timeOut;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 public abstract class NotifyBase {
-    protected Stage stage;
+
+    protected final Stage stage;
+
     private final Region layout;
-    private Node node = null;
+
+    private Node node;
+
     private AnchorPane root;
+
+    private final NotifyUtils notifyUtils;
+
     private final NotifyAnimation animations;
-    private boolean animation = true;
-    private boolean animateNotification = true;
+
+    private final PauseTransition autoCloseTimer;
+
+    // ---------------------------------------------------------
+    // CONFIGURATION
+    // ---------------------------------------------------------
+
     private NotifyPos position = NotifyPos.TOP;
-    private double duration = 0.5;
-    private final Map<String, Object> closeCallbacks = new HashMap<>();
+
+    private double animationDuration = 0.5;
+
+    private double displayDuration = 0.5;
+
+    private boolean animateNotification = true;
+
+    private boolean autoClose = false;
+
+    // ---------------------------------------------------------
+    // LIFECYCLE
+    // ---------------------------------------------------------
+
+    private Lifecycle lifecycle = Lifecycle.NEW;
+
+    private Consumer<NotifyBase> submitter;
+
+    private boolean submitted = false;
+
     private Runnable onCloseRequest;
+
     private Runnable onClosed;
 
+    private Runnable onDisplayFinished;
+
+    // ---------------------------------------------------------
+    // CONSTRUCTOR
+    // ---------------------------------------------------------
+
     public NotifyBase(Stage stage, Region layout) {
-        this.stage = stage;
-        this.layout = layout;
+
+        this.stage = Objects.requireNonNull(stage);
+
+        this.layout = Objects.requireNonNull(layout);
+
+        this.notifyUtils = new NotifyUtils();
+
         this.animations = new NotifyAnimation();
+
+        this.autoCloseTimer = new PauseTransition();
+
+        this.autoCloseTimer.setOnFinished(event -> close());
     }
 
-    public Region getLayout() { return this.layout; }
+    // ---------------------------------------------------------
+    // GETTERS
+    // ---------------------------------------------------------
 
-    // creates or applies the positions to the notification
-    protected void setInanimatePosition(Node node, NotifyPos position) {
-        this.animation = false;
-        Scene scene = stage.getScene();
-        NotifyUtils notifyUtils = new NotifyUtils();
-
-        // get geometry
-        Map<String, Double> helperGeometry = notifyUtils.getGeometry(node,scene);
-
-        // Set bounds
-        double width = helperGeometry.get("width");
-        double height = helperGeometry.get("height");
-
-        // Get the scene bounds
-        double sceneWidth = helperGeometry.get("sceneWidth");
-        double sceneHeight = helperGeometry.get("sceneHeight");
-
-        // Define positioning
-        Map<String, Object> coordinate = notifyUtils.parsePosition(position,width,height,sceneWidth,sceneHeight);
-        double toX = (double) coordinate.get("toX");
-        double toY = (double) coordinate.get("toY");
-
-        // Initial Position
-        node.setLayoutX(toX);
-        node.setLayoutY(toY);
-
-        root.setVisible(true);
-        root.setManaged(true);
-
-        notifyUtils.addNodeListeners(stage,node,position,width,height);
+    public Region getLayout() {
+        return layout;
     }
 
-    protected void positioningRoute(Node node, NotifyPos position, Boolean animation, double duration) {
-        if (position == null) return;
+    public Lifecycle getLifecycle() {
+        return lifecycle;
+    }
 
-        if (animation) {
-            this.animation = true;
-            this.animations.animate(node,position,this.stage,duration);
+    // ---------------------------------------------------------
+    // MANAGER INTEGRATION
+    // ---------------------------------------------------------
 
-            this.root.setVisible(true);
-            this.root.setManaged(true);
+    public void setSubmitter(Consumer<NotifyBase> submitter) {
 
+        if (lifecycle != Lifecycle.NEW || submitted) {
+            throw new IllegalStateException(
+                    "Cannot change the submitter after submission."
+            );
+        }
+
+        this.submitter = Objects.requireNonNull(submitter);
+    }
+
+    private void submit() {
+
+        requireFxThread();
+
+        if (submitted) {
             return;
         }
 
-        setInanimatePosition(node,position);
+        if (submitter == null) {
+            throw new IllegalStateException(
+                    "Notification has not been connected to a NotifyManager."
+            );
+        }
+
+        submitted = true;
+
+        submitter.accept(this);
     }
 
-    // A function fired right before the close of the notification
+    // ---------------------------------------------------------
+    // NOTIFICATION CONFIGURATION
+    // ---------------------------------------------------------
+
+    protected void show(
+            Node node,
+            NotifyPos position,
+            boolean animation,
+            double animationDuration,
+            boolean autoClose,
+            double displayDuration
+    ) {
+
+        requireFxThread();
+
+        if (lifecycle != Lifecycle.NEW || submitted) {
+            throw new IllegalStateException(
+                    "This notification has already been submitted."
+            );
+        }
+
+        this.node = Objects.requireNonNull(node);
+
+        this.position = Objects.requireNonNullElse(
+                position,
+                NotifyPos.TOP
+        );
+
+        if (!Double.isFinite(animationDuration) ||
+                animationDuration < 0) {
+
+            throw new IllegalArgumentException(
+                    "Animation duration must be a finite, non-negative value."
+            );
+        }
+
+        if (!Double.isFinite(displayDuration) ||
+                displayDuration < 0) {
+
+            throw new IllegalArgumentException(
+                    "Display duration must be a finite, non-negative value."
+            );
+        }
+
+        this.animateNotification = animation;
+
+        this.animationDuration = animationDuration;
+
+        this.autoClose = autoClose;
+
+        this.displayDuration = displayDuration;
+
+        submit();
+    }
+
+    // ---------------------------------------------------------
+    // CALLBACKS
+    // ---------------------------------------------------------
+
     public void setOnCloseRequest(Runnable callback) {
-        if (callback != null)
-            this.onCloseRequest = callback;
+        this.onCloseRequest = callback;
     }
 
-    // A function fired after the notification is closed
     public void setOnClosed(Runnable callback) {
-        if (callback != null)
-            this.onClosed = callback;
+        this.onClosed = callback;
     }
 
     private void callOnCloseRequest() {
-        if (this.onCloseRequest != null)
-            this.onCloseRequest.run();
+        executeCallback(onCloseRequest);
     }
+
     private void callOnClosed() {
-        if (this.onClosed != null)
-            this.onClosed.run();
+        executeCallback(onClosed);
     }
 
-    // Method for displaying any type of notification
-    protected void show(Node node, NotifyPos position, boolean animation, double duration) {
-        setProps(node,position,animation,duration);
+    private void executeCallback(Runnable callback) {
+
+        if (callback == null) {
+            return;
+        }
+
+        try {
+            callback.run();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private void setProps(Node node, NotifyPos pos, boolean animation, double duration) {
-        this.node = node;
-        this.position = pos;
-        this.animateNotification = animation;
-        this.duration = duration;
-    }
-
-    public void display(Runnable callback) {
-        // Setting the position of the notification type
-        positioningRoute(this.node,this.position,this.animateNotification,this.duration);
-
-        if (callback != null)
-            closeCallbacks.put("notify::close",callback);
-    }
+    // ---------------------------------------------------------
+    // ROOT MANAGEMENT
+    // ---------------------------------------------------------
 
     public void setRoot(AnchorPane root) {
-        this.root = root;
+        this.root = Objects.requireNonNull(root);
     }
 
-    protected void close() {
-        close(() -> {});
-    }
-    protected void close(Runnable run) {
-        Platform.runLater(() -> run(run));
-    }
+    // ---------------------------------------------------------
+    // DISPLAY
+    // ---------------------------------------------------------
 
-    private void run(Runnable next) {
-        if (this.node != null) {
-            if (this.animation) {
-                this.callOnCloseRequest();
-                this.animations.reverseTransition(() -> {
-                    this.root.setManaged(false);
-                    this.root.setVisible(false);
+    public void display(Runnable callback) {
 
-                    if (!this.closeCallbacks.isEmpty()) {
-                        timeOut(() -> {
-                            Runnable callback = (Runnable) closeCallbacks.get("notify::close");
-                            callback.run();
-                        }, .1);
-                    }
-                    (new NotifyUtils()).removeListeners(stage);
-                    (new NotifyAnimation()).removeListeners(stage);
+        runOnFxThread(() -> {
 
-                    this.callOnClosed();
-                    next.run();
-                });
+            if (lifecycle != Lifecycle.NEW) {
+                return;
+            }
+
+            lifecycle = Lifecycle.DISPLAYING;
+
+            // Store the callback before validation.
+            // Otherwise, a display failure could leave the manager queue stuck.
+            this.onDisplayFinished = callback;
+
+            if (node == null ||
+                    root == null ||
+                    stage.getScene() == null) {
+
+                System.err.println(
+                        "Cannot display notification: missing node, root or scene."
+                );
+
+                finishClose(null);
 
                 return;
             }
 
-            this.callOnCloseRequest();
-            this.root.setManaged(false);
-            this.root.setVisible(false);
-            // checks if callback was provided to close function
-            if (!this.closeCallbacks.isEmpty()) {
-                timeOut(() -> {
-                    Runnable callback = (Runnable) closeCallbacks.get("notify::close");
-                    callback.run();
-                }, .1);
+            try {
+
+                root.setManaged(true);
+
+                root.setVisible(true);
+
+                if (animateNotification) {
+
+                    animationRoute();
+
+                } else {
+
+                    setInanimatePosition(node, position);
+
+                    onEntranceFinished();
+                }
+
+            } catch (Exception e) {
+
+                System.err.println(
+                        "Notification display failed: " + e.getMessage()
+                );
+
+                e.printStackTrace();
+
+                finishClose(null);
             }
-            (new NotifyUtils()).removeListeners(stage);
-            (new NotifyAnimation()).removeListeners(stage);
-            this.callOnClosed();
-            next.run();
+        });
+    }
+
+    // ---------------------------------------------------------
+    // ENTRANCE ANIMATION
+    // ---------------------------------------------------------
+
+    private void animationRoute() {
+
+        animations.animate(
+                node,
+                position,
+                stage,
+                animationDuration,
+                this::onEntranceFinished
+        );
+    }
+
+    private void onEntranceFinished() {
+
+        if (lifecycle != Lifecycle.DISPLAYING) {
+            return;
+        }
+
+        lifecycle = Lifecycle.VISIBLE;
+
+        if (autoClose && displayDuration > 0) {
+
+            autoCloseTimer.setDuration(
+                    Duration.seconds(displayDuration)
+            );
+
+            autoCloseTimer.playFromStart();
+        }
+    }
+
+    // ---------------------------------------------------------
+    // STATIC POSITIONING
+    // ---------------------------------------------------------
+
+    private void setInanimatePosition(
+            Node node,
+            NotifyPos position
+    ) {
+
+        if (node == null ||
+                root == null ||
+                stage.getScene() == null) {
+            return;
+        }
+
+        Scene scene = stage.getScene();
+
+        Map<String, Double> geometry =
+                notifyUtils.getGeometry(node, scene);
+
+        double width = geometry.get("width");
+
+        double height = geometry.get("height");
+
+        double sceneWidth = geometry.get("sceneWidth");
+
+        double sceneHeight = geometry.get("sceneHeight");
+
+        NotifyCoord coordinates = notifyUtils.parsePosition(
+                position,
+                width,
+                height,
+                sceneWidth,
+                sceneHeight
+        );
+
+        node.setLayoutX(coordinates.toX());
+
+        node.setLayoutY(coordinates.toY());
+
+        notifyUtils.addNodeListeners(stage, node, position);
+    }
+
+    // ---------------------------------------------------------
+    // CLOSE
+    // ---------------------------------------------------------
+
+    protected void close() {
+        close(null);
+    }
+
+    protected void close(Runnable callback) {
+
+        runOnFxThread(() -> {
+
+            if (lifecycle == Lifecycle.CLOSING ||
+                    lifecycle == Lifecycle.CLOSED) {
+                return;
+            }
+
+            lifecycle = Lifecycle.CLOSING;
+
+            autoCloseTimer.stop();
+
+            closeInternal(callback);
+        });
+    }
+
+    private void closeInternal(Runnable callback) {
+
+        callOnCloseRequest();
+
+        if (node == null || root == null) {
+
+            finishClose(callback);
+
+            return;
+        }
+
+        if (animateNotification) {
+
+            try {
+
+                animations.reverseTransition(
+                        () -> finishClose(callback)
+                );
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+                finishClose(callback);
+            }
+
+        } else {
+
+            finishClose(callback);
+        }
+    }
+
+    // ---------------------------------------------------------
+    // FINISH CLOSE
+    // ---------------------------------------------------------
+
+    private void finishClose(Runnable callback) {
+
+        if (lifecycle == Lifecycle.CLOSED) {
+            return;
+        }
+
+        lifecycle = Lifecycle.CLOSED;
+
+        cleanupResources();
+
+        callOnClosed();
+
+        executeCallback(callback);
+
+        executeCallback(onDisplayFinished);
+
+        onDisplayFinished = null;
+    }
+
+    // ---------------------------------------------------------
+    // RESOURCE CLEANUP
+    // ---------------------------------------------------------
+
+    private void cleanupResources() {
+
+        autoCloseTimer.stop();
+
+        try {
+
+            if (root != null) {
+
+                root.setVisible(false);
+
+                root.setManaged(false);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            notifyUtils.removeListeners();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            animations.dispose();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ---------------------------------------------------------
+    // DISPOSAL
+    // ---------------------------------------------------------
+
+    public void dispose() {
+
+        runOnFxThread(() -> {
+
+            if (lifecycle == Lifecycle.CLOSED) {
+                return;
+            }
+
+            lifecycle = Lifecycle.CLOSED;
+
+            // Do not invoke user callbacks during manager disposal.
+            onDisplayFinished = null;
+
+            onCloseRequest = null;
+
+            onClosed = null;
+
+            cleanupResources();
+        });
+    }
+
+    // ---------------------------------------------------------
+    // THREAD MANAGEMENT
+    // ---------------------------------------------------------
+
+    private void requireFxThread() {
+
+        if (!Platform.isFxApplicationThread()) {
+
+            throw new IllegalStateException(
+                    "Notifications must be configured on the JavaFX Application Thread."
+            );
+        }
+    }
+
+    private void runOnFxThread(Runnable task) {
+
+        if (Platform.isFxApplicationThread()) {
+            task.run();
+        } else {
+            Platform.runLater(task);
         }
     }
 }
