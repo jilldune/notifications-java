@@ -18,7 +18,7 @@ Currently not published to Maven Central. To use this in your project:
 
 ## ⚙️ Usage
 
-Use the manager 'NotifyManager' for all notifications that belongs to a particular Stage. this avoids the creation of the manager instance multiple times which can distrust your scene graph entirely or get an unexpected behaviours.
+Use the manager 'NotifyManager' for all notifications that belongs to a particular Stage. this avoids the creation of the manager instance multiple times which can distrust your scene graph entirely or get an unexpected behaviors.
 
 example:
 
@@ -42,7 +42,7 @@ public class Main extends Application {
         toast.create("Hello from notifications-java!");
     }
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         launch();
     }
 }
